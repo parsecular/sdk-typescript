@@ -322,13 +322,30 @@ describe('instantiate client', () => {
     test('empty env variable', () => {
       process.env['PARSEC_API_BASE_URL'] = ''; // empty
       const client = new ParsecAPI({ apiKey: 'My API Key' });
-      expect(client.baseURL).toEqual('https://petstore3.swagger.io/api/v3');
+      expect(client.baseURL).toEqual('https://api.parsecapi.com');
     });
 
     test('blank env variable', () => {
       process.env['PARSEC_API_BASE_URL'] = '  '; // blank
       const client = new ParsecAPI({ apiKey: 'My API Key' });
-      expect(client.baseURL).toEqual('https://petstore3.swagger.io/api/v3');
+      expect(client.baseURL).toEqual('https://api.parsecapi.com');
+    });
+
+    test('env variable with environment', () => {
+      process.env['PARSEC_API_BASE_URL'] = 'https://example.com/from_env';
+
+      expect(
+        () => new ParsecAPI({ apiKey: 'My API Key', environment: 'production' }),
+      ).toThrowErrorMatchingInlineSnapshot(
+        `"Ambiguous URL; The \`baseURL\` option (or PARSEC_API_BASE_URL env var) and the \`environment\` option are given. If you want to use the environment you must pass baseURL: null"`,
+      );
+
+      const client = new ParsecAPI({
+        apiKey: 'My API Key',
+        baseURL: null,
+        environment: 'production',
+      });
+      expect(client.baseURL).toEqual('https://api.parsecapi.com');
     });
 
     test('in request options', () => {
@@ -441,14 +458,14 @@ describe('instantiate client', () => {
 
   test('with environment variable arguments', () => {
     // set options via env var
-    process.env['PETSTORE_API_KEY'] = 'My API Key';
+    process.env['PARSEC_API_KEY'] = 'My API Key';
     const client = new ParsecAPI();
     expect(client.apiKey).toBe('My API Key');
   });
 
   test('with overridden environment variable arguments', () => {
     // set options via env var
-    process.env['PETSTORE_API_KEY'] = 'another My API Key';
+    process.env['PARSEC_API_KEY'] = 'another My API Key';
     const client = new ParsecAPI({ apiKey: 'My API Key' });
     expect(client.apiKey).toBe('My API Key');
   });

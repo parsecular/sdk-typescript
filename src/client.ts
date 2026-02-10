@@ -18,29 +18,36 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  Category,
-  Pet,
-  PetCreateParams,
-  PetFindByStatusParams,
-  PetFindByStatusResponse,
-  PetFindByTagsParams,
-  PetFindByTagsResponse,
-  PetUpdateByIDParams,
-  PetUpdateParams,
-  PetUploadImageParams,
-  PetUploadImageResponse,
-  Pets,
-} from './resources/pets';
+  Account,
+  AccountBalanceParams,
+  AccountBalanceResponse,
+  AccountPingParams,
+  AccountPingResponse,
+  AccountUpdateCredentialsParams,
+  AccountUserActivityParams,
+  AccountUserActivityResponse,
+} from './resources/account';
 import {
-  User,
-  UserCreateParams,
-  UserCreateWithListParams,
-  UserLoginParams,
-  UserLoginResponse,
-  UserUpdateParams,
-  Users,
-} from './resources/users';
-import { Store, StoreListInventoryResponse } from './resources/store/store';
+  ApprovalListParams,
+  ApprovalListResponse,
+  ApprovalSetParams,
+  ApprovalSetResponse,
+  Approvals,
+} from './resources/approvals';
+import { ExchangeListResponse, Exchanges } from './resources/exchanges';
+import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
+import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
+import {
+  Order,
+  OrderCancelParams,
+  OrderCreateParams,
+  OrderListParams,
+  OrderListResponse,
+  OrderRetrieveParams,
+  Orders,
+} from './resources/orders';
+import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
+import { Websocket, WebsocketUsageParams, WebsocketUsageResponse } from './resources/websocket';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -54,11 +61,26 @@ import {
 } from './internal/utils/log';
 import { isEmptyObj } from './internal/utils/values';
 
+const environments = {
+  production: 'https://api.parsecapi.com',
+  local: 'http://localhost:3000',
+};
+type Environment = keyof typeof environments;
+
 export interface ClientOptions {
   /**
-   * Defaults to process.env['PETSTORE_API_KEY'].
+   * Defaults to process.env['PARSEC_API_KEY'].
    */
   apiKey?: string | undefined;
+
+  /**
+   * Specifies the environment to use for the API.
+   *
+   * Each environment maps to a different base URL:
+   * - `production` corresponds to `https://api.parsecapi.com`
+   * - `local` corresponds to `http://localhost:3000`
+   */
+  environment?: Environment | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
@@ -150,8 +172,9 @@ export class ParsecAPI {
   /**
    * API Client for interfacing with the Parsec API API.
    *
-   * @param {string | undefined} [opts.apiKey=process.env['PETSTORE_API_KEY'] ?? undefined]
-   * @param {string} [opts.baseURL=process.env['PARSEC_API_BASE_URL'] ?? https://petstore3.swagger.io/api/v3] - Override the default base URL for the API.
+   * @param {string | undefined} [opts.apiKey=process.env['PARSEC_API_KEY'] ?? undefined]
+   * @param {Environment} [opts.environment=production] - Specifies the environment URL to use for the API.
+   * @param {string} [opts.baseURL=process.env['PARSEC_API_BASE_URL'] ?? https://api.parsecapi.com] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -161,22 +184,29 @@ export class ParsecAPI {
    */
   constructor({
     baseURL = readEnv('PARSEC_API_BASE_URL'),
-    apiKey = readEnv('PETSTORE_API_KEY'),
+    apiKey = readEnv('PARSEC_API_KEY'),
     ...opts
   }: ClientOptions = {}) {
     if (apiKey === undefined) {
       throw new Errors.ParsecAPIError(
-        "The PETSTORE_API_KEY environment variable is missing or empty; either provide it, or instantiate the ParsecAPI client with an apiKey option, like new ParsecAPI({ apiKey: 'My API Key' }).",
+        "The PARSEC_API_KEY environment variable is missing or empty; either provide it, or instantiate the ParsecAPI client with an apiKey option, like new ParsecAPI({ apiKey: 'My API Key' }).",
       );
     }
 
     const options: ClientOptions = {
       apiKey,
       ...opts,
-      baseURL: baseURL || `https://petstore3.swagger.io/api/v3`,
+      baseURL,
+      environment: opts.environment ?? 'production',
     };
 
-    this.baseURL = options.baseURL!;
+    if (baseURL && opts.environment) {
+      throw new Errors.ParsecAPIError(
+        'Ambiguous URL; The `baseURL` option (or PARSEC_API_BASE_URL env var) and the `environment` option are given. If you want to use the environment you must pass baseURL: null',
+      );
+    }
+
+    this.baseURL = options.baseURL || environments[options.environment || 'production'];
     this.timeout = options.timeout ?? ParsecAPI.DEFAULT_TIMEOUT /* 1 minute */;
     this.logger = options.logger ?? console;
     const defaultLogLevel = 'warn';
@@ -202,7 +232,8 @@ export class ParsecAPI {
   withOptions(options: Partial<ClientOptions>): this {
     const client = new (this.constructor as any as new (props: ClientOptions) => typeof this)({
       ...this._options,
-      baseURL: this.baseURL,
+      environment: options.environment ? options.environment : undefined,
+      baseURL: options.environment ? undefined : this.baseURL,
       maxRetries: this.maxRetries,
       timeout: this.timeout,
       logger: this.logger,
@@ -219,7 +250,7 @@ export class ParsecAPI {
    * Check whether the base URL is set to its default.
    */
   #baseURLOverridden(): boolean {
-    return this.baseURL !== 'https://petstore3.swagger.io/api/v3';
+    return this.baseURL !== environments[this._options.environment || 'production'];
   }
 
   protected defaultQuery(): Record<string, string | undefined> | undefined {
@@ -231,7 +262,7 @@ export class ParsecAPI {
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([{ api_key: this.apiKey }]);
+    return buildHeaders([{ 'X-API-Key': this.apiKey }]);
   }
 
   protected stringifyQuery(query: Record<string, unknown>): string {
@@ -729,44 +760,80 @@ export class ParsecAPI {
 
   static toFile = Uploads.toFile;
 
-  pets: API.Pets = new API.Pets(this);
-  store: API.Store = new API.Store(this);
-  users: API.Users = new API.Users(this);
+  exchanges: API.Exchanges = new API.Exchanges(this);
+  markets: API.Markets = new API.Markets(this);
+  orderbook: API.Orderbook = new API.Orderbook(this);
+  websocket: API.Websocket = new API.Websocket(this);
+  orders: API.Orders = new API.Orders(this);
+  positions: API.Positions = new API.Positions(this);
+  account: API.Account = new API.Account(this);
+  approvals: API.Approvals = new API.Approvals(this);
 }
 
-ParsecAPI.Pets = Pets;
-ParsecAPI.Store = Store;
-ParsecAPI.Users = Users;
+ParsecAPI.Exchanges = Exchanges;
+ParsecAPI.Markets = Markets;
+ParsecAPI.Orderbook = Orderbook;
+ParsecAPI.Websocket = Websocket;
+ParsecAPI.Orders = Orders;
+ParsecAPI.Positions = Positions;
+ParsecAPI.Account = Account;
+ParsecAPI.Approvals = Approvals;
 
 export declare namespace ParsecAPI {
   export type RequestOptions = Opts.RequestOptions;
 
-  export {
-    Pets as Pets,
-    type Category as Category,
-    type Pet as Pet,
-    type PetFindByStatusResponse as PetFindByStatusResponse,
-    type PetFindByTagsResponse as PetFindByTagsResponse,
-    type PetUploadImageResponse as PetUploadImageResponse,
-    type PetCreateParams as PetCreateParams,
-    type PetUpdateParams as PetUpdateParams,
-    type PetFindByStatusParams as PetFindByStatusParams,
-    type PetFindByTagsParams as PetFindByTagsParams,
-    type PetUpdateByIDParams as PetUpdateByIDParams,
-    type PetUploadImageParams as PetUploadImageParams,
-  };
-
-  export { Store as Store, type StoreListInventoryResponse as StoreListInventoryResponse };
+  export { Exchanges as Exchanges, type ExchangeListResponse as ExchangeListResponse };
 
   export {
-    Users as Users,
-    type User as User,
-    type UserLoginResponse as UserLoginResponse,
-    type UserCreateParams as UserCreateParams,
-    type UserUpdateParams as UserUpdateParams,
-    type UserCreateWithListParams as UserCreateWithListParams,
-    type UserLoginParams as UserLoginParams,
+    Markets as Markets,
+    type MarketListResponse as MarketListResponse,
+    type MarketListParams as MarketListParams,
   };
 
-  export type Order = API.Order;
+  export {
+    Orderbook as Orderbook,
+    type OrderbookRetrieveResponse as OrderbookRetrieveResponse,
+    type OrderbookRetrieveParams as OrderbookRetrieveParams,
+  };
+
+  export {
+    Websocket as Websocket,
+    type WebsocketUsageResponse as WebsocketUsageResponse,
+    type WebsocketUsageParams as WebsocketUsageParams,
+  };
+
+  export {
+    Orders as Orders,
+    type Order as Order,
+    type OrderListResponse as OrderListResponse,
+    type OrderCreateParams as OrderCreateParams,
+    type OrderRetrieveParams as OrderRetrieveParams,
+    type OrderListParams as OrderListParams,
+    type OrderCancelParams as OrderCancelParams,
+  };
+
+  export {
+    Positions as Positions,
+    type PositionListResponse as PositionListResponse,
+    type PositionListParams as PositionListParams,
+  };
+
+  export {
+    Account as Account,
+    type AccountBalanceResponse as AccountBalanceResponse,
+    type AccountPingResponse as AccountPingResponse,
+    type AccountUserActivityResponse as AccountUserActivityResponse,
+    type AccountBalanceParams as AccountBalanceParams,
+    type AccountPingParams as AccountPingParams,
+    type AccountUpdateCredentialsParams as AccountUpdateCredentialsParams,
+    type AccountUserActivityParams as AccountUserActivityParams,
+  };
+
+  export {
+    Approvals as Approvals,
+    type ApprovalListResponse as ApprovalListResponse,
+    type ApprovalSetResponse as ApprovalSetResponse,
+    type ApprovalListParams as ApprovalListParams,
+    type ApprovalSetParams as ApprovalSetParams,
+  };
 }
