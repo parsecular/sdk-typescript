@@ -28,6 +28,16 @@ Methods:
 
 - <code title="get /api/v1/orderbook">client.orderbook.<a href="./src/resources/orderbook.ts">retrieve</a>({ ...params }) -> OrderbookRetrieveResponse</code>
 
+# PriceHistory
+
+Types:
+
+- <code><a href="./src/resources/price-history.ts">PriceHistoryRetrieveResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/price-history">client.priceHistory.<a href="./src/resources/price-history.ts">retrieve</a>({ ...params }) -> PriceHistoryRetrieveResponse</code>
+
 # Websocket
 
 Types:

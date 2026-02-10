@@ -47,6 +47,11 @@ import {
   Orders,
 } from './resources/orders';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
+import {
+  PriceHistory,
+  PriceHistoryRetrieveParams,
+  PriceHistoryRetrieveResponse,
+} from './resources/price-history';
 import { Websocket, WebsocketUsageParams, WebsocketUsageResponse } from './resources/websocket';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
@@ -763,6 +768,7 @@ export class ParsecAPI {
   exchanges: API.Exchanges = new API.Exchanges(this);
   markets: API.Markets = new API.Markets(this);
   orderbook: API.Orderbook = new API.Orderbook(this);
+  priceHistory: API.PriceHistory = new API.PriceHistory(this);
   websocket: API.Websocket = new API.Websocket(this);
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
@@ -773,6 +779,7 @@ export class ParsecAPI {
 ParsecAPI.Exchanges = Exchanges;
 ParsecAPI.Markets = Markets;
 ParsecAPI.Orderbook = Orderbook;
+ParsecAPI.PriceHistory = PriceHistory;
 ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
@@ -794,6 +801,12 @@ export declare namespace ParsecAPI {
     Orderbook as Orderbook,
     type OrderbookRetrieveResponse as OrderbookRetrieveResponse,
     type OrderbookRetrieveParams as OrderbookRetrieveParams,
+  };
+
+  export {
+    PriceHistory as PriceHistory,
+    type PriceHistoryRetrieveResponse as PriceHistoryRetrieveResponse,
+    type PriceHistoryRetrieveParams as PriceHistoryRetrieveParams,
   };
 
   export {
