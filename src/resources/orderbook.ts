@@ -13,10 +13,18 @@ export class Orderbook extends APIResource {
   }
 }
 
-export interface OrderbookRetrieveResponse {
-  asks: Array<Array<number>>;
+/**
+ * Two-element tuple where `level[0]` is price and `level[1]` is size.
+ *
+ * NOTE: Stainless currently generates fixed-length arrays as `number[]`; we keep
+ * the wire format but provide tuple typing for SDK consumers here.
+ */
+export type OrderbookLevel = [price: number, size: number];
 
-  bids: Array<Array<number>>;
+export interface OrderbookRetrieveResponse {
+  asks: Array<OrderbookLevel>;
+
+  bids: Array<OrderbookLevel>;
 
   exchange: string;
 
@@ -59,5 +67,6 @@ export declare namespace Orderbook {
   export {
     type OrderbookRetrieveResponse as OrderbookRetrieveResponse,
     type OrderbookRetrieveParams as OrderbookRetrieveParams,
+    type OrderbookLevel as OrderbookLevel,
   };
 }

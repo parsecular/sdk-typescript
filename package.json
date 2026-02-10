@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "type": "commonjs",
-  "repository": "github:stainless-sdks/parsec-api-typescript",
+  "repository": "github:parsecular/sdk-typescript",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.27.0",
   "files": [
@@ -18,6 +18,7 @@
   },
   "scripts": {
     "test": "./scripts/test",
+    "test:contract": "PARSEC_CONTRACT_TESTS=1 ./node_modules/.bin/jest tests/contract.test.ts tests/schema-validation.test.ts",
     "build": "./scripts/build",
     "prepublishOnly": "echo 'to publish, run pnpm build && (cd dist; pnpm publish)' && exit 1",
     "format": "./scripts/format",
@@ -28,6 +29,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
     "@arethetypeswrong/cli": "^0.17.0",
     "@swc/core": "^1.3.102",
     "@swc/jest": "^0.2.29",
@@ -35,6 +37,8 @@
     "@types/node": "^20.17.6",
     "@typescript-eslint/eslint-plugin": "8.31.1",
     "@typescript-eslint/parser": "8.31.1",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "eslint": "^9.39.1",
     "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-unused-imports": "^4.1.4",
