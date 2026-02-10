@@ -30,4 +30,9 @@ export {
   type OrderCancelParams,
 } from './orders';
 export { Positions, type PositionListResponse, type PositionListParams } from './positions';
+export {
+  PriceHistory,
+  type PriceHistoryRetrieveResponse,
+  type PriceHistoryRetrieveParams,
+} from './price-history';
 export { Websocket, type WebsocketUsageResponse, type WebsocketUsageParams } from './websocket';
