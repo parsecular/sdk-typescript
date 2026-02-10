@@ -1,61 +1,90 @@
-# Shared
+# Exchanges
 
 Types:
 
-- <code><a href="./src/resources/shared.ts">Order</a></code>
+- <code><a href="./src/resources/exchanges.ts">ExchangeListResponse</a></code>
 
-# Pets
+Methods:
+
+- <code title="get /api/v1/exchanges">client.exchanges.<a href="./src/resources/exchanges.ts">list</a>() -> ExchangeListResponse</code>
+
+# Markets
 
 Types:
 
-- <code><a href="./src/resources/pets.ts">Category</a></code>
-- <code><a href="./src/resources/pets.ts">Pet</a></code>
-- <code><a href="./src/resources/pets.ts">PetFindByStatusResponse</a></code>
-- <code><a href="./src/resources/pets.ts">PetFindByTagsResponse</a></code>
-- <code><a href="./src/resources/pets.ts">PetUploadImageResponse</a></code>
+- <code><a href="./src/resources/markets.ts">MarketListResponse</a></code>
 
 Methods:
 
-- <code title="post /pet">client.pets.<a href="./src/resources/pets.ts">create</a>({ ...params }) -> Pet</code>
-- <code title="get /pet/{petId}">client.pets.<a href="./src/resources/pets.ts">retrieve</a>(petID) -> Pet</code>
-- <code title="put /pet">client.pets.<a href="./src/resources/pets.ts">update</a>({ ...params }) -> Pet</code>
-- <code title="delete /pet/{petId}">client.pets.<a href="./src/resources/pets.ts">delete</a>(petID) -> void</code>
-- <code title="get /pet/findByStatus">client.pets.<a href="./src/resources/pets.ts">findByStatus</a>({ ...params }) -> PetFindByStatusResponse</code>
-- <code title="get /pet/findByTags">client.pets.<a href="./src/resources/pets.ts">findByTags</a>({ ...params }) -> PetFindByTagsResponse</code>
-- <code title="post /pet/{petId}">client.pets.<a href="./src/resources/pets.ts">updateByID</a>(petID, { ...params }) -> void</code>
-- <code title="post /pet/{petId}/uploadImage">client.pets.<a href="./src/resources/pets.ts">uploadImage</a>(petID, image, { ...params }) -> PetUploadImageResponse</code>
+- <code title="get /api/v1/markets">client.markets.<a href="./src/resources/markets.ts">list</a>({ ...params }) -> MarketListResponse</code>
 
-# Store
+# Orderbook
 
 Types:
 
-- <code><a href="./src/resources/store/store.ts">StoreListInventoryResponse</a></code>
+- <code><a href="./src/resources/orderbook.ts">OrderbookRetrieveResponse</a></code>
 
 Methods:
 
-- <code title="get /store/inventory">client.store.<a href="./src/resources/store/store.ts">listInventory</a>() -> StoreListInventoryResponse</code>
+- <code title="get /api/v1/orderbook">client.orderbook.<a href="./src/resources/orderbook.ts">retrieve</a>({ ...params }) -> OrderbookRetrieveResponse</code>
 
-## Orders
-
-Methods:
-
-- <code title="post /store/order">client.store.orders.<a href="./src/resources/store/orders.ts">create</a>({ ...params }) -> Order</code>
-- <code title="get /store/order/{orderId}">client.store.orders.<a href="./src/resources/store/orders.ts">retrieve</a>(orderID) -> Order</code>
-- <code title="delete /store/order/{orderId}">client.store.orders.<a href="./src/resources/store/orders.ts">delete</a>(orderID) -> void</code>
-
-# Users
+# Websocket
 
 Types:
 
-- <code><a href="./src/resources/users.ts">User</a></code>
-- <code><a href="./src/resources/users.ts">UserLoginResponse</a></code>
+- <code><a href="./src/resources/websocket.ts">WebsocketUsageResponse</a></code>
 
 Methods:
 
-- <code title="post /user">client.users.<a href="./src/resources/users.ts">create</a>({ ...params }) -> User</code>
-- <code title="get /user/{username}">client.users.<a href="./src/resources/users.ts">retrieve</a>(username) -> User</code>
-- <code title="put /user/{username}">client.users.<a href="./src/resources/users.ts">update</a>(existingUsername, { ...params }) -> void</code>
-- <code title="delete /user/{username}">client.users.<a href="./src/resources/users.ts">delete</a>(username) -> void</code>
-- <code title="post /user/createWithList">client.users.<a href="./src/resources/users.ts">createWithList</a>([ ...items ]) -> User</code>
-- <code title="get /user/login">client.users.<a href="./src/resources/users.ts">login</a>({ ...params }) -> string</code>
-- <code title="get /user/logout">client.users.<a href="./src/resources/users.ts">logout</a>() -> void</code>
+- <code title="get /api/v1/ws/usage">client.websocket.<a href="./src/resources/websocket.ts">usage</a>({ ...params }) -> WebsocketUsageResponse</code>
+
+# Orders
+
+Types:
+
+- <code><a href="./src/resources/orders.ts">Order</a></code>
+- <code><a href="./src/resources/orders.ts">OrderListResponse</a></code>
+
+Methods:
+
+- <code title="post /api/v1/orders">client.orders.<a href="./src/resources/orders.ts">create</a>({ ...params }) -> Order</code>
+- <code title="get /api/v1/orders/{order_id}">client.orders.<a href="./src/resources/orders.ts">retrieve</a>(orderID, { ...params }) -> Order</code>
+- <code title="get /api/v1/orders">client.orders.<a href="./src/resources/orders.ts">list</a>({ ...params }) -> OrderListResponse</code>
+- <code title="delete /api/v1/orders/{order_id}">client.orders.<a href="./src/resources/orders.ts">cancel</a>(orderID, { ...params }) -> Order</code>
+
+# Positions
+
+Types:
+
+- <code><a href="./src/resources/positions.ts">PositionListResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/positions">client.positions.<a href="./src/resources/positions.ts">list</a>({ ...params }) -> PositionListResponse</code>
+
+# Account
+
+Types:
+
+- <code><a href="./src/resources/account.ts">AccountBalanceResponse</a></code>
+- <code><a href="./src/resources/account.ts">AccountPingResponse</a></code>
+- <code><a href="./src/resources/account.ts">AccountUserActivityResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/balance">client.account.<a href="./src/resources/account.ts">balance</a>({ ...params }) -> AccountBalanceResponse</code>
+- <code title="get /api/v1/ping">client.account.<a href="./src/resources/account.ts">ping</a>({ ...params }) -> AccountPingResponse</code>
+- <code title="put /api/v1/credentials">client.account.<a href="./src/resources/account.ts">updateCredentials</a>({ ...params }) -> void</code>
+- <code title="get /api/v1/user-activity">client.account.<a href="./src/resources/account.ts">userActivity</a>({ ...params }) -> AccountUserActivityResponse</code>
+
+# Approvals
+
+Types:
+
+- <code><a href="./src/resources/approvals.ts">ApprovalListResponse</a></code>
+- <code><a href="./src/resources/approvals.ts">ApprovalSetResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/approvals">client.approvals.<a href="./src/resources/approvals.ts">list</a>({ ...params }) -> ApprovalListResponse</code>
+- <code title="post /api/v1/approvals">client.approvals.<a href="./src/resources/approvals.ts">set</a>({ ...params }) -> ApprovalSetResponse</code>

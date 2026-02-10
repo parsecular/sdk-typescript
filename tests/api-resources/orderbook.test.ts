@@ -7,10 +7,10 @@ const client = new ParsecAPI({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource store', () => {
+describe('resource orderbook', () => {
   // Prism tests are disabled
-  test.skip('listInventory', async () => {
-    const responsePromise = client.store.listInventory();
+  test.skip('retrieve: only required params', async () => {
+    const responsePromise = client.orderbook.retrieve({ parsec_id: 'parsec_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -18,5 +18,15 @@ describe('resource store', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Prism tests are disabled
+  test.skip('retrieve: required and optional params', async () => {
+    const response = await client.orderbook.retrieve({
+      parsec_id: 'parsec_id',
+      depth: 1,
+      limit: 1,
+      outcome: 'outcome',
+    });
   });
 });
