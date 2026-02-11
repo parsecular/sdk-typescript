@@ -56,7 +56,7 @@ export interface Order {
 
   status: 'pending' | 'open' | 'filled' | 'partially_filled' | 'cancelled' | 'rejected';
 
-  updated_at?: string;
+  updated_at?: string | null;
 }
 
 export type OrderListResponse = Array<Order>;
