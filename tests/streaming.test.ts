@@ -105,7 +105,7 @@ function sampleSnapshot(overrides: Record<string, any> = {}) {
 beforeEach((done) => {
   wss = new WebSocketServer({ port: 0 }, () => {
     const addr = wss.address();
-    serverPort = typeof addr === 'object' ? addr.port : 0;
+    serverPort = typeof addr === 'object' && addr !== null ? addr.port : 0;
     done();
   });
 });

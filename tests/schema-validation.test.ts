@@ -18,7 +18,7 @@ function getOpenapiSpecFromStats(): string | null {
   try {
     const raw = fs.readFileSync(path.resolve(process.cwd(), '.stats.yml'), 'utf8');
     const match = raw.match(/^openapi_spec_url:\\s*(.+)$/m);
-    return match ? match[1].trim() : null;
+    return match ? match[1]!.trim() : null;
   } catch {
     return null;
   }
