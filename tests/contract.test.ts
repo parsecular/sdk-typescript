@@ -4,7 +4,8 @@ import ParsecAPI, { APIError } from 'parsec-api';
 // They are opt-in so the default SDK CI remains fast/offline.
 const RUN_LIVE = process.env['PARSEC_CONTRACT_TESTS'] === '1';
 
-const BASE_URL = process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
+const BASE_URL =
+  process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
 const API_KEY = process.env['PARSEC_API_KEY'];
 
 if (!RUN_LIVE) {

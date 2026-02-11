@@ -47,7 +47,9 @@ function sleep(ms: number): Promise<void> {
 }
 
 /** Create a connected + authenticated ParsecWebSocket and return the server-side socket. */
-async function connectAndAuth(apiKey = 'pk_test'): Promise<{ ws: ParsecWebSocket; serverClient: WsWebSocket }> {
+async function connectAndAuth(
+  apiKey = 'pk_test',
+): Promise<{ ws: ParsecWebSocket; serverClient: WsWebSocket }> {
   const clientPromise = waitForClient();
   const ws = new ParsecWebSocket(apiKey, wsUrl());
   const connectPromise = ws.connect();
@@ -409,7 +411,7 @@ describe('ParsecWebSocket', () => {
         sampleSnapshot({
           server_seq: 10,
           bids: [
-            [0.70, 2000],
+            [0.7, 2000],
             [0.69, 3000],
           ],
           asks: [
@@ -467,9 +469,7 @@ describe('ParsecWebSocket', () => {
       const subMsg = newMsgs.find((m) => m.type === 'subscribe');
       expect(subMsg).toBeDefined();
       expect(subMsg.markets).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ parsec_id: 'polymarket:0x123', outcome: 'Yes' }),
-        ]),
+        expect.arrayContaining([expect.objectContaining({ parsec_id: 'polymarket:0x123', outcome: 'Yes' })]),
       );
 
       ws.close();

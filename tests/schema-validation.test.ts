@@ -10,7 +10,8 @@ type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
 const RUN_LIVE = process.env['PARSEC_CONTRACT_TESTS'] === '1';
 
-const BASE_URL = process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
+const BASE_URL =
+  process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
 const API_KEY = process.env['PARSEC_API_KEY'];
 
 function getOpenapiSpecFromStats(): string | null {

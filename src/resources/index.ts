@@ -19,7 +19,12 @@ export {
 } from './approvals';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
-export { Orderbook, type OrderbookRetrieveResponse, type OrderbookRetrieveParams, type OrderbookLevel } from './orderbook';
+export {
+  Orderbook,
+  type OrderbookRetrieveResponse,
+  type OrderbookRetrieveParams,
+  type OrderbookLevel,
+} from './orderbook';
 export {
   Orders,
   type Order,

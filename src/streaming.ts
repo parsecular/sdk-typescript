@@ -132,7 +132,12 @@ function parseWireLevels(raw: unknown): StreamingOrderbookLevel[] {
   if (!Array.isArray(raw)) return [];
   const levels: StreamingOrderbookLevel[] = [];
   for (const item of raw) {
-    if (Array.isArray(item) && item.length >= 2 && typeof item[0] === 'number' && typeof item[1] === 'number') {
+    if (
+      Array.isArray(item) &&
+      item.length >= 2 &&
+      typeof item[0] === 'number' &&
+      typeof item[1] === 'number'
+    ) {
       levels.push({ price: item[0], size: item[1] });
     }
   }
@@ -302,10 +307,7 @@ export class ParsecWebSocket {
 
   // ── Internals ───────────────────────────────────────────
 
-  private doConnect(
-    onAuth?: (value: void) => void,
-    onFail?: (reason: Error) => void,
-  ): void {
+  private doConnect(onAuth?: (value: void) => void, onFail?: (reason: Error) => void): void {
     if (this.ws) {
       this.ws.onclose = null;
       this.ws.onerror = null;
@@ -568,9 +570,9 @@ export class ParsecWebSocket {
 
       // Insert while preserving sort (bids desc, asks asc)
       const insertAt =
-        ch.side === 'bid'
-          ? levels.findIndex((l) => l.price < ch.price)
-          : levels.findIndex((l) => l.price > ch.price);
+        ch.side === 'bid' ?
+          levels.findIndex((l) => l.price < ch.price)
+        : levels.findIndex((l) => l.price > ch.price);
 
       if (insertAt === -1) {
         levels.push({ price: ch.price, size: ch.size });
@@ -614,7 +616,10 @@ export class ParsecWebSocket {
     this.state = 'reconnecting';
     this.reconnectAttempt++;
 
-    const delayMs = Math.min(BASE_RECONNECT_DELAY_MS * Math.pow(2, this.reconnectAttempt - 1), MAX_RECONNECT_DELAY_MS);
+    const delayMs = Math.min(
+      BASE_RECONNECT_DELAY_MS * Math.pow(2, this.reconnectAttempt - 1),
+      MAX_RECONNECT_DELAY_MS,
+    );
 
     this.emit('reconnecting', this.reconnectAttempt, delayMs);
 
