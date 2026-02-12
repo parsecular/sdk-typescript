@@ -53,7 +53,12 @@ import {
   PriceHistoryRetrieveResponse,
 } from './resources/price-history';
 import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
-import { Websocket, WebsocketUsageParams, WebsocketUsageResponse } from './resources/websocket';
+import {
+  CustomerUsage,
+  Websocket,
+  WebsocketUsageParams,
+  WebsocketUsageResponse,
+} from './resources/websocket';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -820,6 +825,7 @@ export declare namespace ParsecAPI {
 
   export {
     Websocket as Websocket,
+    type CustomerUsage as CustomerUsage,
     type WebsocketUsageResponse as WebsocketUsageResponse,
     type WebsocketUsageParams as WebsocketUsageParams,
   };

@@ -17,6 +17,28 @@ export class Websocket extends APIResource {
   }
 }
 
+export interface CustomerUsage {
+  active_connections: number;
+
+  active_subscriptions: number;
+
+  auth_failures_total: number;
+
+  bytes_sent_total: number;
+
+  connections_closed_total: number;
+
+  connections_opened_total: number;
+
+  customer_id: string;
+
+  messages_sent_total: number;
+
+  subscribe_requests_total: number;
+
+  unsubscribe_requests_total: number;
+}
+
 export interface WebsocketUsageResponse {
   scope: string;
 
@@ -26,9 +48,9 @@ export interface WebsocketUsageResponse {
 
   updated_at_ms: number;
 
-  customer?: WebsocketUsageResponse.Customer;
+  customer?: CustomerUsage;
 
-  customers?: Array<WebsocketUsageResponse.Customer>;
+  customers?: Array<CustomerUsage>;
 }
 
 export namespace WebsocketUsageResponse {
@@ -57,50 +79,6 @@ export namespace WebsocketUsageResponse {
 
     unsubscribe_requests_total: number;
   }
-
-  export interface Customer {
-    active_connections: number;
-
-    active_subscriptions: number;
-
-    auth_failures_total: number;
-
-    bytes_sent_total: number;
-
-    connections_closed_total: number;
-
-    connections_opened_total: number;
-
-    customer_id: string;
-
-    messages_sent_total: number;
-
-    subscribe_requests_total: number;
-
-    unsubscribe_requests_total: number;
-  }
-
-  export interface Customer {
-    active_connections: number;
-
-    active_subscriptions: number;
-
-    auth_failures_total: number;
-
-    bytes_sent_total: number;
-
-    connections_closed_total: number;
-
-    connections_opened_total: number;
-
-    customer_id: string;
-
-    messages_sent_total: number;
-
-    subscribe_requests_total: number;
-
-    unsubscribe_requests_total: number;
-  }
 }
 
 export interface WebsocketUsageParams {
@@ -117,6 +95,7 @@ export interface WebsocketUsageParams {
 
 export declare namespace Websocket {
   export {
+    type CustomerUsage as CustomerUsage,
     type WebsocketUsageResponse as WebsocketUsageResponse,
     type WebsocketUsageParams as WebsocketUsageParams,
   };

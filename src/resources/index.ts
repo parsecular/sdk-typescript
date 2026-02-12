@@ -36,4 +36,9 @@ export {
   type PriceHistoryRetrieveParams,
 } from './price-history';
 export { Trades, type TradeListResponse, type TradeListParams } from './trades';
-export { Websocket, type WebsocketUsageResponse, type WebsocketUsageParams } from './websocket';
+export {
+  Websocket,
+  type CustomerUsage,
+  type WebsocketUsageResponse,
+  type WebsocketUsageParams,
+} from './websocket';
