@@ -19,7 +19,7 @@ export interface StreamingOrderbookLevel {
 }
 
 export type FeedState = 'healthy' | 'degraded' | 'disconnected';
-export type BookState = 'fresh' | 'stale';
+export type BookState = 'fresh' | 'stale' | 'needs_refresh';
 export type OrderbookKind = 'snapshot' | 'delta';
 
 export interface OrderbookSnapshot {

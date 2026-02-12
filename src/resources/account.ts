@@ -59,6 +59,8 @@ export namespace AccountPingResponse {
 
     exchange: string;
 
+    has_credentials: boolean;
+
     message: string;
   }
 }

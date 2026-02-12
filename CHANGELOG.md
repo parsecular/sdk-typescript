@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.2.0 (2026-02-12)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/parsecular/sdk-typescript/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* add npm publish workflow + release doctor NPM_TOKEN check ([90e0fff](https://github.com/parsecular/sdk-typescript/commit/90e0fff414c4d5659f3b059319353cc9409dafd9))
+* **api:** api update ([fb19529](https://github.com/parsecular/sdk-typescript/commit/fb19529903596b6570c07af21c94e2f812d99783))
+* **api:** api update ([6715cc2](https://github.com/parsecular/sdk-typescript/commit/6715cc2d44c5f8093089c2cc6e556f457deecc9c))
+
+
+### Bug Fixes
+
+* use correct candle.timestamp field in contract test ([4263623](https://github.com/parsecular/sdk-typescript/commit/4263623dde4f34966d10e9efa3b808b9baf0d89c))
+* **ws:** add missing needs_refresh book state + fill activity tests ([8d99697](https://github.com/parsecular/sdk-typescript/commit/8d99697055e101745dd33a6be6ea85d61ab93fe6))
+
+
+### Chores
+
+* **internal:** avoid type checking errors with ts-reset ([e1f84d9](https://github.com/parsecular/sdk-typescript/commit/e1f84d91e9514f390bb55741885b9c8c8aa5b463))
+
+
+### Styles
+
+* fix prettier formatting and unused import in contract tests ([072ae33](https://github.com/parsecular/sdk-typescript/commit/072ae3305c56870994faf79159144056d87fe07c))
+
 ## 0.1.0 (2026-02-12)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/parsecular/sdk-typescript/compare/v0.0.1...v0.1.0)

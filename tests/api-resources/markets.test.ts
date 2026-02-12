@@ -27,7 +27,9 @@ describe('resource markets', () => {
       client.markets.list(
         {
           cursor: 'cursor',
+          event_id: 'event_id',
           exchanges: ['string'],
+          group_id: 'group_id',
           limit: 1,
           min_liquidity: 0,
           min_volume: 0,

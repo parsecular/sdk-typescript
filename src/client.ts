@@ -53,6 +53,7 @@ import {
   PriceHistoryRetrieveParams,
   PriceHistoryRetrieveResponse,
 } from './resources/price-history';
+import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
 import { Websocket, WebsocketUsageParams, WebsocketUsageResponse } from './resources/websocket';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
@@ -493,7 +494,7 @@ export class ParsecAPI {
       loggerFor(this).info(`${responseInfo} - ${retryMessage}`);
 
       const errText = await response.text().catch((err: any) => castToError(err).message);
-      const errJSON = safeJSON(errText);
+      const errJSON = safeJSON(errText) as any;
       const errMessage = errJSON ? undefined : errText;
 
       loggerFor(this).debug(
@@ -770,6 +771,7 @@ export class ParsecAPI {
   markets: API.Markets = new API.Markets(this);
   orderbook: API.Orderbook = new API.Orderbook(this);
   priceHistory: API.PriceHistory = new API.PriceHistory(this);
+  trades: API.Trades = new API.Trades(this);
   websocket: API.Websocket = new API.Websocket(this);
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
@@ -815,6 +817,7 @@ ParsecAPI.Exchanges = Exchanges;
 ParsecAPI.Markets = Markets;
 ParsecAPI.Orderbook = Orderbook;
 ParsecAPI.PriceHistory = PriceHistory;
+ParsecAPI.Trades = Trades;
 ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
@@ -842,6 +845,12 @@ export declare namespace ParsecAPI {
     PriceHistory as PriceHistory,
     type PriceHistoryRetrieveResponse as PriceHistoryRetrieveResponse,
     type PriceHistoryRetrieveParams as PriceHistoryRetrieveParams,
+  };
+
+  export {
+    Trades as Trades,
+    type TradeListResponse as TradeListResponse,
+    type TradeListParams as TradeListParams,
   };
 
   export {

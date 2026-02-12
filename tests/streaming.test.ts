@@ -592,6 +592,118 @@ describe('ParsecWebSocket', () => {
     });
   });
 
+  describe('fill activity', () => {
+    test('fill activity is emitted with correct fields', async () => {
+      const { ws, serverClient } = await connectAndAuth();
+
+      const activities: Activity[] = [];
+      ws.on('activity', (a) => activities.push(a));
+
+      serverSend(serverClient, {
+        type: 'activity',
+        parsec_id: 'kalshi:KXBTC',
+        exchange: 'kalshi',
+        outcome: 'Yes',
+        token_id: 'tok_xyz',
+        market_id: 'KXBTC',
+        kind: 'fill',
+        price: 0.72,
+        size: 50,
+        fill_id: 'fill_456',
+        order_id: 'order_789',
+        side: 'buy',
+        server_seq: 10,
+        feed_state: 'healthy',
+        exchange_ts_ms: 1707044096200,
+        ingest_ts_ms: 1707044096205,
+        source_channel: 'fills',
+      });
+      await sleep(20);
+
+      expect(activities.length).toBe(1);
+      const a = activities[0]!;
+      expect(a.kind).toBe('fill');
+      expect(a.fillId).toBe('fill_456');
+      expect(a.orderId).toBe('order_789');
+      expect(a.tradeId).toBeUndefined();
+      expect(a.aggressorSide).toBeUndefined();
+      expect(a.price).toBe(0.72);
+      expect(a.size).toBe(50);
+      expect(a.sourceChannel).toBe('fills');
+
+      ws.close();
+    });
+  });
+
+  describe('book_state variants', () => {
+    test('stale book_state is passed through', async () => {
+      const { ws, serverClient } = await connectAndAuth();
+
+      const books: OrderbookSnapshot[] = [];
+      ws.on('orderbook', (b) => books.push(b));
+
+      ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
+      await sleep(20);
+
+      serverSend(serverClient, sampleSnapshot({ book_state: 'stale' }));
+      await sleep(20);
+
+      expect(books.length).toBe(1);
+      expect(books[0]!.bookState).toBe('stale');
+
+      ws.close();
+    });
+
+    test('needs_refresh book_state is passed through', async () => {
+      const { ws, serverClient } = await connectAndAuth();
+
+      const books: OrderbookSnapshot[] = [];
+      ws.on('orderbook', (b) => books.push(b));
+
+      ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
+      await sleep(20);
+
+      serverSend(serverClient, sampleSnapshot({ book_state: 'needs_refresh' }));
+      await sleep(20);
+
+      expect(books.length).toBe(1);
+      expect(books[0]!.bookState).toBe('needs_refresh');
+
+      ws.close();
+    });
+
+    test('needs_refresh book_state on delta is passed through', async () => {
+      const { ws, serverClient } = await connectAndAuth();
+
+      const books: OrderbookSnapshot[] = [];
+      ws.on('orderbook', (b) => books.push(b));
+
+      ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
+      await sleep(20);
+
+      serverSend(serverClient, sampleSnapshot());
+      await sleep(20);
+
+      serverSend(serverClient, {
+        type: 'orderbook_delta',
+        parsec_id: 'polymarket:0x123',
+        outcome: 'Yes',
+        changes: [{ side: 'bid', price: 0.65, size: 1200 }],
+        server_seq: 2,
+        feed_state: 'degraded',
+        book_state: 'needs_refresh',
+        stale_after_ms: 5000,
+      });
+      await sleep(20);
+
+      expect(books.length).toBe(2);
+      expect(books[1]!.bookState).toBe('needs_refresh');
+      expect(books[1]!.feedState).toBe('degraded');
+
+      ws.close();
+    });
+  });
+
   describe('slow_reader + heartbeat events', () => {
     test('slow_reader event is emitted', async () => {
       const { ws, serverClient } = await connectAndAuth();
