@@ -57,7 +57,15 @@ export namespace MarketListResponse {
 
     condition_id?: string;
 
-    group_id?: string;
+    /**
+     * Canonical Parsec event ID for cross-exchange grouping.
+     */
+    event_id?: string | null;
+
+    /**
+     * Source-native exchange event/group ID.
+     */
+    group_id?: string | null;
 
     liquidity?: number | null;
 
@@ -106,13 +114,18 @@ export interface MarketListParams {
   cursor?: string;
 
   /**
+   * Canonical Parsec event ID filter (exact match).
+   */
+  event_id?: string;
+
+  /**
    * Exchanges to query. In SDKs this is typically an array encoded as CSV on the
    * wire. Required unless `parsec_ids` is provided.
    */
   exchanges?: Array<string>;
 
   /**
-   * Group/event ID filter (exact match).
+   * Source-native exchange event/group ID filter (exact match).
    */
   group_id?: string;
 
