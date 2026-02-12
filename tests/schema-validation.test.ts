@@ -10,14 +10,15 @@ type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
 const RUN_LIVE = process.env['PARSEC_CONTRACT_TESTS'] === '1';
 
-const BASE_URL = process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
+const BASE_URL =
+  process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
 const API_KEY = process.env['PARSEC_API_KEY'];
 
 function getOpenapiSpecFromStats(): string | null {
   try {
     const raw = fs.readFileSync(path.resolve(process.cwd(), '.stats.yml'), 'utf8');
     const match = raw.match(/^openapi_spec_url:\\s*(.+)$/m);
-    return match ? match[1].trim() : null;
+    return match ? match[1]!.trim() : null;
   } catch {
     return null;
   }

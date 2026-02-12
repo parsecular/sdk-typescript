@@ -59,11 +59,11 @@ export namespace MarketListResponse {
 
     group_id?: string;
 
-    liquidity?: number;
+    liquidity?: number | null;
 
     open_time?: string;
 
-    question?: string;
+    question?: string | null;
 
     slug?: string;
 

@@ -19,7 +19,12 @@ export {
 } from './approvals';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
-export { Orderbook, type OrderbookRetrieveResponse, type OrderbookRetrieveParams, type OrderbookLevel } from './orderbook';
+export {
+  Orderbook,
+  type OrderbookRetrieveResponse,
+  type OrderbookRetrieveParams,
+  type OrderbookLevel,
+} from './orderbook';
 export {
   Orders,
   type Order,
@@ -30,4 +35,9 @@ export {
   type OrderCancelParams,
 } from './orders';
 export { Positions, type PositionListResponse, type PositionListParams } from './positions';
+export {
+  PriceHistory,
+  type PriceHistoryRetrieveResponse,
+  type PriceHistoryRetrieveParams,
+} from './price-history';
 export { Websocket, type WebsocketUsageResponse, type WebsocketUsageParams } from './websocket';

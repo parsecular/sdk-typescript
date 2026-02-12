@@ -16,6 +16,7 @@ import { VERSION } from './version';
 import * as Errors from './core/error';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
+import { ParsecWebSocket, type ParsecWebSocketOptions } from './streaming';
 import { APIPromise } from './core/api-promise';
 import {
   Account,
@@ -47,6 +48,11 @@ import {
   Orders,
 } from './resources/orders';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
+import {
+  PriceHistory,
+  PriceHistoryRetrieveParams,
+  PriceHistoryRetrieveResponse,
+} from './resources/price-history';
 import { Websocket, WebsocketUsageParams, WebsocketUsageResponse } from './resources/websocket';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
@@ -763,16 +769,52 @@ export class ParsecAPI {
   exchanges: API.Exchanges = new API.Exchanges(this);
   markets: API.Markets = new API.Markets(this);
   orderbook: API.Orderbook = new API.Orderbook(this);
+  priceHistory: API.PriceHistory = new API.PriceHistory(this);
   websocket: API.Websocket = new API.Websocket(this);
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
   account: API.Account = new API.Account(this);
   approvals: API.Approvals = new API.Approvals(this);
+
+  /**
+   * Create a WebSocket client for real-time orderbook and trade streaming.
+   * Inherits `apiKey` from this client and derives the WebSocket URL from `baseURL`.
+   *
+   * @param opts.url - Override the WebSocket URL (derived from baseURL by default).
+   * @returns A new `ParsecWebSocket` instance.
+   *
+   * @example
+   * ```ts
+   * const client = new ParsecAPI({ apiKey: 'pk_...' });
+   * const ws = client.ws();
+   *
+   * ws.on('orderbook', (book) => console.log(book.bids[0]));
+   * await ws.connect();
+   * ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
+   * ```
+   */
+  ws(opts?: ParsecWebSocketOptions): ParsecWebSocket {
+    const wsUrl = opts?.url ?? this.#deriveWsUrl();
+    return new ParsecWebSocket(this.apiKey, wsUrl);
+  }
+
+  #deriveWsUrl(): string {
+    const base = this.baseURL.replace(/\/$/, '');
+    if (base.startsWith('https://')) {
+      return base.replace(/^https:\/\//, 'wss://') + '/ws';
+    }
+    if (base.startsWith('http://')) {
+      return base.replace(/^http:\/\//, 'ws://') + '/ws';
+    }
+    // Fallback: assume wss
+    return 'wss://' + base + '/ws';
+  }
 }
 
 ParsecAPI.Exchanges = Exchanges;
 ParsecAPI.Markets = Markets;
 ParsecAPI.Orderbook = Orderbook;
+ParsecAPI.PriceHistory = PriceHistory;
 ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
@@ -794,6 +836,12 @@ export declare namespace ParsecAPI {
     Orderbook as Orderbook,
     type OrderbookRetrieveResponse as OrderbookRetrieveResponse,
     type OrderbookRetrieveParams as OrderbookRetrieveParams,
+  };
+
+  export {
+    PriceHistory as PriceHistory,
+    type PriceHistoryRetrieveResponse as PriceHistoryRetrieveResponse,
+    type PriceHistoryRetrieveParams as PriceHistoryRetrieveParams,
   };
 
   export {

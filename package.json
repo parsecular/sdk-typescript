@@ -1,6 +1,6 @@
 {
   "name": "parsec-api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The official TypeScript library for the Parsec API API",
   "author": "Parsec API <support@parsecapi.com>",
   "types": "dist/index.d.ts",
@@ -27,7 +27,10 @@
     "lint": "./scripts/lint",
     "fix": "./scripts/format"
   },
-  "dependencies": {},
+  "dependencies": {
+    "isomorphic-ws": "^5.0.0",
+    "ws": "^8.19.0"
+  },
   "devDependencies": {
     "@apidevtools/swagger-parser": "^10.1.1",
     "@arethetypeswrong/cli": "^0.17.0",
@@ -35,6 +38,7 @@
     "@swc/jest": "^0.2.29",
     "@types/jest": "^29.4.0",
     "@types/node": "^20.17.6",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "8.31.1",
     "@typescript-eslint/parser": "8.31.1",
     "ajv": "^8.17.1",
