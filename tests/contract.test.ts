@@ -140,8 +140,8 @@ if (!RUN_LIVE) {
       if (history.candles.length > 0) {
         const candle = history.candles[0]!;
         // Candles should have OHLC-like fields
-        expect(typeof candle.t).toBe('number'); // timestamp
-        expect(candle.t).toBeGreaterThan(0);
+        expect(typeof candle.timestamp).toBe('string');
+        expect(candle.timestamp.length).toBeGreaterThan(0);
       }
     });
   });
