@@ -38,6 +38,16 @@ Methods:
 
 - <code title="get /api/v1/price-history">client.priceHistory.<a href="./src/resources/price-history.ts">retrieve</a>({ ...params }) -> PriceHistoryRetrieveResponse</code>
 
+# Trades
+
+Types:
+
+- <code><a href="./src/resources/trades.ts">TradeListResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/trades">client.trades.<a href="./src/resources/trades.ts">list</a>({ ...params }) -> TradeListResponse</code>
+
 # Websocket
 
 Types:
