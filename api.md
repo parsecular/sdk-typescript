@@ -52,6 +52,7 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/websocket.ts">CustomerUsage</a></code>
 - <code><a href="./src/resources/websocket.ts">WebsocketUsageResponse</a></code>
 
 Methods:
