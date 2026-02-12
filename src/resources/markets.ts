@@ -112,6 +112,11 @@ export interface MarketListParams {
   exchanges?: Array<string>;
 
   /**
+   * Group/event ID filter (exact match).
+   */
+  group_id?: string;
+
+  /**
    * Results per page (default 100).
    */
   limit?: number;

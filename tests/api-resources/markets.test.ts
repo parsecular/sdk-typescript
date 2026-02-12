@@ -28,6 +28,7 @@ describe('resource markets', () => {
         {
           cursor: 'cursor',
           exchanges: ['string'],
+          group_id: 'group_id',
           limit: 1,
           min_liquidity: 0,
           min_volume: 0,
