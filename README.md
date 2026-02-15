@@ -50,6 +50,104 @@ const exchanges: ParsecAPI.ExchangeListResponse = await client.exchanges.list();
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
 
+## Real-time Streaming
+
+The SDK includes a WebSocket client for streaming orderbook snapshots, deltas, and trade activity in real time. The client maintains a local materialized orderbook, handles authentication, automatic reconnection with exponential backoff, and sequence gap detection.
+
+### Quick start
+
+<!-- prettier-ignore -->
+```ts
+import ParsecAPI from 'parsec-api';
+
+const client = new ParsecAPI({ apiKey: 'pk_...' });
+const ws = client.ws();
+
+ws.on('orderbook', (book) => {
+  console.log(`${book.parsecId} mid=${book.midPrice}`);
+});
+
+ws.subscribe({ parsecId: 'polymarket:1234', outcome: 'yes' });
+await ws.connect();
+```
+
+### Event handlers
+
+Register handlers with `ws.on(event, callback)` and remove them with `ws.off(event, callback)`.
+
+<!-- prettier-ignore -->
+```ts
+ws.on('orderbook', (book: OrderbookSnapshot) => {
+  console.log(book.bids, book.asks, book.midPrice, book.spread);
+});
+
+ws.on('activity', (activity: Activity) => {
+  console.log(`${activity.kind}: ${activity.price} x ${activity.size}`);
+});
+
+ws.on('error', (err: WsError) => {
+  console.error(`WS error: ${err.message}`);
+});
+
+ws.on('disconnected', (reason: string) => {
+  console.log(`Disconnected: ${reason}`);
+});
+
+ws.on('reconnecting', (attempt: number, delayMs: number) => {
+  console.log(`Reconnecting (attempt ${attempt}) in ${delayMs}ms`);
+});
+```
+
+Available events: `orderbook`, `activity`, `error`, `connected`, `disconnected`, `reconnecting`, `heartbeat`, `slow_reader`.
+
+### Multiple market subscriptions
+
+You can subscribe to multiple markets at once by passing an array:
+
+<!-- prettier-ignore -->
+```ts
+ws.subscribe([
+  { parsecId: 'polymarket:1234', outcome: 'yes' },
+  { parsecId: 'kalshi:KXBTC-25', outcome: 'yes', depth: 10 },
+]);
+
+// Unsubscribe from a single market
+ws.unsubscribe({ parsecId: 'polymarket:1234', outcome: 'yes' });
+```
+
+### Connection lifecycle
+
+The client reconnects automatically on disconnect with exponential backoff (up to 30 seconds). Authentication errors are treated as fatal and will not trigger reconnection.
+
+<!-- prettier-ignore -->
+```ts
+await ws.connect();       // Resolves after successful auth
+ws.close();               // Disconnect, cancel reconnect, clear subscriptions
+await ws.waitForClose();  // Resolves when permanently closed
+```
+
+### Accessing the local orderbook
+
+The client maintains a materialized orderbook for each subscription. You can read the current state at any time with `getBook()`:
+
+<!-- prettier-ignore -->
+```ts
+const book = ws.getBook('polymarket:1234', 'yes');
+if (book) {
+  console.log(`Best bid: ${book.bids[0]?.price}, Best ask: ${book.asks[0]?.price}`);
+}
+```
+
+### Types
+
+Key types are exported from `parsec-api/streaming`:
+
+- `OrderbookSnapshot` — Full orderbook state emitted on every `orderbook` event
+- `Activity` — Trade or fill event
+- `WsError` — Error payload with optional `code` and `parsecId`
+- `MarketSubscription` — Subscription descriptor (`parsecId`, `outcome`, `depth`)
+- `StreamingOrderbookLevel` — A single `{ price, size }` level
+
 ## Handling errors
 
 When the library is unable to connect to the API,

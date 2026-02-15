@@ -1,5 +1,139 @@
 # Changelog
 
+## 0.4.0 (2026-02-15)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/parsecular/sdk-typescript/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** api update ([ccbaac2](https://github.com/parsecular/sdk-typescript/commit/ccbaac2a74b40b06e69380ebd0231542f555ec58))
+* v0.4.0 streaming fixes, docs, and contract test updates ([0c2f18c](https://github.com/parsecular/sdk-typescript/commit/0c2f18cbf6423d79ca60d4c63da317edafa77a73))
+
+## 0.4.0 (2026-02-15)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/parsecular/sdk-typescript/compare/v0.3.0...v0.4.0)
+
+### ⚠ BREAKING CHANGES
+
+This release migrates the `Market` type to the new Silver layer schema. All field names have changed. See the **Migration Guide** below.
+
+**Market field renames:**
+* `id` has been renamed to `exchange_market_id`
+* `title` has been renamed to `question`
+* `volume` (integer) has been replaced by `volume_total` (number/float)
+* `group_id` has been renamed to `exchange_group_id`
+* `event_id` has been renamed to `parsec_group_id`
+* `close_time` has been renamed to `end_date`
+* `open_time` has been renamed to `event_start_time`
+* `status` changed from enum (`active | closed | resolved`) to plain string
+
+**Market field type changes:**
+* `outcomes` changed from `string[]` to `Outcome[]` objects with `{ name, price?, token_id? }`
+
+**Removed Market fields:**
+* `meta` (`ResponseMeta`) — removed from responses
+* `outcome_tokens` — removed
+* `token_id_yes` / `token_id_no` — removed (token IDs now inside `Outcome` objects)
+* `outcome_prices` — removed
+* `volume_1wk` / `volume_1mo` — removed
+
+### Features
+
+* **api:** add Events resource — `client.events.list()` for querying aggregated market groups
+* **api:** new Market fields: `parsec_group_id`, `best_bid`, `best_ask`, `last_price`, `volume_24h`, `open_interest`, `created_at`, `updated_at`, `url`, `rules`, `group_title`, `outcome_count`, `xref`, `collection_date`, `last_collected`
+* **ws:** add `getBook()` method to read current local orderbook state
+* **ws:** add `waitForClose()` for async waiting on connection close
+
+### Bug Fixes
+
+* **ws:** fix mutation leak in emitted orderbook snapshots — listeners no longer share mutable state
+* **ws:** add reconnect jitter to prevent thundering herd on mass reconnection
+* **ws:** fix concurrent `connect()` race condition
+
+### Migration Guide
+
+**Accessing market identity:**
+
+```typescript
+// v0.3.0
+const marketId = market.id;
+const title = market.title;
+
+// v0.4.0
+const marketId = market.exchange_market_id;
+const title = market.question;
+```
+
+**Working with outcomes (most impactful change):**
+
+```typescript
+// v0.3.0
+const outcomes: string[] = market.outcomes;         // ["Yes", "No"]
+const yesToken = market.token_id_yes;
+const noToken = market.token_id_no;
+const prices = market.outcome_prices;
+
+// v0.4.0
+const outcomes: Outcome[] = market.outcomes;         // [{ name: "Yes", price: 0.65, token_id: "abc" }, ...]
+const yesOutcome = outcomes.find(o => o.name === 'Yes');
+const yesToken = yesOutcome?.token_id;
+const yesPrice = yesOutcome?.price;
+```
+
+**Volume and timing fields:**
+
+```typescript
+// v0.3.0
+const vol = market.volume;        // integer
+const close = market.close_time;
+const open = market.open_time;
+
+// v0.4.0
+const vol = market.volume_total;  // float
+const close = market.end_date;
+const open = market.event_start_time;
+// New volume field:
+const vol24h = market.volume_24h;
+```
+
+**Group and event references:**
+
+```typescript
+// v0.3.0
+const groupId = market.group_id;
+const eventId = market.event_id;
+
+// v0.4.0
+const groupId = market.exchange_group_id;
+const eventId = market.parsec_group_id;
+```
+
+**Events (new resource):**
+
+```typescript
+const events = await client.events.list({ exchange: 'polymarket' });
+for (const event of events.data) {
+  console.log(event.title, event.markets.length);
+}
+```
+
+**WebSocket orderbook reading:**
+
+```typescript
+const ws = client.ws({ exchange: 'kalshi' });
+ws.subscribe('orderbook', parsecId);
+
+ws.on('orderbook', (book) => {
+  // Emitted snapshots are now safe to store — no mutation leak
+});
+
+// Read current book state at any time
+const book = ws.getBook(parsecId);
+
+// Wait for graceful close
+await ws.waitForClose();
+```
+
 ## 0.3.0 (2026-02-12)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/parsecular/sdk-typescript/compare/v0.2.0...v0.3.0)

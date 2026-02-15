@@ -59,6 +59,11 @@ export namespace PriceHistoryRetrieveResponse {
      * Trade volume in contracts.
      */
     volume: number;
+
+    /**
+     * Open interest at this candle's close.
+     */
+    open_interest?: number;
   }
 }
 

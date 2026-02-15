@@ -20,89 +20,188 @@ export class Markets extends APIResource {
 export interface MarketListResponse {
   markets: Array<MarketListResponse.Market>;
 
-  meta: MarketListResponse.Meta;
-
   pagination: MarketListResponse.Pagination;
 }
 
 export namespace MarketListResponse {
   export interface Market {
+    exchange: string;
+
+    /**
+     * Source-native exchange event/group ID.
+     */
+    exchange_group_id: string;
+
     /**
      * Native exchange market ID.
      */
-    id: string;
+    exchange_market_id: string;
 
-    description: string;
+    /**
+     * Title of the group/event this market belongs to.
+     */
+    group_title: string;
 
-    exchange: string;
-
+    /**
+     * Market type (e.g., binary, categorical).
+     */
     market_type: string;
 
-    outcome_tokens: Array<Market.OutcomeToken>;
+    /**
+     * Market outcomes with optional price and token ID.
+     */
+    outcomes: Array<Market.Outcome>;
 
-    outcomes: Array<string>;
+    /**
+     * Parsec group ID for cross-exchange event grouping.
+     */
+    parsec_group_id: string;
 
     /**
      * Primary key in format `{exchange}:{native_id}`.
      */
     parsec_id: string;
 
-    status: 'active' | 'closed' | 'resolved';
+    /**
+     * Market question text.
+     */
+    question: string;
 
-    title: string;
+    /**
+     * Market status. Common values: active, closed, resolved, archived.
+     */
+    status: string;
 
-    volume: number;
+    /**
+     * Total trading volume (USDC).
+     */
+    volume_total: number;
 
-    close_time?: string;
+    /**
+     * Best ask price (normalized 0.0-1.0).
+     */
+    best_ask?: number;
 
+    /**
+     * Best bid price (normalized 0.0-1.0).
+     */
+    best_bid?: number;
+
+    /**
+     * Date when this market was first collected.
+     */
+    collection_date?: string;
+
+    /**
+     * Exchange-native condition ID.
+     */
     condition_id?: string;
 
-    /**
-     * Canonical Parsec event ID for cross-exchange grouping.
-     */
-    event_id?: string | null;
+    created_at?: string;
 
     /**
-     * Source-native exchange event/group ID.
+     * Detailed market description.
      */
-    group_id?: string | null;
+    description?: string;
 
-    liquidity?: number | null;
+    /**
+     * Market end/close date.
+     */
+    end_date?: string;
 
-    open_time?: string;
+    /**
+     * Event start time.
+     */
+    event_start_time?: string;
 
-    question?: string | null;
+    /**
+     * Date of last data collection.
+     */
+    last_collected?: string;
+
+    /**
+     * Last traded price (normalized 0.0-1.0).
+     */
+    last_price?: number;
+
+    /**
+     * Current liquidity (USDC).
+     */
+    liquidity?: number;
+
+    /**
+     * Current open interest (contracts/pairs).
+     */
+    open_interest?: number;
+
+    /**
+     * Number of outcomes in this market.
+     */
+    outcome_count?: number;
+
+    /**
+     * Market resolution rules.
+     */
+    rules?: string;
 
     slug?: string;
 
-    token_id_no?: string;
+    updated_at?: string;
 
-    token_id_yes?: string;
+    /**
+     * Direct URL to the market on the exchange.
+     */
+    url?: string;
+
+    /**
+     * 24-hour trading volume (USDC).
+     */
+    volume_24h?: number;
+
+    /**
+     * Cross-reference data (exchange-specific metadata).
+     */
+    xref?: { [key: string]: unknown };
   }
 
   export namespace Market {
-    export interface OutcomeToken {
-      outcome: string;
+    export interface Outcome {
+      /**
+       * Outcome label (e.g., "Yes", "No", or a categorical name).
+       */
+      name: string;
 
-      token_id: string;
+      /**
+       * Last known price for this outcome (normalized 0.0-1.0).
+       */
+      price?: number;
+
+      /**
+       * Exchange-native token ID for this outcome.
+       */
+      token_id?: string;
     }
   }
 
-  export interface Meta {
-    exchanges_queried: Array<string>;
-
-    exchanges_succeeded: Array<string>;
-
-    exchanges_failed?: { [key: string]: string };
-  }
-
   export interface Pagination {
+    /**
+     * Number of items in this response.
+     */
     count: number;
 
+    /**
+     * True if there are more results.
+     */
     has_more: boolean;
 
+    /**
+     * Total number of items matching the filters (before pagination).
+     */
     total: number;
 
+    /**
+     * Cursor for the next page (offset-based).
+     */
     next_cursor?: string;
   }
 }
@@ -152,14 +251,14 @@ export interface MarketListParams {
   parsec_ids?: Array<string>;
 
   /**
-   * Keyword search in title/description/question (case-insensitive).
+   * Keyword search in question/description (case-insensitive).
    */
   search?: string;
 
   /**
-   * Status filter.
+   * Status filter (e.g., active, closed, resolved, archived).
    */
-  status?: 'active' | 'closed' | 'resolved';
+  status?: string;
 }
 
 export declare namespace Markets {

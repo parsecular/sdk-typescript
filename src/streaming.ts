@@ -163,6 +163,8 @@ export class ParsecWebSocket {
   private intentionalClose = false;
   private reconnectAttempt = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private connectPromise: Promise<void> | null = null;
+  private closeResolve: (() => void) | null = null;
 
   private readonly subscriptions = new Map<string, MarketSubscription>();
   private readonly books = new Map<string, LocalBook>();
@@ -209,16 +211,23 @@ export class ParsecWebSocket {
   // ── Connection lifecycle ────────────────────────────────
 
   async connect(): Promise<void> {
-    if (this.state === 'connected' || this.state === 'connecting' || this.state === 'authenticating') {
-      return;
+    if (this.state === 'connected') return;
+
+    // Deduplicate concurrent connect() calls — return the in-flight promise.
+    if ((this.state === 'connecting' || this.state === 'authenticating') && this.connectPromise) {
+      return this.connectPromise;
     }
 
     this.intentionalClose = false;
     this.reconnectAttempt = 0;
 
-    return new Promise<void>((resolve, reject) => {
+    this.connectPromise = new Promise<void>((resolve, reject) => {
       this.doConnect(resolve, reject);
+    }).finally(() => {
+      this.connectPromise = null;
     });
+
+    return this.connectPromise;
   }
 
   close(): void {
@@ -243,6 +252,55 @@ export class ParsecWebSocket {
     }
 
     this.emit('disconnected', 'Client closed');
+
+    if (this.closeResolve) {
+      this.closeResolve();
+      this.closeResolve = null;
+    }
+  }
+
+  /**
+   * Returns a promise that resolves when the connection is permanently closed
+   * (via `close()` or a fatal auth error). If already closed, resolves immediately.
+   */
+  waitForClose(): Promise<void> {
+    if (this.state === 'closed' && this.intentionalClose) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve) => {
+      this.closeResolve = resolve;
+    });
+  }
+
+  /**
+   * Returns a deep copy of the current materialized book for the given market,
+   * or `undefined` if no snapshot has been received yet.
+   */
+  getBook(parsecId: string, outcome: string = 'yes'): OrderbookSnapshot | undefined {
+    const book = this.books.get(marketKey(parsecId, outcome));
+    if (!book) return undefined;
+
+    const bids = book.bids.map((l) => ({ ...l }));
+    const asks = book.asks.map((l) => ({ ...l }));
+    const { midPrice, spread } = computeMidSpread(bids, asks);
+
+    return {
+      parsecId: book.parsecId,
+      outcome: book.outcome,
+      exchange: book.exchange,
+      tokenId: book.tokenId,
+      marketId: book.marketId,
+      bids,
+      asks,
+      midPrice,
+      spread,
+      tickSize: book.tickSize,
+      kind: 'snapshot',
+      serverSeq: book.lastSeq,
+      feedState: 'healthy',
+      bookState: 'fresh',
+      staleAfterMs: 0,
+    };
   }
 
   // ── Subscribe / unsubscribe ─────────────────────────────
@@ -411,6 +469,11 @@ export class ParsecWebSocket {
         if (onFail) {
           onFail(new Error(errMsg));
         }
+
+        if (this.closeResolve) {
+          this.closeResolve();
+          this.closeResolve = null;
+        }
         break;
       }
 
@@ -514,8 +577,8 @@ export class ParsecWebSocket {
       exchange,
       tokenId,
       marketId,
-      bids,
-      asks,
+      bids: bids.map((l) => ({ ...l })),
+      asks: asks.map((l) => ({ ...l })),
       midPrice,
       spread,
       tickSize: msg.tick_size,
@@ -593,8 +656,8 @@ export class ParsecWebSocket {
       exchange: book.exchange,
       tokenId: book.tokenId,
       marketId: book.marketId,
-      bids: book.bids,
-      asks: book.asks,
+      bids: book.bids.map((l) => ({ ...l })),
+      asks: book.asks.map((l) => ({ ...l })),
       midPrice,
       spread,
       tickSize: book.tickSize,
@@ -621,13 +684,16 @@ export class ParsecWebSocket {
       MAX_RECONNECT_DELAY_MS,
     );
 
-    this.emit('reconnecting', this.reconnectAttempt, delayMs);
+    // ±25% jitter to avoid thundering-herd reconnects.
+    const jitter = delayMs * (0.75 + Math.random() * 0.5);
+
+    this.emit('reconnecting', this.reconnectAttempt, jitter);
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       if (this.intentionalClose) return;
       this.doConnect();
-    }, delayMs);
+    }, jitter);
   }
 
   private resubscribeAll(): void {

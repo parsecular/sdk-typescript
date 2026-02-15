@@ -50,11 +50,12 @@ if (!RUN_LIVE) {
       expect(market.exchange).toBe('kalshi'); // filtered to kalshi
       expect(Array.isArray(market.outcomes)).toBe(true);
       expect(market.outcomes.length).toBeGreaterThan(0);
-      expect(typeof market.outcomes[0]).toBe('string');
-      expect(['active', 'closed', 'settled']).toContain(market.status);
-      expect(typeof market.title).toBe('string');
-      expect(market.title.length).toBeGreaterThan(0);
-    });
+      expect(typeof market.outcomes[0]!.name).toBe('string');
+      expect(typeof market.status).toBe('string');
+      expect(market.status.length).toBeGreaterThan(0);
+      expect(typeof market.question).toBe('string');
+      expect(market.question.length).toBeGreaterThan(0);
+    }, 30_000);
 
     test('GET /api/v1/markets supports multi-exchange filter', async () => {
       const resp = await client.markets.list({ exchanges: ['kalshi', 'polymarket'], limit: 20 });
@@ -70,6 +71,38 @@ if (!RUN_LIVE) {
     }, 30_000);
   });
 
+  describe('REST: events', () => {
+    test('GET /api/v1/events returns paginated event list with correct shape', async () => {
+      const resp = await client.events.list({ exchanges: ['kalshi'], limit: 3 });
+      expect(resp).toHaveProperty('events');
+      expect(Array.isArray(resp.events)).toBe(true);
+      expect(resp.events.length).toBeGreaterThan(0);
+      expect(resp.events.length).toBeLessThanOrEqual(3);
+
+      const event = resp.events[0]!;
+      expect(typeof event.event_id).toBe('string');
+      expect(typeof event.title).toBe('string');
+      expect(event.title.length).toBeGreaterThan(0);
+      expect(typeof event.market_count).toBe('number');
+      expect(event.market_count).toBeGreaterThan(0);
+      expect(typeof event.total_volume).toBe('number');
+      expect(Array.isArray(event.exchanges)).toBe(true);
+      expect(typeof event.status).toBe('string');
+    }, 60_000);
+
+    test('GET /api/v1/events with include_markets returns nested markets', async () => {
+      const resp = await client.events.list({ exchanges: ['kalshi'], limit: 1, include_markets: true });
+      const event = resp.events[0]!;
+      expect(event.markets).toBeDefined();
+      expect(Array.isArray(event.markets)).toBe(true);
+      if (event.markets!.length > 0) {
+        const market = event.markets![0]!;
+        expect(typeof market.parsec_id).toBe('string');
+        expect(typeof market.question).toBe('string');
+      }
+    }, 60_000);
+  });
+
   describe('REST: orderbook', () => {
     test('GET /api/v1/orderbook returns correctly structured bids/asks', async () => {
       // Find an active market with actual orderbook depth — some 'active'
@@ -81,7 +114,7 @@ if (!RUN_LIVE) {
         if (m.status !== 'active' || m.outcomes.length === 0) continue;
         const book = await client.orderbook.retrieve({
           parsec_id: m.parsec_id,
-          outcome: m.outcomes[0]!,
+          outcome: m.outcomes[0]!.name,
         });
         if (book.bids.length + book.asks.length > 0) {
           market = m;
@@ -130,7 +163,7 @@ if (!RUN_LIVE) {
 
       const history = await client.priceHistory.retrieve({
         parsec_id: market!.parsec_id,
-        outcome: market!.outcomes[0]!,
+        outcome: market!.outcomes[0]!.name,
         interval: '1h',
       });
       expect(history).toHaveProperty('candles');
@@ -235,21 +268,25 @@ if (!RUN_LIVE) {
 
   describe('WebSocket contract tests (live server)', () => {
     /** Find active markets with actual orderbook depth for WS tests.
-     *  Probes each market's orderbook to avoid picking empty/illiquid ones. */
+     *  Probes each market's orderbook to avoid picking empty/illiquid ones.
+     *  Searches across multiple exchanges to maximise chances of finding enough markets. */
     async function findActiveMarketsWithDepth(
       count: number = 1,
     ): Promise<Array<{ parsecId: string; outcome: string }>> {
-      const resp = await client.markets.list({ exchanges: ['kalshi'], limit: 30 });
       const result: Array<{ parsecId: string; outcome: string }> = [];
-      for (const m of resp.markets) {
-        if (m.status !== 'active' || m.outcomes.length === 0) continue;
-        const ob = await client.orderbook.retrieve({
-          parsec_id: m.parsec_id,
-          outcome: m.outcomes[0]!,
-        });
-        if (ob.bids.length + ob.asks.length > 0) {
-          result.push({ parsecId: m.parsec_id, outcome: m.outcomes[0]! });
-          if (result.length >= count) break;
+      for (const exchange of ['kalshi', 'polymarket']) {
+        if (result.length >= count) break;
+        const resp = await client.markets.list({ exchanges: [exchange], limit: 30 });
+        for (const m of resp.markets) {
+          if (m.status !== 'active' || m.outcomes.length === 0) continue;
+          const ob = await client.orderbook.retrieve({
+            parsec_id: m.parsec_id,
+            outcome: m.outcomes[0]!.name,
+          });
+          if (ob.bids.length + ob.asks.length > 0) {
+            result.push({ parsecId: m.parsec_id, outcome: m.outcomes[0]!.name });
+            if (result.length >= count) break;
+          }
         }
       }
       if (result.length < count) {
