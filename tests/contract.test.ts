@@ -55,7 +55,7 @@ if (!RUN_LIVE) {
       expect(market.status.length).toBeGreaterThan(0);
       expect(typeof market.question).toBe('string');
       expect(market.question.length).toBeGreaterThan(0);
-    });
+    }, 30_000);
 
     test('GET /api/v1/markets supports multi-exchange filter', async () => {
       const resp = await client.markets.list({ exchanges: ['kalshi', 'polymarket'], limit: 20 });
@@ -268,21 +268,25 @@ if (!RUN_LIVE) {
 
   describe('WebSocket contract tests (live server)', () => {
     /** Find active markets with actual orderbook depth for WS tests.
-     *  Probes each market's orderbook to avoid picking empty/illiquid ones. */
+     *  Probes each market's orderbook to avoid picking empty/illiquid ones.
+     *  Searches across multiple exchanges to maximise chances of finding enough markets. */
     async function findActiveMarketsWithDepth(
       count: number = 1,
     ): Promise<Array<{ parsecId: string; outcome: string }>> {
-      const resp = await client.markets.list({ exchanges: ['kalshi'], limit: 30 });
       const result: Array<{ parsecId: string; outcome: string }> = [];
-      for (const m of resp.markets) {
-        if (m.status !== 'active' || m.outcomes.length === 0) continue;
-        const ob = await client.orderbook.retrieve({
-          parsec_id: m.parsec_id,
-          outcome: m.outcomes[0]!.name,
-        });
-        if (ob.bids.length + ob.asks.length > 0) {
-          result.push({ parsecId: m.parsec_id, outcome: m.outcomes[0]!.name });
-          if (result.length >= count) break;
+      for (const exchange of ['kalshi', 'polymarket']) {
+        if (result.length >= count) break;
+        const resp = await client.markets.list({ exchanges: [exchange], limit: 30 });
+        for (const m of resp.markets) {
+          if (m.status !== 'active' || m.outcomes.length === 0) continue;
+          const ob = await client.orderbook.retrieve({
+            parsec_id: m.parsec_id,
+            outcome: m.outcomes[0]!.name,
+          });
+          if (ob.bids.length + ob.asks.length > 0) {
+            result.push({ parsecId: m.parsec_id, outcome: m.outcomes[0]!.name });
+            if (result.length >= count) break;
+          }
         }
       }
       if (result.length < count) {
