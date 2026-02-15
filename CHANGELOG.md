@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 (2026-02-15)
+
+Full Changelog: [v0.4.0...v0.4.1](https://github.com/parsecular/sdk-typescript/compare/v0.4.0...v0.4.1)
+
 ## 0.4.0 (2026-02-15)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/parsecular/sdk-typescript/compare/v0.3.0...v0.4.0)
