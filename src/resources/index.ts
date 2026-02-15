@@ -17,6 +17,7 @@ export {
   type ApprovalListParams,
   type ApprovalSetParams,
 } from './approvals';
+export { Events, type EventListResponse, type EventListParams } from './events';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
 export { Orderbook, type OrderbookRetrieveResponse, type OrderbookRetrieveParams } from './orderbook';

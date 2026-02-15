@@ -7,10 +7,10 @@ const client = new ParsecAPI({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource markets', () => {
+describe('resource events', () => {
   // Prism tests are disabled
   test.skip('list', async () => {
-    const responsePromise = client.markets.list();
+    const responsePromise = client.events.list();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -24,16 +24,13 @@ describe('resource markets', () => {
   test.skip('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.markets.list(
+      client.events.list(
         {
           cursor: 'cursor',
-          event_id: 'event_id',
           exchanges: ['string'],
-          group_id: 'group_id',
+          include_markets: true,
           limit: 1,
-          min_liquidity: 0,
           min_volume: 0,
-          parsec_ids: ['string'],
           search: 'search',
           status: 'status',
         },
