@@ -391,7 +391,6 @@ export class ParsecWebSocket {
 
     this.ws.onopen = () => {
       this.state = 'authenticating';
-      this.emit('connected');
       this.wsSend({ type: 'auth', api_key: this.apiKey });
     };
 
@@ -439,6 +438,7 @@ export class ParsecWebSocket {
       case 'auth_ok': {
         this.state = 'connected';
         this.reconnectAttempt = 0;
+        this.emit('connected');
 
         // Clear one-shot connect() callbacks so reconnects don't re-resolve
         if (onAuth) {
