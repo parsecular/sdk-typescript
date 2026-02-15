@@ -4,6 +4,15 @@
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/parsecular/sdk-typescript/compare/v0.3.0...v0.4.0)
 
+### Features
+
+* **api:** api update ([ccbaac2](https://github.com/parsecular/sdk-typescript/commit/ccbaac2a74b40b06e69380ebd0231542f555ec58))
+* v0.4.0 streaming fixes, docs, and contract test updates ([0c2f18c](https://github.com/parsecular/sdk-typescript/commit/0c2f18cbf6423d79ca60d4c63da317edafa77a73))
+
+## 0.4.0 (2026-02-15)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/parsecular/sdk-typescript/compare/v0.3.0...v0.4.0)
+
 ### ⚠ BREAKING CHANGES
 
 This release migrates the `Market` type to the new Silver layer schema. All field names have changed. See the **Migration Guide** below.
