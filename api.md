@@ -48,6 +48,16 @@ Methods:
 
 - <code title="get /api/v1/trades">client.trades.<a href="./src/resources/trades.ts">list</a>({ ...params }) -> TradeListResponse</code>
 
+# Events
+
+Types:
+
+- <code><a href="./src/resources/events.ts">EventListResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/events">client.events.<a href="./src/resources/events.ts">list</a>({ ...params }) -> EventListResponse</code>
+
 # Websocket
 
 Types:

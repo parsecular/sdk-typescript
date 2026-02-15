@@ -35,6 +35,7 @@ import {
   ApprovalSetResponse,
   Approvals,
 } from './resources/approvals';
+import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
 import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
 import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
@@ -777,6 +778,7 @@ export class ParsecAPI {
   orderbook: API.Orderbook = new API.Orderbook(this);
   priceHistory: API.PriceHistory = new API.PriceHistory(this);
   trades: API.Trades = new API.Trades(this);
+  events: API.Events = new API.Events(this);
   websocket: API.Websocket = new API.Websocket(this);
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
@@ -823,6 +825,7 @@ ParsecAPI.Markets = Markets;
 ParsecAPI.Orderbook = Orderbook;
 ParsecAPI.PriceHistory = PriceHistory;
 ParsecAPI.Trades = Trades;
+ParsecAPI.Events = Events;
 ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
@@ -856,6 +859,12 @@ export declare namespace ParsecAPI {
     Trades as Trades,
     type TradeListResponse as TradeListResponse,
     type TradeListParams as TradeListParams,
+  };
+
+  export {
+    Events as Events,
+    type EventListResponse as EventListResponse,
+    type EventListParams as EventListParams,
   };
 
   export {
