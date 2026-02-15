@@ -276,7 +276,7 @@ if (!RUN_LIVE) {
       const result: Array<{ parsecId: string; outcome: string }> = [];
       for (const exchange of ['kalshi', 'polymarket']) {
         if (result.length >= count) break;
-        const resp = await client.markets.list({ exchanges: [exchange], limit: 30 });
+        const resp = await client.markets.list({ exchanges: [exchange], status: 'active', min_volume: 10000, limit: 50 });
         for (const m of resp.markets) {
           if (m.status !== 'active' || m.outcomes.length === 0) continue;
           const ob = await client.orderbook.retrieve({
