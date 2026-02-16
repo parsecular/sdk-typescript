@@ -145,11 +145,11 @@ function parseWireLevels(raw: unknown): StreamingOrderbookLevel[] {
 }
 
 function marketKey(parsecId: string, outcome: string): string {
-  return `${parsecId}:${outcome}`;
+  return `${parsecId}:${outcome.toLowerCase()}`;
 }
 
 function subKey(parsecId: string, outcome?: string): string {
-  return outcome ? `${parsecId}:${outcome}` : parsecId;
+  return outcome ? `${parsecId}:${outcome.toLowerCase()}` : parsecId;
 }
 
 // ── WebSocket client ────────────────────────────────────────
