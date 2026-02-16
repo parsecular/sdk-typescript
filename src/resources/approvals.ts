@@ -51,7 +51,7 @@ export namespace ApprovalSetResponse {
 
     tx_hash: string | null;
 
-    error?: string;
+    error?: string | null;
   }
 }
 

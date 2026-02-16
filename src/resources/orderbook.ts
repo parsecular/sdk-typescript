@@ -34,9 +34,9 @@ export interface OrderbookRetrieveResponse {
 
   parsec_id: string;
 
-  timestamp: string | null;
-
   token_id: string;
+
+  timestamp?: string | null;
 }
 
 export interface OrderbookRetrieveParams {

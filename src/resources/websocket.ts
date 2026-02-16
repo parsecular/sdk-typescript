@@ -40,6 +40,8 @@ export interface CustomerUsage {
 }
 
 export interface WebsocketUsageResponse {
+  customers: Array<CustomerUsage>;
+
   scope: string;
 
   top_markets: Array<WebsocketUsageResponse.TopMarket>;
@@ -49,8 +51,6 @@ export interface WebsocketUsageResponse {
   updated_at_ms: number;
 
   customer?: CustomerUsage;
-
-  customers?: Array<CustomerUsage>;
 }
 
 export namespace WebsocketUsageResponse {
