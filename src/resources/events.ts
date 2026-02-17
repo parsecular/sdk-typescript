@@ -14,7 +14,10 @@ export class Events extends APIResource {
     query: EventListParams | null | undefined = {},
     options?: RequestOptions,
   ): APIPromise<EventListResponse> {
-    const request = this._client.get('/api/v1/events', { query, ...options }) as APIPromise<EventListResponse>;
+    const request = this._client.get('/api/v1/events', {
+      query,
+      ...options,
+    }) as APIPromise<EventListResponse>;
     return request._thenUnwrap((data: EventListResponse) => {
       data.events.forEach((event) => {
         if (!event.markets) return;

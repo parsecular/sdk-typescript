@@ -41,7 +41,10 @@ export class Markets extends APIResource {
     query: MarketListParams | null | undefined = {},
     options?: RequestOptions,
   ): APIPromise<MarketListResponse> {
-    const request = this._client.get('/api/v1/markets', { query, ...options }) as APIPromise<MarketListResponse>;
+    const request = this._client.get('/api/v1/markets', {
+      query,
+      ...options,
+    }) as APIPromise<MarketListResponse>;
     return request._thenUnwrap((data: MarketListResponse) => {
       data.markets = data.markets.map((market) => attachBinaryOutcomeGetters(market));
       return data;

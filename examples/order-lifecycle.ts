@@ -8,21 +8,21 @@
  *   PARSEC_API_KEY=pk_live_xxx PARSEC_ENABLE_TRADING=1 npx tsx examples/order-lifecycle.ts
  */
 
-import ParsecAPI from "parsec-api";
+import ParsecAPI from 'parsec-api';
 
-if (!process.env["PARSEC_ENABLE_TRADING"]) {
-  console.log("Set PARSEC_ENABLE_TRADING=1 to run this example (places a real order).");
+if (!process.env['PARSEC_ENABLE_TRADING']) {
+  console.log('Set PARSEC_ENABLE_TRADING=1 to run this example (places a real order).');
   process.exit(0);
 }
 
 const client = new ParsecAPI(); // reads PARSEC_API_KEY from env
-const EXCHANGE = "kalshi"; // or "polymarket"
+const EXCHANGE = 'kalshi'; // or "polymarket"
 
 async function main() {
   // 1. Find an active market with orderbook depth
   const { markets } = await client.markets.list({
     exchanges: [EXCHANGE],
-    status: "active",
+    status: 'active',
     min_volume: 10_000,
     limit: 10,
   });
@@ -35,15 +35,15 @@ async function main() {
       break;
     }
   }
-  if (!target) throw new Error("No tradeable market found");
+  if (!target) throw new Error('No tradeable market found');
   console.log(`Market: ${target.parsec_id} — ${target.question}\n`);
 
   // 2. Place a limit buy at $0.01 (won't fill)
   const order = await client.orders.create({
     exchange: EXCHANGE,
     market_id: target.exchange_market_id,
-    outcome: "yes",
-    side: "buy",
+    outcome: 'yes',
+    side: 'buy',
     price: 0.01,
     size: 1,
   });
