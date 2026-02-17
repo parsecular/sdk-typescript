@@ -46,6 +46,11 @@ const client = new ParsecAPI({
 });
 
 const exchanges: ParsecAPI.ExchangeListResponse = await client.exchanges.list();
+const estimate = await client.executionPrice.retrieve({
+  parsec_id: 'kalshi:KXBTC-25',
+  side: 'buy',
+  amount: 10,
+});
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -161,6 +166,8 @@ const exchanges = await client.exchanges.list().catch(async (err) => {
     console.log(err.status); // 400
     console.log(err.name); // BadRequestError
     console.log(err.headers); // {server: 'nginx', ...}
+    console.log(err.code); // "insufficient_funds" (when provided)
+    console.log(err.retryable); // true/false (when provided)
   } else {
     throw err;
   }

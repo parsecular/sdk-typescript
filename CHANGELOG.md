@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0 (2026-02-17)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/parsecular/sdk-typescript/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **api:** 0.5.1 contract and execution-price update ([b04d806](https://github.com/parsecular/sdk-typescript/commit/b04d8063808402a2014cf343a69c3315ed908504))
+
+
+### Styles
+
+* fix lint failures in examples and formatting ([56cdbfc](https://github.com/parsecular/sdk-typescript/commit/56cdbfcade80f30e2a87cadbe29a3a5a8599d8dd))
+
 ## 0.5.0 (2026-02-16)
 
 Full Changelog: [v0.4.1...v0.5.0](https://github.com/parsecular/sdk-typescript/compare/v0.4.1...v0.5.0)

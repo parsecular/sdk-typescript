@@ -37,6 +37,11 @@ import {
 } from './resources/approvals';
 import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
+import {
+  ExecutionPrice,
+  ExecutionPriceRetrieveParams,
+  ExecutionPriceRetrieveResponse,
+} from './resources/execution-price';
 import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
 import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
 import {
@@ -162,6 +167,11 @@ export interface ClientOptions {
    * Defaults to globalThis.console.
    */
   logger?: Logger | undefined;
+
+  // TODO(verbose-mode): Add per-request debug override that logs raw request/response
+  // details (method, URL, headers, body, status) independent of global log level.
+  // pmxt exposes `verbose: true` per request, which is useful during strategy
+  // integration debugging without enabling global SDK logging noise.
 }
 
 /**
@@ -775,6 +785,7 @@ export class ParsecAPI {
 
   exchanges: API.Exchanges = new API.Exchanges(this);
   markets: API.Markets = new API.Markets(this);
+  executionPrice: API.ExecutionPrice = new API.ExecutionPrice(this);
   orderbook: API.Orderbook = new API.Orderbook(this);
   priceHistory: API.PriceHistory = new API.PriceHistory(this);
   trades: API.Trades = new API.Trades(this);
@@ -822,6 +833,7 @@ export class ParsecAPI {
 
 ParsecAPI.Exchanges = Exchanges;
 ParsecAPI.Markets = Markets;
+ParsecAPI.ExecutionPrice = ExecutionPrice;
 ParsecAPI.Orderbook = Orderbook;
 ParsecAPI.PriceHistory = PriceHistory;
 ParsecAPI.Trades = Trades;
@@ -841,6 +853,12 @@ export declare namespace ParsecAPI {
     Markets as Markets,
     type MarketListResponse as MarketListResponse,
     type MarketListParams as MarketListParams,
+  };
+
+  export {
+    ExecutionPrice as ExecutionPrice,
+    type ExecutionPriceRetrieveResponse as ExecutionPriceRetrieveResponse,
+    type ExecutionPriceRetrieveParams as ExecutionPriceRetrieveParams,
   };
 
   export {

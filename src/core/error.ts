@@ -23,6 +23,35 @@ export class APIError<
     this.error = error;
   }
 
+  /**
+   * Machine-readable error code from API response body, when provided.
+   * Example: `insufficient_funds`, `rate_limit_exceeded`.
+   */
+  get code(): string | undefined {
+    const code = (this.error as any)?.code;
+    return typeof code === 'string' ? code : undefined;
+  }
+
+  /**
+   * Retry hint from API response body, when provided.
+   */
+  get retryable(): boolean | undefined {
+    const retryable = (this.error as any)?.retryable;
+    return typeof retryable === 'boolean' ? retryable : undefined;
+  }
+
+  isCode(code: string): boolean {
+    return this.code === code;
+  }
+
+  isRetryable(): boolean {
+    return this.retryable === true;
+  }
+
+  isInsufficientFunds(): boolean {
+    return this.code === 'insufficient_funds';
+  }
+
   private static makeMessage(status: number | undefined, error: any, message: string | undefined) {
     const msg =
       error?.message ?

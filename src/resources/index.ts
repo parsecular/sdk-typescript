@@ -21,6 +21,11 @@ export { Events, type EventListResponse, type EventListParams } from './events';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
 export {
+  ExecutionPrice,
+  type ExecutionPriceRetrieveResponse,
+  type ExecutionPriceRetrieveParams,
+} from './execution-price';
+export {
   Orderbook,
   type OrderbookRetrieveResponse,
   type OrderbookRetrieveParams,

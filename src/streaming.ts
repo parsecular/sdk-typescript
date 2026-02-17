@@ -28,6 +28,7 @@ export interface OrderbookSnapshot {
   exchange: string;
   tokenId: string;
   marketId: string;
+  title?: string | undefined;
   bids: StreamingOrderbookLevel[];
   asks: StreamingOrderbookLevel[];
   midPrice: number;
@@ -103,6 +104,7 @@ interface LocalBook {
   exchange: string;
   tokenId: string;
   marketId: string;
+  title?: string | undefined;
   bids: StreamingOrderbookLevel[];
   asks: StreamingOrderbookLevel[];
   tickSize?: number | undefined;
@@ -156,7 +158,11 @@ function subKey(parsecId: string, outcome?: string): string {
 
 export class ParsecWebSocket {
   private readonly apiKey: string;
+  private readonly terminalToken?: string | undefined;
   private readonly wsUrl: string;
+
+  /** Customer ID returned by the server on successful auth. */
+  customerId?: string | undefined;
 
   private ws: WebSocket | null = null;
   private state: WsState = 'disconnected';
@@ -171,9 +177,10 @@ export class ParsecWebSocket {
   private readonly listeners = new Map<EventName, Set<(...args: any[]) => void>>();
 
   /** @internal — called by ParsecAPI.ws(), not directly by users. */
-  constructor(apiKey: string, wsUrl: string) {
+  constructor(apiKey: string, wsUrl: string, terminalToken?: string) {
     this.apiKey = apiKey;
     this.wsUrl = wsUrl;
+    this.terminalToken = terminalToken;
   }
 
   // ── Event emitter ───────────────────────────────────────
@@ -290,6 +297,7 @@ export class ParsecWebSocket {
       exchange: book.exchange,
       tokenId: book.tokenId,
       marketId: book.marketId,
+      title: book.title,
       bids,
       asks,
       midPrice,
@@ -391,7 +399,11 @@ export class ParsecWebSocket {
 
     this.ws.onopen = () => {
       this.state = 'authenticating';
-      this.wsSend({ type: 'auth', api_key: this.apiKey });
+      if (this.terminalToken) {
+        this.wsSend({ type: 'auth_terminal', token: this.terminalToken });
+      } else {
+        this.wsSend({ type: 'auth', api_key: this.apiKey });
+      }
     };
 
     this.ws.onmessage = (event: WebSocket.MessageEvent) => {
@@ -438,6 +450,7 @@ export class ParsecWebSocket {
       case 'auth_ok': {
         this.state = 'connected';
         this.reconnectAttempt = 0;
+        this.customerId = msg.customer_id;
         this.emit('connected');
 
         // Clear one-shot connect() callbacks so reconnects don't re-resolve
@@ -563,6 +576,7 @@ export class ParsecWebSocket {
       exchange,
       tokenId,
       marketId,
+      title: msg.title,
       bids,
       asks,
       tickSize: msg.tick_size,
@@ -577,6 +591,7 @@ export class ParsecWebSocket {
       exchange,
       tokenId,
       marketId,
+      title: msg.title,
       bids: bids.map((l) => ({ ...l })),
       asks: asks.map((l) => ({ ...l })),
       midPrice,
@@ -656,6 +671,7 @@ export class ParsecWebSocket {
       exchange: book.exchange,
       tokenId: book.tokenId,
       marketId: book.marketId,
+      title: book.title,
       bids: book.bids.map((l) => ({ ...l })),
       asks: book.asks.map((l) => ({ ...l })),
       midPrice,

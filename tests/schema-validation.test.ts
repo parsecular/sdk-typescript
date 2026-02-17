@@ -165,7 +165,7 @@ if (!RUN_LIVE) {
       }
     });
 
-    test('POST /api/v1/orders (400) matches schema for invalid params.order_type', async () => {
+    test('POST /api/v1/orders (501) matches schema for unsupported params.order_type on exchange', async () => {
       try {
         await client.orders.create({
           exchange: 'kalshi',
@@ -180,8 +180,8 @@ if (!RUN_LIVE) {
       } catch (err) {
         expect(err).toBeInstanceOf(APIError);
         const e = err as APIError;
-        expect(e.status).toBe(400);
-        expectValidJsonBody('/api/v1/orders', 'post', 400, e.error);
+        expect(e.status).toBe(501);
+        expectValidJsonBody('/api/v1/orders', 'post', 501, e.error);
       }
     });
 
