@@ -26,13 +26,17 @@ if (!RUN_LIVE) {
   // ── REST contract tests ──────────────────────────────────
 
   describe('REST: exchanges', () => {
-    test('GET /api/v1/exchanges returns string[]', async () => {
+    test('GET /api/v1/exchanges returns capability objects', async () => {
       const exchanges = await client.exchanges.list();
       expect(Array.isArray(exchanges)).toBe(true);
       expect(exchanges.length).toBeGreaterThan(0);
-      expect(typeof exchanges[0]).toBe('string');
-      // Should include known exchanges
-      expect(exchanges).toEqual(expect.arrayContaining(['kalshi']));
+      expect(typeof exchanges[0]!.id).toBe('string');
+      expect(typeof exchanges[0]!.name).toBe('string');
+      expect(typeof exchanges[0]!.has).toBe('object');
+      expect(typeof exchanges[0]!.has.fetch_markets).toBe('boolean');
+      expect(typeof exchanges[0]!.has.create_order).toBe('boolean');
+      expect(typeof exchanges[0]!.has.websocket).toBe('boolean');
+      expect(exchanges.some((ex) => ex.id === 'kalshi')).toBe(true);
     });
   });
 
@@ -155,6 +159,32 @@ if (!RUN_LIVE) {
     }, 30_000);
   });
 
+  describe('REST: execution-price', () => {
+    test('GET /api/v1/execution-price returns VWAP estimate shape', async () => {
+      const markets = await client.markets.list({ exchanges: ['kalshi'], limit: 5 });
+      const market = markets.markets.find((m) => m.outcomes.length > 0);
+      expect(market).toBeDefined();
+
+      const estimate = await client.executionPrice.retrieve({
+        parsec_id: market!.parsec_id,
+        outcome: market!.outcomes[0]!.name,
+        side: 'buy',
+        amount: 1,
+      });
+
+      expect(typeof estimate.filled_amount).toBe('number');
+      expect(typeof estimate.total_cost).toBe('number');
+      expect(typeof estimate.fully_filled).toBe('boolean');
+      expect(typeof estimate.levels_consumed).toBe('number');
+      if (estimate.avg_price !== null && estimate.avg_price !== undefined) {
+        expect(typeof estimate.avg_price).toBe('number');
+      }
+      if (estimate.slippage !== null && estimate.slippage !== undefined) {
+        expect(typeof estimate.slippage).toBe('number');
+      }
+    });
+  });
+
   describe('REST: price-history', () => {
     test('GET /api/v1/price-history returns candles with correct structure', async () => {
       const markets = await client.markets.list({ exchanges: ['kalshi'], limit: 5 });
@@ -192,7 +222,7 @@ if (!RUN_LIVE) {
   });
 
   describe('REST: orders', () => {
-    test('POST /api/v1/orders returns 400 with error body on invalid params', async () => {
+    test('POST /api/v1/orders returns 501 with error body when order_type is unsupported on exchange', async () => {
       try {
         await client.orders.create({
           exchange: 'kalshi',
@@ -207,7 +237,7 @@ if (!RUN_LIVE) {
       } catch (err) {
         expect(err).toBeInstanceOf(APIError);
         const e = err as APIError;
-        expect(e.status).toBe(400);
+        expect(e.status).toBe(501);
         expect(e.error).toHaveProperty('error');
         expect(typeof (e.error as any).error).toBe('string');
       }
@@ -220,8 +250,9 @@ if (!RUN_LIVE) {
       // If any orders exist, verify structure
       if ((orders as any[]).length > 0) {
         const order = (orders as any[])[0];
-        expect(order).toHaveProperty('order_id');
-        expect(order).toHaveProperty('exchange');
+        expect(order).toHaveProperty('id');
+        expect(order).toHaveProperty('market_id');
+        expect(order).toHaveProperty('status');
       }
     });
   });
@@ -235,7 +266,8 @@ if (!RUN_LIVE) {
       if ((positions as any[]).length > 0) {
         const pos = (positions as any[])[0];
         expect(pos).toHaveProperty('market_id');
-        expect(pos).toHaveProperty('exchange');
+        expect(pos).toHaveProperty('outcome');
+        expect(pos).toHaveProperty('size');
       }
     });
   });

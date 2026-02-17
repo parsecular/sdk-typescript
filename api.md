@@ -18,6 +18,16 @@ Methods:
 
 - <code title="get /api/v1/markets">client.markets.<a href="./src/resources/markets.ts">list</a>({ ...params }) -> MarketListResponse</code>
 
+# ExecutionPrice
+
+Types:
+
+- <code><a href="./src/resources/execution-price.ts">ExecutionPriceRetrieveResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/execution-price">client.executionPrice.<a href="./src/resources/execution-price.ts">retrieve</a>({ ...params }) -> ExecutionPriceRetrieveResponse</code>
+
 # Orderbook
 
 Types:

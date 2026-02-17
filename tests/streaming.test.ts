@@ -78,6 +78,7 @@ function sampleSnapshot(overrides: Record<string, any> = {}) {
     outcome: 'Yes',
     token_id: 'tok_abc',
     market_id: '0x123',
+    title: 'Will X happen?',
     tick_size: 0.01,
     kind: 'snapshot',
     bids: [
@@ -134,6 +135,7 @@ describe('ParsecWebSocket', () => {
       await connectPromise;
 
       expect(events).toContain('connected');
+      expect(ws.customerId).toBe('cust_123');
       ws.close();
     });
 
@@ -153,6 +155,25 @@ describe('ParsecWebSocket', () => {
       await expect(connectPromise).rejects.toThrow('Invalid API key');
       expect(errors.length).toBe(1);
       expect(errors[0]!.code).toBe(1002);
+      ws.close();
+    });
+
+    test('connect() sends auth_terminal when terminalToken is provided', async () => {
+      const clientPromise = waitForClient();
+      const ws = new ParsecWebSocket('pk_test', wsUrl(), 'term_tok_abc');
+
+      const connectPromise = ws.connect();
+      const serverClient = await clientPromise;
+      const msgs = collectClientMessages(serverClient);
+
+      await sleep(20);
+      expect(msgs.length).toBeGreaterThanOrEqual(1);
+      expect(msgs[0]).toEqual({ type: 'auth_terminal', token: 'term_tok_abc' });
+
+      serverSend(serverClient, { type: 'auth_ok', customer_id: 'cust_456' });
+      await connectPromise;
+
+      expect(ws.customerId).toBe('cust_456');
       ws.close();
     });
   });
@@ -193,6 +214,7 @@ describe('ParsecWebSocket', () => {
       expect(book.outcome).toBe('Yes');
       expect(book.tokenId).toBe('tok_abc');
       expect(book.marketId).toBe('0x123');
+      expect(book.title).toBe('Will X happen?');
       expect(book.tickSize).toBe(0.01);
       expect(book.serverSeq).toBe(1);
       expect(book.feedState).toBe('healthy');
@@ -200,6 +222,42 @@ describe('ParsecWebSocket', () => {
       expect(book.staleAfterMs).toBe(5000);
       expect(book.exchangeTsMs).toBe(1707044096000);
       expect(book.ingestTsMs).toBe(1707044096005);
+
+      ws.close();
+    });
+
+    test('getBook() includes title', async () => {
+      const { ws, serverClient } = await connectAndAuth();
+
+      ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
+      await sleep(20);
+
+      serverSend(serverClient, sampleSnapshot());
+      await sleep(20);
+
+      const book = ws.getBook('polymarket:0x123', 'Yes');
+      expect(book).toBeDefined();
+      expect(book!.title).toBe('Will X happen?');
+
+      ws.close();
+    });
+
+    test('title is undefined when not provided by server', async () => {
+      const { ws, serverClient } = await connectAndAuth();
+
+      const books: OrderbookSnapshot[] = [];
+      ws.on('orderbook', (b) => books.push(b));
+
+      ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
+      await sleep(20);
+
+      // Send snapshot without title
+      const { title, ...snapshotWithoutTitle } = sampleSnapshot();
+      serverSend(serverClient, snapshotWithoutTitle);
+      await sleep(20);
+
+      expect(books.length).toBe(1);
+      expect(books[0]!.title).toBeUndefined();
 
       ws.close();
     });
@@ -238,6 +296,8 @@ describe('ParsecWebSocket', () => {
       expect(delta.bids[0]).toEqual({ price: 0.65, size: 1500 });
       // Other levels unchanged
       expect(delta.bids[1]).toEqual({ price: 0.64, size: 2500 });
+      // Delta preserves title from snapshot
+      expect(delta.title).toBe('Will X happen?');
 
       ws.close();
     });
