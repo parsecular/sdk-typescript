@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.7.0 (2026-02-18)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/parsecular/sdk-typescript/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** api update ([cd03d6e](https://github.com/parsecular/sdk-typescript/commit/cd03d6e13fcf029d60e52dcedf623db6727903fd))
+* **api:** api update ([0e45edc](https://github.com/parsecular/sdk-typescript/commit/0e45edc6b36033da1e1cd52985c2344862460718))
+
+
+### Bug Fixes
+
+* **ts:** remove duplicate execution-price export ([3f83cd9](https://github.com/parsecular/sdk-typescript/commit/3f83cd99d32629b0850f8f61164e53ca1eeffdef))
+
+
+### Chores
+
+* **internal/client:** fix form-urlencoded requests ([64316fe](https://github.com/parsecular/sdk-typescript/commit/64316febbbcc63a6333d5ec2d9db9f0b3bb5234a))
+
 ## 0.6.0 (2026-02-17)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/parsecular/sdk-typescript/compare/v0.5.0...v0.6.0)
