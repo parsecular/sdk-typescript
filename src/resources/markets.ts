@@ -177,6 +177,12 @@ export namespace MarketListResponse {
     liquidity?: number;
 
     /**
+     * Minimum order size in contracts. Varies per market on Polymarket (e.g. 5, 15);
+     * typically 1 on Kalshi.
+     */
+    min_order_size?: number;
+
+    /**
      * Current open interest (contracts/pairs).
      */
     open_interest?: number;

@@ -93,7 +93,10 @@ export interface OrderCreateParams {
   size: number;
 
   /**
-   * Body param
+   * Body param: Optional key-value parameters. Supported keys:
+   *
+   * - `order_type`: Order time-in-force. Values: `gtc` (default), `ioc`, `fok`.
+   *   Unsupported types return 501 per exchange.
    */
   params?: { [key: string]: string };
 }

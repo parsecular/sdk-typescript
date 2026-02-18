@@ -108,12 +108,14 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/account.ts">AccountBalanceResponse</a></code>
+- <code><a href="./src/resources/account.ts">AccountCapabilitiesResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountPingResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountUserActivityResponse</a></code>
 
 Methods:
 
 - <code title="get /api/v1/balance">client.account.<a href="./src/resources/account.ts">balance</a>({ ...params }) -> AccountBalanceResponse</code>
+- <code title="get /api/v1/session/capabilities">client.account.<a href="./src/resources/account.ts">capabilities</a>() -> AccountCapabilitiesResponse</code>
 - <code title="get /api/v1/ping">client.account.<a href="./src/resources/account.ts">ping</a>({ ...params }) -> AccountPingResponse</code>
 - <code title="put /api/v1/credentials">client.account.<a href="./src/resources/account.ts">updateCredentials</a>({ ...params }) -> void</code>
 - <code title="get /api/v1/user-activity">client.account.<a href="./src/resources/account.ts">userActivity</a>({ ...params }) -> AccountUserActivityResponse</code>
