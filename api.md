@@ -18,6 +18,16 @@ Methods:
 
 - <code title="get /api/v1/markets">client.markets.<a href="./src/resources/markets.ts">list</a>({ ...params }) -> MarketListResponse</code>
 
+# ExecutionPrice
+
+Types:
+
+- <code><a href="./src/resources/execution-price.ts">ExecutionPriceRetrieveResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/execution-price">client.executionPrice.<a href="./src/resources/execution-price.ts">retrieve</a>({ ...params }) -> ExecutionPriceRetrieveResponse</code>
+
 # Orderbook
 
 Types:
@@ -98,12 +108,14 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/account.ts">AccountBalanceResponse</a></code>
+- <code><a href="./src/resources/account.ts">AccountCapabilitiesResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountPingResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountUserActivityResponse</a></code>
 
 Methods:
 
 - <code title="get /api/v1/balance">client.account.<a href="./src/resources/account.ts">balance</a>({ ...params }) -> AccountBalanceResponse</code>
+- <code title="get /api/v1/session/capabilities">client.account.<a href="./src/resources/account.ts">capabilities</a>() -> AccountCapabilitiesResponse</code>
 - <code title="get /api/v1/ping">client.account.<a href="./src/resources/account.ts">ping</a>({ ...params }) -> AccountPingResponse</code>
 - <code title="put /api/v1/credentials">client.account.<a href="./src/resources/account.ts">updateCredentials</a>({ ...params }) -> void</code>
 - <code title="get /api/v1/user-activity">client.account.<a href="./src/resources/account.ts">userActivity</a>({ ...params }) -> AccountUserActivityResponse</code>

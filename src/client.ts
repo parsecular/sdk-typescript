@@ -21,6 +21,7 @@ import {
   Account,
   AccountBalanceParams,
   AccountBalanceResponse,
+  AccountCapabilitiesResponse,
   AccountPingParams,
   AccountPingResponse,
   AccountUpdateCredentialsParams,
@@ -36,6 +37,11 @@ import {
 } from './resources/approvals';
 import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
+import {
+  ExecutionPrice,
+  ExecutionPriceRetrieveParams,
+  ExecutionPriceRetrieveResponse,
+} from './resources/execution-price';
 import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
 import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
 import {
@@ -782,6 +788,7 @@ export class ParsecAPI {
 
   exchanges: API.Exchanges = new API.Exchanges(this);
   markets: API.Markets = new API.Markets(this);
+  executionPrice: API.ExecutionPrice = new API.ExecutionPrice(this);
   orderbook: API.Orderbook = new API.Orderbook(this);
   priceHistory: API.PriceHistory = new API.PriceHistory(this);
   trades: API.Trades = new API.Trades(this);
@@ -795,6 +802,7 @@ export class ParsecAPI {
 
 ParsecAPI.Exchanges = Exchanges;
 ParsecAPI.Markets = Markets;
+ParsecAPI.ExecutionPrice = ExecutionPrice;
 ParsecAPI.Orderbook = Orderbook;
 ParsecAPI.PriceHistory = PriceHistory;
 ParsecAPI.Trades = Trades;
@@ -814,6 +822,12 @@ export declare namespace ParsecAPI {
     Markets as Markets,
     type MarketListResponse as MarketListResponse,
     type MarketListParams as MarketListParams,
+  };
+
+  export {
+    ExecutionPrice as ExecutionPrice,
+    type ExecutionPriceRetrieveResponse as ExecutionPriceRetrieveResponse,
+    type ExecutionPriceRetrieveParams as ExecutionPriceRetrieveParams,
   };
 
   export {
@@ -866,6 +880,7 @@ export declare namespace ParsecAPI {
   export {
     Account as Account,
     type AccountBalanceResponse as AccountBalanceResponse,
+    type AccountCapabilitiesResponse as AccountCapabilitiesResponse,
     type AccountPingResponse as AccountPingResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,

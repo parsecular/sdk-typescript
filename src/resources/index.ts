@@ -3,6 +3,7 @@
 export {
   Account,
   type AccountBalanceResponse,
+  type AccountCapabilitiesResponse,
   type AccountPingResponse,
   type AccountUserActivityResponse,
   type AccountBalanceParams,
@@ -19,6 +20,11 @@ export {
 } from './approvals';
 export { Events, type EventListResponse, type EventListParams } from './events';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
+export {
+  ExecutionPrice,
+  type ExecutionPriceRetrieveResponse,
+  type ExecutionPriceRetrieveParams,
+} from './execution-price';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
 export { Orderbook, type OrderbookRetrieveResponse, type OrderbookRetrieveParams } from './orderbook';
 export {
