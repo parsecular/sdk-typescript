@@ -27,11 +27,6 @@ export {
 } from './execution-price';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
 export {
-  ExecutionPrice,
-  type ExecutionPriceRetrieveResponse,
-  type ExecutionPriceRetrieveParams,
-} from './execution-price';
-export {
   Orderbook,
   type OrderbookRetrieveResponse,
   type OrderbookRetrieveParams,
