@@ -36,6 +36,16 @@ export interface OrderbookRetrieveResponse {
 
   token_id: string;
 
+  /**
+   * Minimum order size in contracts.
+   */
+  min_order_size?: number;
+
+  /**
+   * Minimum price increment for orders on this market.
+   */
+  tick_size?: number;
+
   timestamp?: string | null;
 }
 

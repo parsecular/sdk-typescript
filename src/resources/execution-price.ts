@@ -44,9 +44,26 @@ export interface ExecutionPriceRetrieveResponse {
   avg_price?: number | null;
 
   /**
+   * Estimated exchange fee (null when fee rate is unknown).
+   */
+  fee_estimate?: number | null;
+
+  /**
+   * Total cost including fees (total_cost + fee_estimate). Null when fee rate is
+   * unknown.
+   */
+  net_cost?: number | null;
+
+  /**
    * Price impact vs best price (null if no liquidity).
    */
   slippage?: number | null;
+
+  /**
+   * Price of the last consumed orderbook level (worst fill price). Null if no
+   * liquidity.
+   */
+  worst_price?: number | null;
 }
 
 export interface ExecutionPriceRetrieveParams {
