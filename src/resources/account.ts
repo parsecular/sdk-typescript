@@ -14,6 +14,13 @@ export class Account extends APIResource {
   }
 
   /**
+   * Returns the customer's tier and list of linked exchanges.
+   */
+  capabilities(options?: RequestOptions): APIPromise<AccountCapabilitiesResponse> {
+    return this._client.get('/api/v1/session/capabilities', options);
+  }
+
+  /**
    * Performs a lightweight balance fetch per exchange to verify connectivity/auth
    * status.
    */
@@ -49,6 +56,18 @@ export class Account extends APIResource {
 
 export interface AccountBalanceResponse {
   raw: { [key: string]: unknown };
+}
+
+export interface AccountCapabilitiesResponse {
+  /**
+   * Exchange IDs the customer has credentials linked for.
+   */
+  linked_exchanges: Array<string>;
+
+  /**
+   * Customer tier (e.g., "free", "pro", "admin").
+   */
+  tier: string;
 }
 
 export type AccountPingResponse = Array<AccountPingResponse.AccountPingResponseItem>;
@@ -131,6 +150,7 @@ export interface AccountUserActivityParams {
 export declare namespace Account {
   export {
     type AccountBalanceResponse as AccountBalanceResponse,
+    type AccountCapabilitiesResponse as AccountCapabilitiesResponse,
     type AccountPingResponse as AccountPingResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,

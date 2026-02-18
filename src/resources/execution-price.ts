@@ -6,7 +6,8 @@ import { RequestOptions } from '../internal/request-options';
 
 export class ExecutionPrice extends APIResource {
   /**
-   * Estimates execution price (VWAP) for a hypothetical order without placing it.
+   * Walks the orderbook to estimate the volume-weighted average price (VWAP) for a
+   * hypothetical order of the given size. Does not place an order.
    */
   retrieve(
     query: ExecutionPriceRetrieveParams,
@@ -18,17 +19,12 @@ export class ExecutionPrice extends APIResource {
 
 export interface ExecutionPriceRetrieveResponse {
   /**
-   * Volume-weighted average execution price, or null when no liquidity is available.
-   */
-  avg_price?: number | null;
-
-  /**
    * Number of contracts that would be filled.
    */
   filled_amount: number;
 
   /**
-   * True when the full requested amount is fillable from current depth.
+   * True if the entire requested amount can be filled.
    */
   fully_filled: boolean;
 
@@ -38,19 +34,24 @@ export interface ExecutionPriceRetrieveResponse {
   levels_consumed: number;
 
   /**
-   * Price impact vs best price, or null when no liquidity is available.
-   */
-  slippage?: number | null;
-
-  /**
-   * Total notional cost of the filled amount.
+   * Total cost of the filled portion.
    */
   total_cost: number;
+
+  /**
+   * Volume-weighted average execution price (null if no liquidity).
+   */
+  avg_price?: number | null;
+
+  /**
+   * Price impact vs best price (null if no liquidity).
+   */
+  slippage?: number | null;
 }
 
 export interface ExecutionPriceRetrieveParams {
   /**
-   * Requested order size in contracts.
+   * Order size in contracts.
    */
   amount: number;
 
@@ -60,7 +61,7 @@ export interface ExecutionPriceRetrieveParams {
   parsec_id: string;
 
   /**
-   * Order side.
+   * Order side ("buy" or "sell").
    */
   side: 'buy' | 'sell';
 

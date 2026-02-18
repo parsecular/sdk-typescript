@@ -22,6 +22,7 @@ import {
   Account,
   AccountBalanceParams,
   AccountBalanceResponse,
+  AccountCapabilitiesResponse,
   AccountPingParams,
   AccountPingResponse,
   AccountUpdateCredentialsParams,
@@ -919,6 +920,7 @@ export declare namespace ParsecAPI {
   export {
     Account as Account,
     type AccountBalanceResponse as AccountBalanceResponse,
+    type AccountCapabilitiesResponse as AccountCapabilitiesResponse,
     type AccountPingResponse as AccountPingResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,
