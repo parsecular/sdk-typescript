@@ -44,6 +44,8 @@ export namespace TradeListResponse {
 
     timestamp: string;
 
+    id?: string;
+
     /**
      * Aggressor side (typically "buy" or "sell").
      */
@@ -53,8 +55,6 @@ export namespace TradeListResponse {
      * Trade side (typically "buy" or "sell").
      */
     side?: string;
-
-    trade_id?: string;
   }
 }
 

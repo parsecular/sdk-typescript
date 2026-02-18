@@ -152,6 +152,11 @@ export namespace MarketListResponse {
 
     slug?: string;
 
+    /**
+     * Minimum price increment for orders on this market.
+     */
+    tick_size?: number;
+
     updated_at?: string;
 
     /**
