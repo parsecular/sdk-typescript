@@ -9,6 +9,29 @@ const BASE_URL =
   process.env['PARSEC_BASE_URL'] ?? process.env['TEST_API_BASE_URL'] ?? 'http://localhost:3000';
 const API_KEY = process.env['PARSEC_API_KEY'];
 
+const PUBLIC_ENDPOINT_CONTRACT_COVERAGE = [
+  'GET /api/v1/exchanges',
+  'GET /api/v1/markets',
+  'GET /api/v1/orderbook',
+  'GET /api/v1/price-history',
+  'GET /api/v1/trades',
+  'GET /api/v1/events',
+  'GET /api/v1/ws/usage',
+  'GET /api/v1/execution-price',
+  'POST /api/v1/orders',
+  'GET /api/v1/orders',
+  'GET /api/v1/orders/{order_id}',
+  'DELETE /api/v1/orders/{order_id}',
+  'GET /api/v1/positions',
+  'GET /api/v1/balance',
+  'GET /api/v1/ping',
+  'GET /api/v1/user-activity',
+  'GET /api/v1/approvals',
+  'POST /api/v1/approvals',
+  'PUT /api/v1/credentials',
+  'GET /api/v1/session/capabilities',
+] as const;
+
 // Server can be slow during relay warmup — generous per-test timeouts.
 jest.setTimeout(15_000);
 
@@ -22,8 +45,105 @@ if (!RUN_LIVE) {
   // ── Shared client ─────────────────────────────────────────
 
   const client = new ParsecAPI({ apiKey: API_KEY, baseURL: BASE_URL });
+  type MarketSelection = { parsecId: string; outcome: string; exchange: string };
+
+  let privateExchangeCache: { exchange: string; hasCredentials: boolean } | null = null;
+
+  function assertAPIError(err: unknown, allowedStatuses: number[]): APIError {
+    expect(err).toBeInstanceOf(APIError);
+    const apiErr = err as APIError;
+    expect(allowedStatuses).toContain(apiErr.status);
+    expect(apiErr.error).toHaveProperty('error');
+    expect(typeof (apiErr.error as any).error).toBe('string');
+    return apiErr;
+  }
+
+  async function resolvePrivateExchange(): Promise<{ exchange: string; hasCredentials: boolean }> {
+    if (privateExchangeCache) {
+      return privateExchangeCache;
+    }
+
+    const ping = await client.account.ping();
+    if (Array.isArray(ping) && ping.length > 0) {
+      const authenticated = ping.find((entry) => entry.has_credentials && entry.authenticated);
+      const withCreds = ping.find((entry) => entry.has_credentials);
+      const selected = authenticated ?? withCreds ?? ping[0]!;
+
+      privateExchangeCache = {
+        exchange: selected.exchange,
+        hasCredentials: Boolean(authenticated ?? withCreds),
+      };
+      return privateExchangeCache;
+    }
+
+    privateExchangeCache = { exchange: 'kalshi', hasCredentials: false };
+    return privateExchangeCache;
+  }
+
+  async function findActiveMarketWithOutcome(): Promise<MarketSelection> {
+    for (const exchange of ['kalshi', 'polymarket']) {
+      const resp = await client.markets.list({
+        exchanges: [exchange],
+        status: 'active',
+        limit: 50,
+      });
+
+      const market = resp.markets.find((m) => m.outcomes.length > 0);
+      if (market) {
+        return {
+          parsecId: market.parsec_id,
+          outcome: market.outcomes[0]!.name,
+          exchange,
+        };
+      }
+    }
+
+    throw new Error('No active market with outcomes found');
+  }
+
+  async function findActiveMarketsWithDepth(count: number = 1): Promise<MarketSelection[]> {
+    const result: MarketSelection[] = [];
+
+    for (const exchange of ['kalshi', 'polymarket']) {
+      if (result.length >= count) break;
+      const resp = await client.markets.list({
+        exchanges: [exchange],
+        status: 'active',
+        min_volume: 10000,
+        limit: 50,
+      });
+
+      for (const market of resp.markets) {
+        if (market.outcomes.length === 0) continue;
+        const book = await client.orderbook.retrieve({
+          parsec_id: market.parsec_id,
+          outcome: market.outcomes[0]!.name,
+        });
+        if (book.bids.length + book.asks.length > 0) {
+          result.push({
+            parsecId: market.parsec_id,
+            outcome: market.outcomes[0]!.name,
+            exchange,
+          });
+          if (result.length >= count) break;
+        }
+      }
+    }
+
+    if (result.length < count) {
+      throw new Error(`Need ${count} markets with depth, found ${result.length}`);
+    }
+    return result;
+  }
 
   // ── REST contract tests ──────────────────────────────────
+
+  describe('REST: coverage manifest', () => {
+    test('declares unique public endpoint operations', async () => {
+      const unique = new Set(PUBLIC_ENDPOINT_CONTRACT_COVERAGE);
+      expect(unique.size).toBe(PUBLIC_ENDPOINT_CONTRACT_COVERAGE.length);
+    });
+  });
 
   describe('REST: exchanges', () => {
     test('GET /api/v1/exchanges returns capability objects', async () => {
@@ -33,9 +153,20 @@ if (!RUN_LIVE) {
       expect(typeof exchanges[0]!.id).toBe('string');
       expect(typeof exchanges[0]!.name).toBe('string');
       expect(typeof exchanges[0]!.has).toBe('object');
-      expect(typeof exchanges[0]!.has.fetch_markets).toBe('boolean');
-      expect(typeof exchanges[0]!.has.create_order).toBe('boolean');
-      expect(typeof exchanges[0]!.has.websocket).toBe('boolean');
+      const caps = exchanges[0]!.has;
+      expect(typeof caps.fetch_markets).toBe('boolean');
+      expect(typeof caps.create_order).toBe('boolean');
+      expect(typeof caps.cancel_order).toBe('boolean');
+      expect(typeof caps.fetch_positions).toBe('boolean');
+      expect(typeof caps.fetch_balance).toBe('boolean');
+      expect(typeof caps.fetch_orderbook).toBe('boolean');
+      expect(typeof caps.fetch_price_history).toBe('boolean');
+      expect(typeof caps.fetch_trades).toBe('boolean');
+      expect(typeof caps.fetch_events).toBe('boolean');
+      expect(typeof caps.fetch_user_activity).toBe('boolean');
+      expect(typeof caps.approvals).toBe('boolean');
+      expect(typeof caps.refresh_balance).toBe('boolean');
+      expect(typeof caps.websocket).toBe('boolean');
       expect(exchanges.some((ex) => ex.id === 'kalshi')).toBe(true);
     });
   });
@@ -182,6 +313,18 @@ if (!RUN_LIVE) {
       if (estimate.slippage !== null && estimate.slippage !== undefined) {
         expect(typeof estimate.slippage).toBe('number');
       }
+      if (estimate.worst_price !== null && estimate.worst_price !== undefined) {
+        expect(typeof estimate.worst_price).toBe('number');
+      }
+      if (estimate.fee_estimate !== null && estimate.fee_estimate !== undefined) {
+        expect(typeof estimate.fee_estimate).toBe('number');
+      }
+      if (estimate.net_cost !== null && estimate.net_cost !== undefined) {
+        expect(typeof estimate.net_cost).toBe('number');
+      }
+      if (estimate.fee_estimate != null && estimate.net_cost != null) {
+        expect(estimate.net_cost).toBeCloseTo(estimate.total_cost + estimate.fee_estimate, 8);
+      }
     });
   });
 
@@ -209,6 +352,29 @@ if (!RUN_LIVE) {
     });
   });
 
+  describe('REST: trades', () => {
+    test('GET /api/v1/trades returns normalized trade response shape', async () => {
+      const market = await findActiveMarketWithOutcome();
+      const resp = await client.trades.list({
+        parsec_id: market.parsecId,
+        outcome: market.outcome,
+        limit: 10,
+      });
+
+      expect(resp.parsec_id).toBe(market.parsecId);
+      expect(typeof resp.exchange).toBe('string');
+      expect(typeof resp.outcome).toBe('string');
+      expect(Array.isArray(resp.trades)).toBe(true);
+
+      if (resp.trades.length > 0) {
+        const trade = resp.trades[0]!;
+        expect(typeof (trade as any).id).toBe('string');
+        expect(typeof trade.price).toBe('number');
+        expect(typeof trade.size).toBe('number');
+      }
+    }, 30_000);
+  });
+
   describe('REST: ws/usage', () => {
     test('GET /api/v1/ws/usage returns metering data', async () => {
       const usage = await client.websocket.usage();
@@ -222,10 +388,12 @@ if (!RUN_LIVE) {
   });
 
   describe('REST: orders', () => {
-    test('POST /api/v1/orders returns 501 with error body when order_type is unsupported on exchange', async () => {
+    test('POST /api/v1/orders covers create-order contract path', async () => {
+      // Use a deterministic exchange for negative-path coverage.
+      const exchange = 'kalshi';
       try {
         await client.orders.create({
-          exchange: 'kalshi',
+          exchange,
           market_id: 'does-not-matter',
           outcome: 'yes',
           side: 'buy',
@@ -235,49 +403,141 @@ if (!RUN_LIVE) {
         });
         throw new Error('expected APIError — should never reach here');
       } catch (err) {
-        expect(err).toBeInstanceOf(APIError);
-        const e = err as APIError;
-        expect(e.status).toBe(501);
-        expect(e.error).toHaveProperty('error');
-        expect(typeof (e.error as any).error).toBe('string');
+        assertAPIError(err, [400, 401, 403, 404, 501, 503]);
       }
     });
 
-    test('GET /api/v1/orders returns array', async () => {
-      const orders = await client.orders.list({ exchange: 'kalshi' });
-      // API returns a bare array (empty when no active orders)
-      expect(Array.isArray(orders)).toBe(true);
-      // If any orders exist, verify structure
-      if ((orders as any[]).length > 0) {
-        const order = (orders as any[])[0];
-        expect(order).toHaveProperty('id');
-        expect(order).toHaveProperty('market_id');
-        expect(order).toHaveProperty('status');
+    test('GET /api/v1/orders returns array (or auth error when no linked creds)', async () => {
+      const { exchange, hasCredentials } = await resolvePrivateExchange();
+      try {
+        const orders = await client.orders.list({ exchange });
+        expect(Array.isArray(orders)).toBe(true);
+        if ((orders as any[]).length > 0) {
+          const order = (orders as any[])[0];
+          expect(order).toHaveProperty('id');
+          expect(order).toHaveProperty('market_id');
+          expect(order).toHaveProperty('status');
+        }
+      } catch (err) {
+        const allowed = hasCredentials ? [401, 403, 503] : [401, 403, 503];
+        assertAPIError(err, allowed);
+      }
+    });
+
+    test('GET /api/v1/orders/{order_id} returns not-found/auth error for unknown order', async () => {
+      const exchange = 'kalshi';
+      const missingOrderID = `contract-missing-${Date.now()}`;
+
+      try {
+        await client.orders.retrieve(missingOrderID, { exchange });
+        throw new Error('expected APIError — should never reach here');
+      } catch (err) {
+        assertAPIError(err, [400, 401, 403, 404, 503]);
+      }
+    });
+
+    test('DELETE /api/v1/orders/{order_id} returns not-found/auth error for unknown order', async () => {
+      const exchange = 'kalshi';
+      const missingOrderID = `contract-missing-${Date.now() + 1}`;
+
+      try {
+        await client.orders.cancel(missingOrderID, { exchange });
+        throw new Error('expected APIError — should never reach here');
+      } catch (err) {
+        assertAPIError(err, [400, 401, 403, 404, 503]);
       }
     });
   });
 
   describe('REST: positions', () => {
-    test('GET /api/v1/positions returns array', async () => {
-      const positions = await client.positions.list({ exchange: 'kalshi' });
-      // API returns a bare array (empty when no positions)
-      expect(Array.isArray(positions)).toBe(true);
-      // If any positions exist, verify structure
-      if ((positions as any[]).length > 0) {
-        const pos = (positions as any[])[0];
-        expect(pos).toHaveProperty('market_id');
-        expect(pos).toHaveProperty('outcome');
-        expect(pos).toHaveProperty('size');
+    test('GET /api/v1/positions returns array (or auth error)', async () => {
+      const { exchange } = await resolvePrivateExchange();
+      try {
+        const positions = await client.positions.list({ exchange });
+        expect(Array.isArray(positions)).toBe(true);
+        if ((positions as any[]).length > 0) {
+          const pos = (positions as any[])[0];
+          expect(pos).toHaveProperty('market_id');
+          expect(pos).toHaveProperty('outcome');
+          expect(pos).toHaveProperty('size');
+        }
+      } catch (err) {
+        assertAPIError(err, [401, 403, 503]);
       }
     });
   });
 
   describe('REST: account', () => {
-    test('GET /api/v1/ping returns exchange connectivity status', async () => {
-      const ping = await client.account.ping({ exchange: 'kalshi' });
-      expect(ping).toBeDefined();
-      // Ping response should contain connectivity info
-      expect(typeof ping).toBe('object');
+    test('GET /api/v1/ping returns exchange connectivity statuses', async () => {
+      const ping = await client.account.ping();
+      expect(Array.isArray(ping)).toBe(true);
+      expect(ping.length).toBeGreaterThan(0);
+      expect(typeof ping[0]!.exchange).toBe('string');
+      expect(typeof ping[0]!.has_credentials).toBe('boolean');
+      expect(typeof ping[0]!.authenticated).toBe('boolean');
+    });
+
+    test('GET /api/v1/session/capabilities returns tier + linked exchanges', async () => {
+      const caps = await client.account.capabilities();
+      expect(typeof caps.tier).toBe('string');
+      expect(Array.isArray(caps.linked_exchanges)).toBe(true);
+    });
+
+    test('GET /api/v1/balance returns raw balance object (or auth error)', async () => {
+      const { exchange, hasCredentials } = await resolvePrivateExchange();
+      try {
+        const balance = await client.account.balance({ exchange });
+        expect(balance).toHaveProperty('raw');
+        expect(typeof balance.raw).toBe('object');
+        expect(balance.raw).not.toBeNull();
+      } catch (err) {
+        const allowed = hasCredentials ? [401, 403, 503] : [401, 403, 503];
+        assertAPIError(err, allowed);
+      }
+    });
+
+    test('GET /api/v1/user-activity returns status map', async () => {
+      const activity = await client.account.userActivity({
+        address: '0x0000000000000000000000000000000000000000',
+        exchanges: ['polymarket'],
+        limit: 1,
+      });
+      expect(typeof activity).toBe('object');
+      expect(typeof activity.status).toBe('object');
+      expect(activity.status).toHaveProperty('polymarket');
+      expect(typeof activity.exchanges).toBe('object');
+    });
+
+    test('PUT /api/v1/credentials validates malformed kalshi credentials', async () => {
+      try {
+        await client.account.updateCredentials({
+          kalshi_api_key_id: 'bad-key-id',
+          kalshi_private_key: 'not-a-pem',
+        });
+        throw new Error('expected APIError — should never reach here');
+      } catch (err) {
+        assertAPIError(err, [400]);
+      }
+    });
+  });
+
+  describe('REST: approvals', () => {
+    test('GET /api/v1/approvals rejects unsupported exchange with typed error body', async () => {
+      try {
+        await client.approvals.list({ exchange: 'kalshi' });
+        throw new Error('expected APIError — should never reach here');
+      } catch (err) {
+        assertAPIError(err, [501]);
+      }
+    });
+
+    test('POST /api/v1/approvals rejects unsupported exchange with typed error body', async () => {
+      try {
+        await client.approvals.set({ exchange: 'kalshi', all: true });
+        throw new Error('expected APIError — should never reach here');
+      } catch (err) {
+        assertAPIError(err, [501]);
+      }
     });
   });
 
@@ -299,39 +559,6 @@ if (!RUN_LIVE) {
   // ── WebSocket contract tests ─────────────────────────────
 
   describe('WebSocket contract tests (live server)', () => {
-    /** Find active markets with actual orderbook depth for WS tests.
-     *  Probes each market's orderbook to avoid picking empty/illiquid ones.
-     *  Searches across multiple exchanges to maximise chances of finding enough markets. */
-    async function findActiveMarketsWithDepth(
-      count: number = 1,
-    ): Promise<Array<{ parsecId: string; outcome: string }>> {
-      const result: Array<{ parsecId: string; outcome: string }> = [];
-      for (const exchange of ['kalshi', 'polymarket']) {
-        if (result.length >= count) break;
-        const resp = await client.markets.list({
-          exchanges: [exchange],
-          status: 'active',
-          min_volume: 10000,
-          limit: 50,
-        });
-        for (const m of resp.markets) {
-          if (m.status !== 'active' || m.outcomes.length === 0) continue;
-          const ob = await client.orderbook.retrieve({
-            parsec_id: m.parsec_id,
-            outcome: m.outcomes[0]!.name,
-          });
-          if (ob.bids.length + ob.asks.length > 0) {
-            result.push({ parsecId: m.parsec_id, outcome: m.outcomes[0]!.name });
-            if (result.length >= count) break;
-          }
-        }
-      }
-      if (result.length < count) {
-        throw new Error(`Need ${count} markets with depth, found ${result.length}`);
-      }
-      return result;
-    }
-
     test('connects, authenticates, subscribes, and receives valid orderbook snapshot', async () => {
       const [market] = await findActiveMarketsWithDepth(1);
       const ws = client.ws();

@@ -32,9 +32,29 @@ export namespace ExchangeListResponse {
 
   export namespace ExchangeListResponseItem {
     export interface Has {
+      approvals: boolean;
+
+      cancel_order: boolean;
+
       create_order: boolean;
 
+      fetch_balance: boolean;
+
+      fetch_events: boolean;
+
       fetch_markets: boolean;
+
+      fetch_orderbook: boolean;
+
+      fetch_positions: boolean;
+
+      fetch_price_history: boolean;
+
+      fetch_trades: boolean;
+
+      fetch_user_activity: boolean;
+
+      refresh_balance: boolean;
 
       websocket: boolean;
     }
