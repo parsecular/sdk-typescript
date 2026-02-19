@@ -55,6 +55,18 @@ const estimate = await client.executionPrice.retrieve({
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
 
+## Examples
+
+The SDK ships with runnable examples in the [`examples/`](examples/) directory:
+
+| Example | Description |
+|---------|-------------|
+| [`getting-started.ts`](examples/getting-started.ts) | Fetch markets, read orderbooks, check execution price |
+| [`order-lifecycle.ts`](examples/order-lifecycle.ts) | Place, monitor, and cancel an order end-to-end |
+| [`websocket-streaming.ts`](examples/websocket-streaming.ts) | Stream real-time orderbook and trade data via WebSocket |
+
+Run any example with `npx tsx examples/getting-started.ts` (requires `PARSEC_API_KEY`).
+
 ## Real-time Streaming
 
 The SDK includes a WebSocket client for streaming orderbook snapshots, deltas, and trade activity in real time. The client maintains a local materialized orderbook, handles authentication, automatic reconnection with exponential backoff, and sequence gap detection.
