@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource orderbook', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: only required params', async () => {
     const responsePromise = client.orderbook.retrieve({ parsec_id: 'parsec_id' });
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource orderbook', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: required and optional params', async () => {
     const response = await client.orderbook.retrieve({
       parsec_id: 'parsec_id',

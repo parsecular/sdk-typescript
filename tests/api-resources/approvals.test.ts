@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource approvals', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: only required params', async () => {
     const responsePromise = client.approvals.list({ exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -20,12 +20,12 @@ describe('resource approvals', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: required and optional params', async () => {
     const response = await client.approvals.list({ exchange: 'exchange' });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('set: only required params', async () => {
     const responsePromise = client.approvals.set({ exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -37,7 +37,7 @@ describe('resource approvals', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('set: required and optional params', async () => {
     const response = await client.approvals.set({
       exchange: 'exchange',

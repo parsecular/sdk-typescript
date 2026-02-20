@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource priceHistory', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: only required params', async () => {
     const responsePromise = client.priceHistory.retrieve({ interval: '1m', parsec_id: 'parsec_id' });
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource priceHistory', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: required and optional params', async () => {
     const response = await client.priceHistory.retrieve({
       interval: '1m',

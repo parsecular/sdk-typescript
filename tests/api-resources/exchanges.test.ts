@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource exchanges', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.exchanges.list();
     const rawResponse = await responsePromise.asResponse();
