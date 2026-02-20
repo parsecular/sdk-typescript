@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource executionPrice', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: only required params', async () => {
     const responsePromise = client.executionPrice.retrieve({
       amount: 0,
@@ -24,7 +24,7 @@ describe('resource executionPrice', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: required and optional params', async () => {
     const response = await client.executionPrice.retrieve({
       amount: 0,

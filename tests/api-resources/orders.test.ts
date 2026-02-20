@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource orders', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create: only required params', async () => {
     const responsePromise = client.orders.create({
       exchange: 'exchange',
@@ -27,7 +27,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create: required and optional params', async () => {
     const response = await client.orders.create({
       exchange: 'exchange',
@@ -40,7 +40,7 @@ describe('resource orders', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: only required params', async () => {
     const responsePromise = client.orders.retrieve('order_id', { exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -52,12 +52,12 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve: required and optional params', async () => {
     const response = await client.orders.retrieve('order_id', { exchange: 'exchange' });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: only required params', async () => {
     const responsePromise = client.orders.list({ exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -69,12 +69,12 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: required and optional params', async () => {
     const response = await client.orders.list({ exchange: 'exchange', market_id: 'market_id' });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('cancel: only required params', async () => {
     const responsePromise = client.orders.cancel('order_id', { exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -86,7 +86,7 @@ describe('resource orders', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('cancel: required and optional params', async () => {
     const response = await client.orders.cancel('order_id', { exchange: 'exchange' });
   });
