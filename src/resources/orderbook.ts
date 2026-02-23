@@ -6,7 +6,10 @@ import { RequestOptions } from '../internal/request-options';
 
 export class Orderbook extends APIResource {
   /**
-   * Returns bids/asks as `[price, size]` tuples.
+   * When start_ts or end_ts is provided, returns historical orderbook snapshots
+   * instead of a live L2 snapshot. Large time ranges are handled via internal
+   * chunking and may be slow for very wide windows. In historical mode, limit
+   * defaults to 500 (max 1000).
    */
   retrieve(query: OrderbookRetrieveParams, options?: RequestOptions): APIPromise<OrderbookRetrieveResponse> {
     return this._client.get('/api/v1/orderbook', { query, ...options });
@@ -56,9 +59,19 @@ export interface OrderbookRetrieveParams {
   parsec_id: string;
 
   /**
+   * Opaque pagination cursor for historical mode.
+   */
+  cursor?: string;
+
+  /**
    * Alias for `limit` (REST/WS symmetry).
    */
   depth?: number;
+
+  /**
+   * Unix seconds — end of time range. Defaults to now.
+   */
+  end_ts?: number;
 
   /**
    * Max depth per side (default 50; server clamps to 1..=100).
@@ -71,6 +84,12 @@ export interface OrderbookRetrieveParams {
    * outcome label or numeric index.
    */
   outcome?: string;
+
+  /**
+   * Unix seconds — when present, switches to historical mode (returns snapshots
+   * instead of live book).
+   */
+  start_ts?: number;
 }
 
 export declare namespace Orderbook {

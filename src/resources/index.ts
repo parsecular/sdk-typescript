@@ -42,11 +42,7 @@ export {
   type OrderCancelParams,
 } from './orders';
 export { Positions, type PositionListResponse, type PositionListParams } from './positions';
-export {
-  PriceHistory,
-  type PriceHistoryRetrieveResponse,
-  type PriceHistoryRetrieveParams,
-} from './price-history';
+export { Price, type PriceRetrieveResponse, type PriceRetrieveParams } from './price';
 export { Trades, type TradeListResponse, type TradeListParams } from './trades';
 export {
   Websocket,

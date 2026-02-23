@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource account', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('balance: only required params', async () => {
     const responsePromise = client.account.balance({ exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -20,12 +20,16 @@ describe('resource account', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('balance: required and optional params', async () => {
-    const response = await client.account.balance({ exchange: 'exchange', refresh: true });
+    const response = await client.account.balance({
+      exchange: 'exchange',
+      refresh: true,
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('capabilities', async () => {
     const responsePromise = client.account.capabilities();
     const rawResponse = await responsePromise.asResponse();
@@ -37,7 +41,7 @@ describe('resource account', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('ping', async () => {
     const responsePromise = client.account.ping();
     const rawResponse = await responsePromise.asResponse();
@@ -49,7 +53,7 @@ describe('resource account', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('ping: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
@@ -57,7 +61,7 @@ describe('resource account', () => {
     ).rejects.toThrow(ParsecAPI.NotFoundError);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('updateCredentials', async () => {
     const responsePromise = client.account.updateCredentials({});
     const rawResponse = await responsePromise.asResponse();
@@ -69,7 +73,7 @@ describe('resource account', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('userActivity: only required params', async () => {
     const responsePromise = client.account.userActivity({ address: 'address' });
     const rawResponse = await responsePromise.asResponse();
@@ -81,7 +85,7 @@ describe('resource account', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('userActivity: required and optional params', async () => {
     const response = await client.account.userActivity({
       address: 'address',

@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.9.0 (2026-02-23)
+
+Full Changelog: [v0.8.1...v0.9.0](https://github.com/parsecular/sdk-typescript/compare/v0.8.1...v0.9.0)
+
+### Features
+
+* **api:** api update ([7bac8d0](https://github.com/parsecular/sdk-typescript/commit/7bac8d00838132740b956c303bd88ad899a3b354))
+
+
+### Bug Fixes
+
+* update example + contract test for price-history → price rename and credentials field names ([3497ad1](https://github.com/parsecular/sdk-typescript/commit/3497ad105cb19ee2de2b93ccde93684505900b42))
+
+
+### Chores
+
+* **internal:** remove mock server code ([be46c73](https://github.com/parsecular/sdk-typescript/commit/be46c73d3f395e396cbf288da29b33b031251352))
+* update mock server docs ([f1ed58c](https://github.com/parsecular/sdk-typescript/commit/f1ed58c8a3e56092a019113c201db46828e87497))
+
 ## 0.8.1 (2026-02-19)
 
 Full Changelog: [v0.8.0...v0.8.1](https://github.com/parsecular/sdk-typescript/compare/v0.8.0...v0.8.1)

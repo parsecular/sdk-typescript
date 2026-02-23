@@ -8,7 +8,7 @@ const client = new ParsecAPI({
 });
 
 describe('resource positions', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: only required params', async () => {
     const responsePromise = client.positions.list({ exchange: 'exchange' });
     const rawResponse = await responsePromise.asResponse();
@@ -20,8 +20,12 @@ describe('resource positions', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: required and optional params', async () => {
-    const response = await client.positions.list({ exchange: 'exchange', market_id: 'market_id' });
+    const response = await client.positions.list({
+      exchange: 'exchange',
+      market_id: 'market_id',
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 });

@@ -4,20 +4,17 @@ import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
-export class PriceHistory extends APIResource {
+export class Price extends APIResource {
   /**
    * Returns an array of candlesticks with timestamps at period start (UTC).
    */
-  retrieve(
-    query: PriceHistoryRetrieveParams,
-    options?: RequestOptions,
-  ): APIPromise<PriceHistoryRetrieveResponse> {
-    return this._client.get('/api/v1/price-history', { query, ...options });
+  retrieve(query: PriceRetrieveParams, options?: RequestOptions): APIPromise<PriceRetrieveResponse> {
+    return this._client.get('/api/v1/price', { query, ...options });
   }
 }
 
-export interface PriceHistoryRetrieveResponse {
-  candles: Array<PriceHistoryRetrieveResponse.Candle>;
+export interface PriceRetrieveResponse {
+  candles: Array<PriceRetrieveResponse.Candle>;
 
   exchange: string;
 
@@ -28,7 +25,7 @@ export interface PriceHistoryRetrieveResponse {
   parsec_id: string;
 }
 
-export namespace PriceHistoryRetrieveResponse {
+export namespace PriceRetrieveResponse {
   export interface Candle {
     /**
      * Close price (normalized 0.0-1.0).
@@ -67,21 +64,27 @@ export namespace PriceHistoryRetrieveResponse {
   }
 }
 
-export interface PriceHistoryRetrieveParams {
-  /**
-   * Price history interval.
-   */
-  interval: '1m' | '1h' | '6h' | '1d' | '1w' | 'max';
-
+export interface PriceRetrieveParams {
   /**
    * Unified market ID in format `{exchange}:{native_id}`.
    */
   parsec_id: string;
 
   /**
+   * Point-in-time lookup (Unix seconds). Returns the single closest candle. Cannot
+   * be combined with start_ts/end_ts.
+   */
+  at_ts?: number;
+
+  /**
    * Unix seconds end timestamp (inclusive). Defaults to now.
    */
   end_ts?: number;
+
+  /**
+   * Defaults to 1h for point-in-time (at_ts)
+   */
+  interval?: '1m' | '1h' | '6h' | '1d' | '1w' | 'max';
 
   /**
    * Outcome selector. For binary markets this is typically "yes" or "no"
@@ -97,9 +100,9 @@ export interface PriceHistoryRetrieveParams {
   start_ts?: number;
 }
 
-export declare namespace PriceHistory {
+export declare namespace Price {
   export {
-    type PriceHistoryRetrieveResponse as PriceHistoryRetrieveResponse,
-    type PriceHistoryRetrieveParams as PriceHistoryRetrieveParams,
+    type PriceRetrieveResponse as PriceRetrieveResponse,
+    type PriceRetrieveParams as PriceRetrieveParams,
   };
 }
