@@ -511,8 +511,8 @@ if (!RUN_LIVE) {
     test('PUT /api/v1/credentials validates malformed kalshi credentials', async () => {
       try {
         await client.account.updateCredentials({
-          kalshi_api_key_id: 'bad-key-id',
-          kalshi_private_key: 'not-a-pem',
+          api_key_id: 'bad-key-id',
+          private_key: 'not-a-pem',
         });
         throw new Error('expected APIError — should never reach here');
       } catch (err) {

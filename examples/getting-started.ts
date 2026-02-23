@@ -34,8 +34,8 @@ async function main() {
   console.log(`  Best bid: ${book.bids?.[0]?.[0] ?? '—'}  Best ask: ${book.asks?.[0]?.[0] ?? '—'}`);
   console.log(`  Depth: ${book.bids?.length ?? 0} bids, ${book.asks?.length ?? 0} asks\n`);
 
-  // 3. Get hourly price history (OHLCV candles)
-  const { candles } = await client.priceHistory.retrieve({
+  // 3. Get hourly price candles (OHLCV)
+  const { candles } = await client.price.retrieve({
     parsec_id: market.parsec_id,
     outcome,
     interval: '1h',
