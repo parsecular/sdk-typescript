@@ -24,9 +24,12 @@ describe('resource orderbook', () => {
   test.skip('retrieve: required and optional params', async () => {
     const response = await client.orderbook.retrieve({
       parsec_id: 'parsec_id',
+      cursor: 'cursor',
       depth: 1,
+      end_ts: 0,
       limit: 1,
       outcome: 'outcome',
+      start_ts: 0,
     });
   });
 });

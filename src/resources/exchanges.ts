@@ -46,6 +46,8 @@ export namespace ExchangeListResponse {
 
       fetch_orderbook: boolean;
 
+      fetch_orderbook_history: boolean;
+
       fetch_positions: boolean;
 
       fetch_price_history: boolean;

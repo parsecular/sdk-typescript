@@ -26,6 +26,13 @@ export interface TradeListResponse {
   token_id: string;
 
   trades: Array<TradeListResponse.Trade>;
+
+  /**
+   * True if there are more results available
+   */
+  has_more?: boolean;
+
+  next_cursor?: string | null;
 }
 
 export namespace TradeListResponse {
@@ -52,9 +59,37 @@ export namespace TradeListResponse {
     aggressor_side?: string;
 
     /**
+     * NO-side price from exchange data (never derived). May be null if the trade was
+     * on the YES side.
+     */
+    no_price?: number | null;
+
+    /**
+     * Trade outcome side (e.g. "Yes", "No", "yes", "no").
+     */
+    outcome?: string | null;
+
+    /**
      * Trade side (typically "buy" or "sell").
      */
     side?: string;
+
+    /**
+     * Taker wallet address (Polymarket proxy_wallet). Null for exchanges that don't
+     * expose this.
+     */
+    taker_address?: string | null;
+
+    /**
+     * Transaction hash (Polymarket only).
+     */
+    tx_hash?: string | null;
+
+    /**
+     * YES-side price from exchange data (never derived). May be null if the trade was
+     * on the NO side.
+     */
+    yes_price?: number | null;
   }
 }
 
@@ -63,6 +98,11 @@ export interface TradeListParams {
    * Unified market ID in format `{exchange}:{native_id}`.
    */
   parsec_id: string;
+
+  /**
+   * Opaque pagination cursor from a previous response.
+   */
+  cursor?: string;
 
   /**
    * Unix seconds end timestamp (inclusive).

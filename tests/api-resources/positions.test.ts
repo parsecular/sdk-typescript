@@ -22,6 +22,10 @@ describe('resource positions', () => {
 
   // Mock server tests are disabled
   test.skip('list: required and optional params', async () => {
-    const response = await client.positions.list({ exchange: 'exchange', market_id: 'market_id' });
+    const response = await client.positions.list({
+      exchange: 'exchange',
+      market_id: 'market_id',
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 });
