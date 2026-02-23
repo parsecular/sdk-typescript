@@ -13,7 +13,7 @@ const PUBLIC_ENDPOINT_CONTRACT_COVERAGE = [
   'GET /api/v1/exchanges',
   'GET /api/v1/markets',
   'GET /api/v1/orderbook',
-  'GET /api/v1/price-history',
+  'GET /api/v1/price',
   'GET /api/v1/trades',
   'GET /api/v1/events',
   'GET /api/v1/ws/usage',
@@ -328,13 +328,13 @@ if (!RUN_LIVE) {
     });
   });
 
-  describe('REST: price-history', () => {
-    test('GET /api/v1/price-history returns candles with correct structure', async () => {
+  describe('REST: price', () => {
+    test('GET /api/v1/price returns candles with correct structure', async () => {
       const markets = await client.markets.list({ exchanges: ['kalshi'], limit: 5 });
       const market = markets.markets.find((m) => m.status === 'active' && m.outcomes.length > 0);
       expect(market).toBeDefined();
 
-      const history = await client.priceHistory.retrieve({
+      const history = await client.price.retrieve({
         parsec_id: market!.parsec_id,
         outcome: market!.outcomes[0]!.name,
         interval: '1h',
