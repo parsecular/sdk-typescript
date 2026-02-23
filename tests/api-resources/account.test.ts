@@ -22,7 +22,11 @@ describe('resource account', () => {
 
   // Mock server tests are disabled
   test.skip('balance: required and optional params', async () => {
-    const response = await client.account.balance({ exchange: 'exchange', refresh: true });
+    const response = await client.account.balance({
+      exchange: 'exchange',
+      refresh: true,
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 
   // Mock server tests are disabled

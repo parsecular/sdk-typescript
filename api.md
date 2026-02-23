@@ -38,15 +38,15 @@ Methods:
 
 - <code title="get /api/v1/orderbook">client.orderbook.<a href="./src/resources/orderbook.ts">retrieve</a>({ ...params }) -> OrderbookRetrieveResponse</code>
 
-# PriceHistory
+# Price
 
 Types:
 
-- <code><a href="./src/resources/price-history.ts">PriceHistoryRetrieveResponse</a></code>
+- <code><a href="./src/resources/price.ts">PriceRetrieveResponse</a></code>
 
 Methods:
 
-- <code title="get /api/v1/price-history">client.priceHistory.<a href="./src/resources/price-history.ts">retrieve</a>({ ...params }) -> PriceHistoryRetrieveResponse</code>
+- <code title="get /api/v1/price">client.price.<a href="./src/resources/price.ts">retrieve</a>({ ...params }) -> PriceRetrieveResponse</code>
 
 # Trades
 

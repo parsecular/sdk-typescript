@@ -36,7 +36,15 @@ describe('resource orders', () => {
       price: 0,
       side: 'buy',
       size: 0,
+      credentials: {
+        api_key_id: 'api_key_id',
+        clob_api_key: 'clob_api_key',
+        clob_api_passphrase: 'clob_api_passphrase',
+        clob_api_secret: 'clob_api_secret',
+        private_key: 'private_key',
+      },
       params: { foo: 'string' },
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
     });
   });
 
@@ -54,7 +62,10 @@ describe('resource orders', () => {
 
   // Mock server tests are disabled
   test.skip('retrieve: required and optional params', async () => {
-    const response = await client.orders.retrieve('order_id', { exchange: 'exchange' });
+    const response = await client.orders.retrieve('order_id', {
+      exchange: 'exchange',
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 
   // Mock server tests are disabled
@@ -71,7 +82,11 @@ describe('resource orders', () => {
 
   // Mock server tests are disabled
   test.skip('list: required and optional params', async () => {
-    const response = await client.orders.list({ exchange: 'exchange', market_id: 'market_id' });
+    const response = await client.orders.list({
+      exchange: 'exchange',
+      market_id: 'market_id',
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 
   // Mock server tests are disabled
@@ -88,6 +103,9 @@ describe('resource orders', () => {
 
   // Mock server tests are disabled
   test.skip('cancel: required and optional params', async () => {
-    const response = await client.orders.cancel('order_id', { exchange: 'exchange' });
+    const response = await client.orders.cancel('order_id', {
+      exchange: 'exchange',
+      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+    });
   });
 });

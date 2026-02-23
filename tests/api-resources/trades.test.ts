@@ -24,6 +24,7 @@ describe('resource trades', () => {
   test.skip('list: required and optional params', async () => {
     const response = await client.trades.list({
       parsec_id: 'parsec_id',
+      cursor: 'cursor',
       end_ts: 0,
       limit: 1,
       outcome: 'outcome',

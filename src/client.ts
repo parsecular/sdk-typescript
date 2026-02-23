@@ -55,11 +55,7 @@ import {
   Orders,
 } from './resources/orders';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
-import {
-  PriceHistory,
-  PriceHistoryRetrieveParams,
-  PriceHistoryRetrieveResponse,
-} from './resources/price-history';
+import { Price, PriceRetrieveParams, PriceRetrieveResponse } from './resources/price';
 import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
 import {
   CustomerUsage,
@@ -796,7 +792,7 @@ export class ParsecAPI {
   markets: API.Markets = new API.Markets(this);
   executionPrice: API.ExecutionPrice = new API.ExecutionPrice(this);
   orderbook: API.Orderbook = new API.Orderbook(this);
-  priceHistory: API.PriceHistory = new API.PriceHistory(this);
+  price: API.Price = new API.Price(this);
   trades: API.Trades = new API.Trades(this);
   events: API.Events = new API.Events(this);
   websocket: API.Websocket = new API.Websocket(this);
@@ -844,7 +840,7 @@ ParsecAPI.Exchanges = Exchanges;
 ParsecAPI.Markets = Markets;
 ParsecAPI.ExecutionPrice = ExecutionPrice;
 ParsecAPI.Orderbook = Orderbook;
-ParsecAPI.PriceHistory = PriceHistory;
+ParsecAPI.Price = Price;
 ParsecAPI.Trades = Trades;
 ParsecAPI.Events = Events;
 ParsecAPI.Websocket = Websocket;
@@ -877,9 +873,9 @@ export declare namespace ParsecAPI {
   };
 
   export {
-    PriceHistory as PriceHistory,
-    type PriceHistoryRetrieveResponse as PriceHistoryRetrieveResponse,
-    type PriceHistoryRetrieveParams as PriceHistoryRetrieveParams,
+    Price as Price,
+    type PriceRetrieveResponse as PriceRetrieveResponse,
+    type PriceRetrieveParams as PriceRetrieveParams,
   };
 
   export {

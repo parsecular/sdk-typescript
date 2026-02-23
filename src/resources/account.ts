@@ -9,8 +9,18 @@ export class Account extends APIResource {
   /**
    * Returns the raw balance payload from the exchange (opaque JSON).
    */
-  balance(query: AccountBalanceParams, options?: RequestOptions): APIPromise<AccountBalanceResponse> {
-    return this._client.get('/api/v1/balance', { query, ...options });
+  balance(params: AccountBalanceParams, options?: RequestOptions): APIPromise<AccountBalanceResponse> {
+    const { 'X-Exchange-Credentials': xExchangeCredentials, ...query } = params;
+    return this._client.get('/api/v1/balance', {
+      query,
+      ...options,
+      headers: buildHeaders([
+        {
+          ...(xExchangeCredentials != null ? { 'X-Exchange-Credentials': xExchangeCredentials } : undefined),
+        },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -100,14 +110,21 @@ export namespace AccountUserActivityResponse {
 
 export interface AccountBalanceParams {
   /**
-   * Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., kalshi, polymarket).
    */
   exchange: string;
 
   /**
-   * Refresh balance before returning (default false).
+   * Query param: Refresh balance before returning (default false).
    */
   refresh?: boolean;
+
+  /**
+   * Header param: Base64-encoded JSON of per-request exchange credentials (Mode B).
+   * When provided, Parsec creates a transient exchange session instead of using
+   * stored credentials. The JSON shape matches the RequestCredentials schema.
+   */
+  'X-Exchange-Credentials'?: string;
 }
 
 export interface AccountPingParams {
@@ -118,15 +135,30 @@ export interface AccountPingParams {
 }
 
 export interface AccountUpdateCredentialsParams {
-  evm_private_key?: string | null;
+  /**
+   * Kalshi API key ID.
+   */
+  api_key_id?: string | null;
 
-  kalshi_api_key_id?: string | null;
+  /**
+   * Polymarket CLOB API key.
+   */
+  clob_api_key?: string | null;
 
-  kalshi_private_key?: string | null;
+  /**
+   * Polymarket CLOB API passphrase.
+   */
+  clob_api_passphrase?: string | null;
 
-  poly_funder?: string | null;
+  /**
+   * Polymarket CLOB API secret.
+   */
+  clob_api_secret?: string | null;
 
-  poly_signature_type?: string | null;
+  /**
+   * Kalshi RSA private key (PEM format).
+   */
+  private_key?: string | null;
 }
 
 export interface AccountUserActivityParams {

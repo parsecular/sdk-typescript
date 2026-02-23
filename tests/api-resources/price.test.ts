@@ -7,10 +7,10 @@ const client = new ParsecAPI({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource priceHistory', () => {
+describe('resource price', () => {
   // Mock server tests are disabled
   test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.priceHistory.retrieve({ interval: '1m', parsec_id: 'parsec_id' });
+    const responsePromise = client.price.retrieve({ parsec_id: 'parsec_id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -22,10 +22,11 @@ describe('resource priceHistory', () => {
 
   // Mock server tests are disabled
   test.skip('retrieve: required and optional params', async () => {
-    const response = await client.priceHistory.retrieve({
-      interval: '1m',
+    const response = await client.price.retrieve({
       parsec_id: 'parsec_id',
+      at_ts: 0,
       end_ts: 0,
+      interval: '1m',
       outcome: 'outcome',
       start_ts: 0,
     });
