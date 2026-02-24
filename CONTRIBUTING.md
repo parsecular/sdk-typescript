@@ -60,7 +60,7 @@ $ yarn link parsec-api
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global parsec-api
+$ pnpm link --global parsec-api
 ```
 
 ## Running tests
