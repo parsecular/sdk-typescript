@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.1 (2026-02-27)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/parsecular/sdk-typescript/compare/v0.9.0...v0.9.1)
+
+### Bug Fixes
+
+* **docs/contributing:** correct pnpm link command ([a814ec4](https://github.com/parsecular/sdk-typescript/commit/a814ec4113e6bf9ca02c5aa8185550863ddbd2e3))
+
+
+### Chores
+
+* **internal:** move stringifyQuery implementation to internal function ([fb07597](https://github.com/parsecular/sdk-typescript/commit/fb075976e3ee90b21bff7d07d60f47864c8e20ba))
+* **internal:** upgrade pnpm version ([a624ef4](https://github.com/parsecular/sdk-typescript/commit/a624ef477a84c9d4f4a8dc53fa25fe4144a0986d))
+
 ## 0.9.0 (2026-02-23)
 
 Full Changelog: [v0.8.1...v0.9.0](https://github.com/parsecular/sdk-typescript/compare/v0.8.1...v0.9.0)
