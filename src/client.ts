@@ -26,7 +26,6 @@ import {
   AccountUserActivityParams,
   AccountUserActivityResponse,
 } from './resources/account';
-import { Builder, BuilderPoolResponse } from './resources/builder';
 import { Ctf, CtfMergeParams, CtfRedeemParams, CtfResponse, CtfSplitParams } from './resources/ctf';
 import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
@@ -69,6 +68,7 @@ import {
   WebsocketUsageParams,
   WebsocketUsageResponse,
 } from './resources/websocket';
+import { Builder, BuilderPoolResponse } from './resources/builder/builder';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';

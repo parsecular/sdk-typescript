@@ -9,7 +9,7 @@ export {
   type AccountPingParams,
   type AccountUserActivityParams,
 } from './account';
-export { Builder, type BuilderPoolResponse } from './builder';
+export { Builder, type BuilderPoolResponse } from './builder/builder';
 export { Ctf, type CtfResponse, type CtfMergeParams, type CtfRedeemParams, type CtfSplitParams } from './ctf';
 export { Events, type EventListResponse, type EventListParams } from './events';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
