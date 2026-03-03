@@ -7,10 +7,10 @@ const client = new ParsecAPI({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource approvals', () => {
+describe('resource wallet', () => {
   // Mock server tests are disabled
-  test.skip('list: only required params', async () => {
-    const responsePromise = client.approvals.list({ exchange: 'exchange' });
+  test.skip('retrieve', async () => {
+    const responsePromise = client.wallet.retrieve();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,13 +21,8 @@ describe('resource approvals', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('list: required and optional params', async () => {
-    const response = await client.approvals.list({ exchange: 'exchange' });
-  });
-
-  // Mock server tests are disabled
-  test.skip('set: only required params', async () => {
-    const responsePromise = client.approvals.set({ exchange: 'exchange' });
+  test.skip('exportKey', async () => {
+    const responsePromise = client.wallet.exportKey({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -35,17 +30,5 @@ describe('resource approvals', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('set: required and optional params', async () => {
-    const response = await client.approvals.set({
-      exchange: 'exchange',
-      all: true,
-      ctf: true,
-      ctf_neg_risk: true,
-      usdc: true,
-      usdc_neg_risk: true,
-    });
   });
 });

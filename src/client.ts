@@ -21,20 +21,13 @@ import {
   Account,
   AccountBalanceParams,
   AccountBalanceResponse,
-  AccountCapabilitiesResponse,
   AccountPingParams,
   AccountPingResponse,
-  AccountUpdateCredentialsParams,
   AccountUserActivityParams,
   AccountUserActivityResponse,
 } from './resources/account';
-import {
-  ApprovalListParams,
-  ApprovalListResponse,
-  ApprovalSetParams,
-  ApprovalSetResponse,
-  Approvals,
-} from './resources/approvals';
+import { Builder, BuilderPoolResponse } from './resources/builder';
+import { Ctf, CtfMergeParams, CtfRedeemParams, CtfResponse, CtfSplitParams } from './resources/ctf';
 import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
 import {
@@ -43,6 +36,7 @@ import {
   ExecutionPriceRetrieveResponse,
 } from './resources/execution-price';
 import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
+import { Onboard, OnboardCreateParams, OnboardCreateResponse } from './resources/onboard';
 import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
 import {
   Order,
@@ -53,9 +47,22 @@ import {
   OrderRetrieveParams,
   Orders,
 } from './resources/orders';
+import {
+  PolymarketAuth,
+  PolymarketAuthCredentialsParams,
+  PolymarketAuthCredentialsResponse,
+  PolymarketAuthMessageParams,
+  PolymarketAuthMessageResponse,
+} from './resources/polymarket-auth';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
 import { Price, PriceRetrieveParams, PriceRetrieveResponse } from './resources/price';
 import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
+import {
+  Wallet,
+  WalletExportKeyParams,
+  WalletExportKeyResponse,
+  WalletRetrieveResponse,
+} from './resources/wallet';
 import {
   CustomerUsage,
   Websocket,
@@ -793,7 +800,11 @@ export class ParsecAPI {
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
   account: API.Account = new API.Account(this);
-  approvals: API.Approvals = new API.Approvals(this);
+  onboard: API.Onboard = new API.Onboard(this);
+  wallet: API.Wallet = new API.Wallet(this);
+  polymarketAuth: API.PolymarketAuth = new API.PolymarketAuth(this);
+  ctf: API.Ctf = new API.Ctf(this);
+  builder: API.Builder = new API.Builder(this);
 }
 
 ParsecAPI.Exchanges = Exchanges;
@@ -807,7 +818,11 @@ ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
 ParsecAPI.Account = Account;
-ParsecAPI.Approvals = Approvals;
+ParsecAPI.Onboard = Onboard;
+ParsecAPI.Wallet = Wallet;
+ParsecAPI.PolymarketAuth = PolymarketAuth;
+ParsecAPI.Ctf = Ctf;
+ParsecAPI.Builder = Builder;
 
 export declare namespace ParsecAPI {
   export type RequestOptions = Opts.RequestOptions;
@@ -876,20 +891,41 @@ export declare namespace ParsecAPI {
   export {
     Account as Account,
     type AccountBalanceResponse as AccountBalanceResponse,
-    type AccountCapabilitiesResponse as AccountCapabilitiesResponse,
     type AccountPingResponse as AccountPingResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,
     type AccountPingParams as AccountPingParams,
-    type AccountUpdateCredentialsParams as AccountUpdateCredentialsParams,
     type AccountUserActivityParams as AccountUserActivityParams,
   };
 
   export {
-    Approvals as Approvals,
-    type ApprovalListResponse as ApprovalListResponse,
-    type ApprovalSetResponse as ApprovalSetResponse,
-    type ApprovalListParams as ApprovalListParams,
-    type ApprovalSetParams as ApprovalSetParams,
+    Onboard as Onboard,
+    type OnboardCreateResponse as OnboardCreateResponse,
+    type OnboardCreateParams as OnboardCreateParams,
   };
+
+  export {
+    Wallet as Wallet,
+    type WalletRetrieveResponse as WalletRetrieveResponse,
+    type WalletExportKeyResponse as WalletExportKeyResponse,
+    type WalletExportKeyParams as WalletExportKeyParams,
+  };
+
+  export {
+    PolymarketAuth as PolymarketAuth,
+    type PolymarketAuthCredentialsResponse as PolymarketAuthCredentialsResponse,
+    type PolymarketAuthMessageResponse as PolymarketAuthMessageResponse,
+    type PolymarketAuthCredentialsParams as PolymarketAuthCredentialsParams,
+    type PolymarketAuthMessageParams as PolymarketAuthMessageParams,
+  };
+
+  export {
+    Ctf as Ctf,
+    type CtfResponse as CtfResponse,
+    type CtfMergeParams as CtfMergeParams,
+    type CtfRedeemParams as CtfRedeemParams,
+    type CtfSplitParams as CtfSplitParams,
+  };
+
+  export { Builder as Builder, type BuilderPoolResponse as BuilderPoolResponse };
 }

@@ -7,7 +7,8 @@ import { RequestOptions } from '../internal/request-options';
 export class Trades extends APIResource {
   /**
    * Returns an array of recent trades for the requested market+outcome (normalized
-   * prices 0.0-1.0).
+   * prices 0.0-1.0). Historical data is tier-gated: Free=5d, Pro=30d,
+   * Scale=unlimited.
    */
   list(query: TradeListParams, options?: RequestOptions): APIPromise<TradeListResponse> {
     return this._client.get('/api/v1/trades', { query, ...options });
