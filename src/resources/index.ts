@@ -9,7 +9,7 @@ export {
   type AccountPingParams,
   type AccountUserActivityParams,
 } from './account';
-export { Builder, type BuilderPoolResponse } from './builder';
+export { Builder, type BuilderPoolResponse } from './builder/builder';
 export { Ctf, type CtfResponse, type CtfMergeParams, type CtfRedeemParams, type CtfSplitParams } from './ctf';
 export { Events, type EventListResponse, type EventListParams } from './events';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
@@ -20,12 +20,7 @@ export {
 } from './execution-price';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
 export { Onboard, type OnboardCreateResponse, type OnboardCreateParams } from './onboard';
-export {
-  Orderbook,
-  type OrderbookRetrieveResponse,
-  type OrderbookRetrieveParams,
-  type OrderbookLevel,
-} from './orderbook';
+export { Orderbook, type OrderbookRetrieveResponse, type OrderbookRetrieveParams } from './orderbook';
 export {
   Orders,
   type Order,

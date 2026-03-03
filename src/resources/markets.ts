@@ -4,34 +4,6 @@ import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
-function findOutcomeByName<T extends { name: string }>(outcomes: Array<T>, target: string): T | undefined {
-  const normalized = target.toLowerCase();
-  return outcomes.find((outcome) => outcome.name.toLowerCase() === normalized);
-}
-
-export function attachBinaryOutcomeGetters<
-  TOutcome extends { name: string },
-  TMarket extends { outcomes: Array<TOutcome> },
->(market: TMarket): TMarket & { readonly yes?: TOutcome; readonly no?: TOutcome } {
-  if (!Object.prototype.hasOwnProperty.call(market, 'yes')) {
-    Object.defineProperty(market, 'yes', {
-      configurable: false,
-      enumerable: false,
-      get: () => findOutcomeByName(market.outcomes, 'yes'),
-    });
-  }
-
-  if (!Object.prototype.hasOwnProperty.call(market, 'no')) {
-    Object.defineProperty(market, 'no', {
-      configurable: false,
-      enumerable: false,
-      get: () => findOutcomeByName(market.outcomes, 'no'),
-    });
-  }
-
-  return market as TMarket & { readonly yes?: TOutcome; readonly no?: TOutcome };
-}
-
 export class Markets extends APIResource {
   /**
    * Provide either `exchanges` (CSV) or `parsec_ids` (CSV). When `parsec_ids` is
@@ -41,14 +13,7 @@ export class Markets extends APIResource {
     query: MarketListParams | null | undefined = {},
     options?: RequestOptions,
   ): APIPromise<MarketListResponse> {
-    const request = this._client.get('/api/v1/markets', {
-      query,
-      ...options,
-    }) as APIPromise<MarketListResponse>;
-    return request._thenUnwrap((data: MarketListResponse) => {
-      data.markets = data.markets.map((market) => attachBinaryOutcomeGetters(market));
-      return data;
-    });
+    return this._client.get('/api/v1/markets', { query, ...options });
   }
 }
 
@@ -86,18 +51,6 @@ export namespace MarketListResponse {
      * Market outcomes with optional price and token ID.
      */
     outcomes: Array<Market.Outcome>;
-
-    /**
-     * Convenience getter for binary markets: outcome where `name` is "Yes"
-     * (case-insensitive).
-     */
-    readonly yes?: Market.Outcome;
-
-    /**
-     * Convenience getter for binary markets: outcome where `name` is "No"
-     * (case-insensitive).
-     */
-    readonly no?: Market.Outcome;
 
     /**
      * Parsec group ID for cross-exchange event grouping.

@@ -16,26 +16,17 @@ import { VERSION } from './version';
 import * as Errors from './core/error';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
-import { ParsecWebSocket, type ParsecWebSocketOptions } from './streaming';
 import { APIPromise } from './core/api-promise';
 import {
   Account,
   AccountBalanceParams,
   AccountBalanceResponse,
-  AccountCapabilitiesResponse,
   AccountPingParams,
   AccountPingResponse,
-  AccountUpdateCredentialsParams,
   AccountUserActivityParams,
   AccountUserActivityResponse,
 } from './resources/account';
-import {
-  ApprovalListParams,
-  ApprovalListResponse,
-  ApprovalSetParams,
-  ApprovalSetResponse,
-  Approvals,
-} from './resources/approvals';
+import { Ctf, CtfMergeParams, CtfRedeemParams, CtfResponse, CtfSplitParams } from './resources/ctf';
 import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
 import {
@@ -44,6 +35,7 @@ import {
   ExecutionPriceRetrieveResponse,
 } from './resources/execution-price';
 import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
+import { Onboard, OnboardCreateParams, OnboardCreateResponse } from './resources/onboard';
 import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
 import {
   Order,
@@ -54,15 +46,29 @@ import {
   OrderRetrieveParams,
   Orders,
 } from './resources/orders';
+import {
+  PolymarketAuth,
+  PolymarketAuthCredentialsParams,
+  PolymarketAuthCredentialsResponse,
+  PolymarketAuthMessageParams,
+  PolymarketAuthMessageResponse,
+} from './resources/polymarket-auth';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
 import { Price, PriceRetrieveParams, PriceRetrieveResponse } from './resources/price';
 import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
+import {
+  Wallet,
+  WalletExportKeyParams,
+  WalletExportKeyResponse,
+  WalletRetrieveResponse,
+} from './resources/wallet';
 import {
   CustomerUsage,
   Websocket,
   WebsocketUsageParams,
   WebsocketUsageResponse,
 } from './resources/websocket';
+import { Builder, BuilderPoolResponse } from './resources/builder/builder';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -164,11 +170,6 @@ export interface ClientOptions {
    * Defaults to globalThis.console.
    */
   logger?: Logger | undefined;
-
-  // TODO(verbose-mode): Add per-request debug override that logs raw request/response
-  // details (method, URL, headers, body, status) independent of global log level.
-  // pmxt exposes `verbose: true` per request, which is useful during strategy
-  // integration debugging without enabling global SDK logging noise.
 }
 
 /**
@@ -799,41 +800,11 @@ export class ParsecAPI {
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
   account: API.Account = new API.Account(this);
-  approvals: API.Approvals = new API.Approvals(this);
-
-  /**
-   * Create a WebSocket client for real-time orderbook and trade streaming.
-   * Inherits `apiKey` from this client and derives the WebSocket URL from `baseURL`.
-   *
-   * @param opts.url - Override the WebSocket URL (derived from baseURL by default).
-   * @returns A new `ParsecWebSocket` instance.
-   *
-   * @example
-   * ```ts
-   * const client = new ParsecAPI({ apiKey: 'pk_...' });
-   * const ws = client.ws();
-   *
-   * ws.on('orderbook', (book) => console.log(book.bids[0]));
-   * await ws.connect();
-   * ws.subscribe({ parsecId: 'polymarket:0x123', outcome: 'Yes' });
-   * ```
-   */
-  ws(opts?: ParsecWebSocketOptions): ParsecWebSocket {
-    const wsUrl = opts?.url ?? this.#deriveWsUrl();
-    return new ParsecWebSocket(this.apiKey, wsUrl);
-  }
-
-  #deriveWsUrl(): string {
-    const base = this.baseURL.replace(/\/$/, '');
-    if (base.startsWith('https://')) {
-      return base.replace(/^https:\/\//, 'wss://') + '/ws';
-    }
-    if (base.startsWith('http://')) {
-      return base.replace(/^http:\/\//, 'ws://') + '/ws';
-    }
-    // Fallback: assume wss
-    return 'wss://' + base + '/ws';
-  }
+  onboard: API.Onboard = new API.Onboard(this);
+  wallet: API.Wallet = new API.Wallet(this);
+  polymarketAuth: API.PolymarketAuth = new API.PolymarketAuth(this);
+  ctf: API.Ctf = new API.Ctf(this);
+  builder: API.Builder = new API.Builder(this);
 }
 
 ParsecAPI.Exchanges = Exchanges;
@@ -847,7 +818,11 @@ ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
 ParsecAPI.Account = Account;
-ParsecAPI.Approvals = Approvals;
+ParsecAPI.Onboard = Onboard;
+ParsecAPI.Wallet = Wallet;
+ParsecAPI.PolymarketAuth = PolymarketAuth;
+ParsecAPI.Ctf = Ctf;
+ParsecAPI.Builder = Builder;
 
 export declare namespace ParsecAPI {
   export type RequestOptions = Opts.RequestOptions;
@@ -916,20 +891,41 @@ export declare namespace ParsecAPI {
   export {
     Account as Account,
     type AccountBalanceResponse as AccountBalanceResponse,
-    type AccountCapabilitiesResponse as AccountCapabilitiesResponse,
     type AccountPingResponse as AccountPingResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,
     type AccountPingParams as AccountPingParams,
-    type AccountUpdateCredentialsParams as AccountUpdateCredentialsParams,
     type AccountUserActivityParams as AccountUserActivityParams,
   };
 
   export {
-    Approvals as Approvals,
-    type ApprovalListResponse as ApprovalListResponse,
-    type ApprovalSetResponse as ApprovalSetResponse,
-    type ApprovalListParams as ApprovalListParams,
-    type ApprovalSetParams as ApprovalSetParams,
+    Onboard as Onboard,
+    type OnboardCreateResponse as OnboardCreateResponse,
+    type OnboardCreateParams as OnboardCreateParams,
   };
+
+  export {
+    Wallet as Wallet,
+    type WalletRetrieveResponse as WalletRetrieveResponse,
+    type WalletExportKeyResponse as WalletExportKeyResponse,
+    type WalletExportKeyParams as WalletExportKeyParams,
+  };
+
+  export {
+    PolymarketAuth as PolymarketAuth,
+    type PolymarketAuthCredentialsResponse as PolymarketAuthCredentialsResponse,
+    type PolymarketAuthMessageResponse as PolymarketAuthMessageResponse,
+    type PolymarketAuthCredentialsParams as PolymarketAuthCredentialsParams,
+    type PolymarketAuthMessageParams as PolymarketAuthMessageParams,
+  };
+
+  export {
+    Ctf as Ctf,
+    type CtfResponse as CtfResponse,
+    type CtfMergeParams as CtfMergeParams,
+    type CtfRedeemParams as CtfRedeemParams,
+    type CtfSplitParams as CtfSplitParams,
+  };
+
+  export { Builder as Builder, type BuilderPoolResponse as BuilderPoolResponse };
 }

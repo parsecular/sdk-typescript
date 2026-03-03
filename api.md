@@ -167,8 +167,45 @@ Methods:
 
 Types:
 
-- <code><a href="./src/resources/builder.ts">BuilderPoolResponse</a></code>
+- <code><a href="./src/resources/builder/builder.ts">BuilderPoolResponse</a></code>
 
 Methods:
 
-- <code title="get /api/v1/builder/pool">client.builder.<a href="./src/resources/builder.ts">pool</a>() -> BuilderPoolResponse</code>
+- <code title="get /api/v1/builder/pool">client.builder.<a href="./src/resources/builder/builder.ts">pool</a>() -> BuilderPoolResponse</code>
+
+## Users
+
+Types:
+
+- <code><a href="./src/resources/builder/users.ts">UserCreateResponse</a></code>
+- <code><a href="./src/resources/builder/users.ts">UserRetrieveResponse</a></code>
+- <code><a href="./src/resources/builder/users.ts">UserUpdateResponse</a></code>
+- <code><a href="./src/resources/builder/users.ts">UserListResponse</a></code>
+
+Methods:
+
+- <code title="post /api/v1/builder/users">client.builder.users.<a href="./src/resources/builder/users.ts">create</a>({ ...params }) -> UserCreateResponse</code>
+- <code title="get /api/v1/builder/users/{customer_id}">client.builder.users.<a href="./src/resources/builder/users.ts">retrieve</a>(customerID) -> UserRetrieveResponse</code>
+- <code title="patch /api/v1/builder/users/{customer_id}">client.builder.users.<a href="./src/resources/builder/users.ts">update</a>(customerID, { ...params }) -> UserUpdateResponse</code>
+- <code title="get /api/v1/builder/users">client.builder.users.<a href="./src/resources/builder/users.ts">list</a>({ ...params }) -> UserListResponse</code>
+- <code title="delete /api/v1/builder/users/{customer_id}">client.builder.users.<a href="./src/resources/builder/users.ts">deactivate</a>(customerID) -> void</code>
+
+## Onboard
+
+Types:
+
+- <code><a href="./src/resources/builder/onboard.ts">OnboardCreateResponse</a></code>
+
+Methods:
+
+- <code title="post /api/v1/builder/onboard">client.builder.onboard.<a href="./src/resources/builder/onboard.ts">create</a>({ ...params }) -> OnboardCreateResponse</code>
+
+## Escrow
+
+Types:
+
+- <code><a href="./src/resources/builder/escrow.ts">EscrowConfigResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/builder/escrow/config">client.builder.escrow.<a href="./src/resources/builder/escrow.ts">config</a>() -> EscrowConfigResponse</code>

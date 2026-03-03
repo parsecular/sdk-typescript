@@ -3,7 +3,6 @@
 import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
-import { attachBinaryOutcomeGetters } from './markets';
 
 export class Events extends APIResource {
   /**
@@ -14,17 +13,7 @@ export class Events extends APIResource {
     query: EventListParams | null | undefined = {},
     options?: RequestOptions,
   ): APIPromise<EventListResponse> {
-    const request = this._client.get('/api/v1/events', {
-      query,
-      ...options,
-    }) as APIPromise<EventListResponse>;
-    return request._thenUnwrap((data: EventListResponse) => {
-      data.events.forEach((event) => {
-        if (!event.markets) return;
-        event.markets = event.markets.map((market) => attachBinaryOutcomeGetters(market));
-      });
-      return data;
-    });
+    return this._client.get('/api/v1/events', { query, ...options });
   }
 }
 
@@ -105,18 +94,6 @@ export namespace EventListResponse {
        * Market outcomes with optional price and token ID.
        */
       outcomes: Array<Market.Outcome>;
-
-      /**
-       * Convenience getter for binary markets: outcome where `name` is "Yes"
-       * (case-insensitive).
-       */
-      readonly yes?: Market.Outcome;
-
-      /**
-       * Convenience getter for binary markets: outcome where `name` is "No"
-       * (case-insensitive).
-       */
-      readonly no?: Market.Outcome;
 
       /**
        * Parsec group ID for cross-exchange event grouping.
