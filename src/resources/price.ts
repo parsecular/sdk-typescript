@@ -7,6 +7,7 @@ import { RequestOptions } from '../internal/request-options';
 export class Price extends APIResource {
   /**
    * Returns an array of candlesticks with timestamps at period start (UTC).
+   * Historical data is tier-gated: Free=5d, Pro=30d, Scale=unlimited.
    */
   retrieve(query: PriceRetrieveParams, options?: RequestOptions): APIPromise<PriceRetrieveResponse> {
     return this._client.get('/api/v1/price', { query, ...options });

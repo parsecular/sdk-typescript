@@ -20,17 +20,3 @@ export {
   PermissionDeniedError,
   UnprocessableEntityError,
 } from './core/error';
-
-export {
-  ParsecWebSocket,
-  type ParsecWebSocketOptions,
-  type ParsecWebSocketEventMap,
-  type OrderbookSnapshot,
-  type StreamingOrderbookLevel,
-  type Activity,
-  type WsError,
-  type MarketSubscription,
-  type FeedState,
-  type BookState,
-  type OrderbookKind,
-} from './streaming';

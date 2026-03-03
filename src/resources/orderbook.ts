@@ -9,25 +9,18 @@ export class Orderbook extends APIResource {
    * When start_ts or end_ts is provided, returns historical orderbook snapshots
    * instead of a live L2 snapshot. Large time ranges are handled via internal
    * chunking and may be slow for very wide windows. In historical mode, limit
-   * defaults to 500 (max 1000).
+   * defaults to 500 (max 1000). Historical data is tier-gated: Free=5d, Pro=30d,
+   * Scale=unlimited.
    */
   retrieve(query: OrderbookRetrieveParams, options?: RequestOptions): APIPromise<OrderbookRetrieveResponse> {
     return this._client.get('/api/v1/orderbook', { query, ...options });
   }
 }
 
-/**
- * Two-element tuple where `level[0]` is price and `level[1]` is size.
- *
- * NOTE: Stainless currently generates fixed-length arrays as `number[]`; we keep
- * the wire format but provide tuple typing for SDK consumers here.
- */
-export type OrderbookLevel = [price: number, size: number];
-
 export interface OrderbookRetrieveResponse {
-  asks: Array<OrderbookLevel>;
+  asks: Array<Array<number>>;
 
-  bids: Array<OrderbookLevel>;
+  bids: Array<Array<number>>;
 
   exchange: string;
 
@@ -96,6 +89,5 @@ export declare namespace Orderbook {
   export {
     type OrderbookRetrieveResponse as OrderbookRetrieveResponse,
     type OrderbookRetrieveParams as OrderbookRetrieveParams,
-    type OrderbookLevel as OrderbookLevel,
   };
 }

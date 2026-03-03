@@ -24,13 +24,6 @@ export class Account extends APIResource {
   }
 
   /**
-   * Returns the customer's tier and list of linked exchanges.
-   */
-  capabilities(options?: RequestOptions): APIPromise<AccountCapabilitiesResponse> {
-    return this._client.get('/api/v1/session/capabilities', options);
-  }
-
-  /**
    * Performs a lightweight balance fetch per exchange to verify connectivity/auth
    * status.
    */
@@ -39,17 +32,6 @@ export class Account extends APIResource {
     options?: RequestOptions,
   ): APIPromise<AccountPingResponse> {
     return this._client.get('/api/v1/ping', { query, ...options });
-  }
-
-  /**
-   * Updates stored credentials for this API key. Returns 204 on success.
-   */
-  updateCredentials(body: AccountUpdateCredentialsParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.put('/api/v1/credentials', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
   }
 
   /**
@@ -66,18 +48,6 @@ export class Account extends APIResource {
 
 export interface AccountBalanceResponse {
   raw: { [key: string]: unknown };
-}
-
-export interface AccountCapabilitiesResponse {
-  /**
-   * Exchange IDs the customer has credentials linked for.
-   */
-  linked_exchanges: Array<string>;
-
-  /**
-   * Customer tier (e.g., "free", "pro", "admin").
-   */
-  tier: string;
 }
 
 export type AccountPingResponse = Array<AccountPingResponse.AccountPingResponseItem>;
@@ -134,33 +104,6 @@ export interface AccountPingParams {
   exchange?: string;
 }
 
-export interface AccountUpdateCredentialsParams {
-  /**
-   * Kalshi API key ID.
-   */
-  api_key_id?: string | null;
-
-  /**
-   * Polymarket CLOB API key.
-   */
-  clob_api_key?: string | null;
-
-  /**
-   * Polymarket CLOB API passphrase.
-   */
-  clob_api_passphrase?: string | null;
-
-  /**
-   * Polymarket CLOB API secret.
-   */
-  clob_api_secret?: string | null;
-
-  /**
-   * Kalshi RSA private key (PEM format).
-   */
-  private_key?: string | null;
-}
-
 export interface AccountUserActivityParams {
   /**
    * User address (typically an EVM address).
@@ -182,12 +125,10 @@ export interface AccountUserActivityParams {
 export declare namespace Account {
   export {
     type AccountBalanceResponse as AccountBalanceResponse,
-    type AccountCapabilitiesResponse as AccountCapabilitiesResponse,
     type AccountPingResponse as AccountPingResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,
     type AccountPingParams as AccountPingParams,
-    type AccountUpdateCredentialsParams as AccountUpdateCredentialsParams,
     type AccountUserActivityParams as AccountUserActivityParams,
   };
 }

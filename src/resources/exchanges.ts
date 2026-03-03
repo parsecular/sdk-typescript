@@ -32,8 +32,6 @@ export namespace ExchangeListResponse {
 
   export namespace ExchangeListResponseItem {
     export interface Has {
-      approvals: boolean;
-
       cancel_order: boolean;
 
       create_order: boolean;
@@ -41,6 +39,8 @@ export namespace ExchangeListResponse {
       fetch_balance: boolean;
 
       fetch_events: boolean;
+
+      fetch_fills: boolean;
 
       fetch_markets: boolean;
 
