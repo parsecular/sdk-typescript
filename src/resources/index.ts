@@ -3,21 +3,14 @@
 export {
   Account,
   type AccountBalanceResponse,
-  type AccountCapabilitiesResponse,
   type AccountPingResponse,
   type AccountUserActivityResponse,
   type AccountBalanceParams,
   type AccountPingParams,
-  type AccountUpdateCredentialsParams,
   type AccountUserActivityParams,
 } from './account';
-export {
-  Approvals,
-  type ApprovalListResponse,
-  type ApprovalSetResponse,
-  type ApprovalListParams,
-  type ApprovalSetParams,
-} from './approvals';
+export { Builder, type BuilderPoolResponse } from './builder';
+export { Ctf, type CtfResponse, type CtfMergeParams, type CtfRedeemParams, type CtfSplitParams } from './ctf';
 export { Events, type EventListResponse, type EventListParams } from './events';
 export { Exchanges, type ExchangeListResponse } from './exchanges';
 export {
@@ -26,6 +19,7 @@ export {
   type ExecutionPriceRetrieveParams,
 } from './execution-price';
 export { Markets, type MarketListResponse, type MarketListParams } from './markets';
+export { Onboard, type OnboardCreateResponse, type OnboardCreateParams } from './onboard';
 export {
   Orderbook,
   type OrderbookRetrieveResponse,
@@ -41,9 +35,22 @@ export {
   type OrderListParams,
   type OrderCancelParams,
 } from './orders';
+export {
+  PolymarketAuth,
+  type PolymarketAuthCredentialsResponse,
+  type PolymarketAuthMessageResponse,
+  type PolymarketAuthCredentialsParams,
+  type PolymarketAuthMessageParams,
+} from './polymarket-auth';
 export { Positions, type PositionListResponse, type PositionListParams } from './positions';
 export { Price, type PriceRetrieveResponse, type PriceRetrieveParams } from './price';
 export { Trades, type TradeListResponse, type TradeListParams } from './trades';
+export {
+  Wallet,
+  type WalletRetrieveResponse,
+  type WalletExportKeyResponse,
+  type WalletExportKeyParams,
+} from './wallet';
 export {
   Websocket,
   type CustomerUsage,

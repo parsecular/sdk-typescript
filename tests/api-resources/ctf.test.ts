@@ -7,10 +7,13 @@ const client = new ParsecAPI({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource account', () => {
+describe('resource ctf', () => {
   // Mock server tests are disabled
-  test.skip('balance: only required params', async () => {
-    const responsePromise = client.account.balance({ exchange: 'exchange' });
+  test.skip('merge: only required params', async () => {
+    const responsePromise = client.ctf.merge({
+      amount: '1000000',
+      condition_id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,17 +24,18 @@ describe('resource account', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('balance: required and optional params', async () => {
-    const response = await client.account.balance({
-      exchange: 'exchange',
-      refresh: true,
-      'X-Exchange-Credentials': 'X-Exchange-Credentials',
+  test.skip('merge: required and optional params', async () => {
+    const response = await client.ctf.merge({
+      amount: '1000000',
+      condition_id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
     });
   });
 
   // Mock server tests are disabled
-  test.skip('ping', async () => {
-    const responsePromise = client.account.ping();
+  test.skip('redeem: only required params', async () => {
+    const responsePromise = client.ctf.redeem({
+      condition_id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -42,16 +46,20 @@ describe('resource account', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('ping: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.account.ping({ exchange: 'exchange' }, { path: '/_stainless_unknown_path' }),
-    ).rejects.toThrow(ParsecAPI.NotFoundError);
+  test.skip('redeem: required and optional params', async () => {
+    const response = await client.ctf.redeem({
+      condition_id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      amounts: ['500000', '500000'],
+      neg_risk: true,
+    });
   });
 
   // Mock server tests are disabled
-  test.skip('userActivity: only required params', async () => {
-    const responsePromise = client.account.userActivity({ address: 'address' });
+  test.skip('split: only required params', async () => {
+    const responsePromise = client.ctf.split({
+      amount: '1000000',
+      condition_id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -62,11 +70,10 @@ describe('resource account', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('userActivity: required and optional params', async () => {
-    const response = await client.account.userActivity({
-      address: 'address',
-      exchanges: ['string'],
-      limit: 1,
+  test.skip('split: required and optional params', async () => {
+    const response = await client.ctf.split({
+      amount: '1000000',
+      condition_id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
     });
   });
 });

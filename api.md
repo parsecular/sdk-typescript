@@ -108,26 +108,67 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/account.ts">AccountBalanceResponse</a></code>
-- <code><a href="./src/resources/account.ts">AccountCapabilitiesResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountPingResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountUserActivityResponse</a></code>
 
 Methods:
 
 - <code title="get /api/v1/balance">client.account.<a href="./src/resources/account.ts">balance</a>({ ...params }) -> AccountBalanceResponse</code>
-- <code title="get /api/v1/session/capabilities">client.account.<a href="./src/resources/account.ts">capabilities</a>() -> AccountCapabilitiesResponse</code>
 - <code title="get /api/v1/ping">client.account.<a href="./src/resources/account.ts">ping</a>({ ...params }) -> AccountPingResponse</code>
-- <code title="put /api/v1/credentials">client.account.<a href="./src/resources/account.ts">updateCredentials</a>({ ...params }) -> void</code>
 - <code title="get /api/v1/user-activity">client.account.<a href="./src/resources/account.ts">userActivity</a>({ ...params }) -> AccountUserActivityResponse</code>
 
-# Approvals
+# Onboard
 
 Types:
 
-- <code><a href="./src/resources/approvals.ts">ApprovalListResponse</a></code>
-- <code><a href="./src/resources/approvals.ts">ApprovalSetResponse</a></code>
+- <code><a href="./src/resources/onboard.ts">OnboardCreateResponse</a></code>
 
 Methods:
 
-- <code title="get /api/v1/approvals">client.approvals.<a href="./src/resources/approvals.ts">list</a>({ ...params }) -> ApprovalListResponse</code>
-- <code title="post /api/v1/approvals">client.approvals.<a href="./src/resources/approvals.ts">set</a>({ ...params }) -> ApprovalSetResponse</code>
+- <code title="post /api/v1/onboard">client.onboard.<a href="./src/resources/onboard.ts">create</a>({ ...params }) -> OnboardCreateResponse</code>
+
+# Wallet
+
+Types:
+
+- <code><a href="./src/resources/wallet.ts">WalletRetrieveResponse</a></code>
+- <code><a href="./src/resources/wallet.ts">WalletExportKeyResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/wallet">client.wallet.<a href="./src/resources/wallet.ts">retrieve</a>() -> WalletRetrieveResponse</code>
+- <code title="post /api/v1/wallet/export-key">client.wallet.<a href="./src/resources/wallet.ts">exportKey</a>({ ...params }) -> WalletExportKeyResponse</code>
+
+# PolymarketAuth
+
+Types:
+
+- <code><a href="./src/resources/polymarket-auth.ts">PolymarketAuthCredentialsResponse</a></code>
+- <code><a href="./src/resources/polymarket-auth.ts">PolymarketAuthMessageResponse</a></code>
+
+Methods:
+
+- <code title="post /api/v1/exchange/polymarket/auth-credentials">client.polymarketAuth.<a href="./src/resources/polymarket-auth.ts">credentials</a>({ ...params }) -> PolymarketAuthCredentialsResponse</code>
+- <code title="get /api/v1/exchange/polymarket/auth-message">client.polymarketAuth.<a href="./src/resources/polymarket-auth.ts">message</a>({ ...params }) -> PolymarketAuthMessageResponse</code>
+
+# Ctf
+
+Types:
+
+- <code><a href="./src/resources/ctf.ts">CtfResponse</a></code>
+
+Methods:
+
+- <code title="post /api/v1/polymarket/ctf/merge">client.ctf.<a href="./src/resources/ctf.ts">merge</a>({ ...params }) -> CtfResponse</code>
+- <code title="post /api/v1/polymarket/ctf/redeem">client.ctf.<a href="./src/resources/ctf.ts">redeem</a>({ ...params }) -> CtfResponse</code>
+- <code title="post /api/v1/polymarket/ctf/split">client.ctf.<a href="./src/resources/ctf.ts">split</a>({ ...params }) -> CtfResponse</code>
+
+# Builder
+
+Types:
+
+- <code><a href="./src/resources/builder.ts">BuilderPoolResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/builder/pool">client.builder.<a href="./src/resources/builder.ts">pool</a>() -> BuilderPoolResponse</code>
