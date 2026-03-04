@@ -18,9 +18,9 @@ const PUBLIC_ENDPOINT_CONTRACT_COVERAGE = [
   'GET /api/v1/builder/users',
   'GET /api/v1/builder/users/{customer_id}',
   'GET /api/v1/events',
-  'GET /api/v1/exchange/polymarket/auth-message',
   'GET /api/v1/exchanges',
   'GET /api/v1/execution-price',
+  'GET /api/v1/fills',
   'GET /api/v1/markets',
   'GET /api/v1/orderbook',
   'GET /api/v1/orders',
@@ -29,13 +29,13 @@ const PUBLIC_ENDPOINT_CONTRACT_COVERAGE = [
   'GET /api/v1/positions',
   'GET /api/v1/price',
   'GET /api/v1/trades',
+  'GET /api/v1/usage',
   'GET /api/v1/user-activity',
   'GET /api/v1/wallet',
   'GET /api/v1/ws/usage',
   'PATCH /api/v1/builder/users/{customer_id}',
   'POST /api/v1/builder/onboard',
   'POST /api/v1/builder/users',
-  'POST /api/v1/exchange/polymarket/auth-credentials',
   'POST /api/v1/onboard',
   'POST /api/v1/orders',
   'POST /api/v1/polymarket/ctf/merge',
@@ -479,6 +479,31 @@ if (!RUN_LIVE) {
     });
   });
 
+  describe('REST: fills', () => {
+    test('GET /api/v1/fills returns array (or auth error)', async () => {
+      const { exchange } = await resolvePrivateExchange();
+      try {
+        const fills = await client.fills.list({ exchange });
+        expect(Array.isArray(fills)).toBe(true);
+        if ((fills as any[]).length > 0) {
+          const fill = (fills as any[])[0];
+          expect(fill).toHaveProperty('fill_id');
+          expect(fill).toHaveProperty('order_id');
+          expect(fill).toHaveProperty('market_id');
+          expect(fill).toHaveProperty('outcome');
+          expect(fill).toHaveProperty('side');
+          expect(fill).toHaveProperty('price');
+          expect(fill).toHaveProperty('size');
+          expect(fill).toHaveProperty('fee');
+          expect(fill).toHaveProperty('is_taker');
+          expect(fill).toHaveProperty('created_at');
+        }
+      } catch (err) {
+        assertAPIError(err, [401, 403, 503]);
+      }
+    });
+  });
+
   describe('REST: account', () => {
     test('GET /api/v1/ping returns exchange connectivity statuses', async () => {
       const ping = await client.account.ping();
@@ -506,6 +531,18 @@ if (!RUN_LIVE) {
         const allowed = hasCredentials ? [401, 403, 503] : [401, 403, 503];
         assertAPIError(err, allowed);
       }
+    });
+
+    test('GET /api/v1/usage returns usage object', async () => {
+      const usage = await client.account.usage();
+      expect(typeof usage).toBe('object');
+      expect(usage).not.toBeNull();
+      expect(usage).toHaveProperty('tier');
+      expect(typeof (usage as any).tier).toBe('string');
+      expect(usage).toHaveProperty('limits');
+      expect(typeof (usage as any).limits).toBe('object');
+      expect(usage).toHaveProperty('usage');
+      expect(typeof (usage as any).usage).toBe('object');
     });
 
     test('GET /api/v1/user-activity returns status map', async () => {
