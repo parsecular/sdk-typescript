@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.10.0 (2026-03-03)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/parsecular/sdk-typescript/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* **api:** api update ([b5540b3](https://github.com/parsecular/sdk-typescript/commit/b5540b384014caccb9ebea655ca4de7b766e4662))
+* **api:** api update ([94b98c5](https://github.com/parsecular/sdk-typescript/commit/94b98c5cd39d1e7d5d618890c55876bab0d02d84))
+* **api:** api update ([1fc689e](https://github.com/parsecular/sdk-typescript/commit/1fc689ebb5e6a51f165d69feadceb85e8f31f94e))
+
+
+### Bug Fixes
+
+* **docs/contributing:** correct pnpm link command ([a814ec4](https://github.com/parsecular/sdk-typescript/commit/a814ec4113e6bf9ca02c5aa8185550863ddbd2e3))
+* **docs/contributing:** correct pnpm link command ([fb980a3](https://github.com/parsecular/sdk-typescript/commit/fb980a3767647d9ce5964d73b5226525a20be308))
+
+
+### Chores
+
+* **internal:** move stringifyQuery implementation to internal function ([fb07597](https://github.com/parsecular/sdk-typescript/commit/fb075976e3ee90b21bff7d07d60f47864c8e20ba))
+* **internal:** move stringifyQuery implementation to internal function ([75f70ce](https://github.com/parsecular/sdk-typescript/commit/75f70ce80161f73a73aaf2fdc22171567388ebf1))
+* **internal:** upgrade pnpm version ([a624ef4](https://github.com/parsecular/sdk-typescript/commit/a624ef477a84c9d4f4a8dc53fa25fe4144a0986d))
+* **internal:** upgrade pnpm version ([9405eed](https://github.com/parsecular/sdk-typescript/commit/9405eedcbec4fe569e9de26d8c4c60570c268fd6))
+* **internal:** version bump ([1a26f9c](https://github.com/parsecular/sdk-typescript/commit/1a26f9c67d91e5fe81bae6c262b265649e83a66f))
+
 ## 0.9.0 (2026-02-23)
 
 Full Changelog: [v0.8.1...v0.9.0](https://github.com/parsecular/sdk-typescript/compare/v0.8.1...v0.9.0)
