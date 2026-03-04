@@ -35,6 +35,15 @@ export class Account extends APIResource {
   }
 
   /**
+   * Returns the authenticated customer's tier, billing period, rate limits, and
+   * current consumption (monthly requests, WebSocket connections/subscriptions).
+   * Values of 0 for limits indicate unlimited.
+   */
+  usage(options?: RequestOptions): APIPromise<AccountUsageResponse> {
+    return this._client.get('/api/v1/usage', options);
+  }
+
+  /**
    * Fetches user activity data from each requested exchange and returns a
    * per-exchange status map.
    */
@@ -61,6 +70,78 @@ export namespace AccountPingResponse {
     has_credentials: boolean;
 
     message: string;
+  }
+}
+
+export interface AccountUsageResponse {
+  /**
+   * Unix seconds — 1st of next month UTC.
+   */
+  billing_period_end: number;
+
+  /**
+   * Unix seconds — 1st of current month UTC.
+   */
+  billing_period_start: number;
+
+  limits: AccountUsageResponse.Limits;
+
+  /**
+   * Current tier (free, pro, scale).
+   */
+  tier: string;
+
+  usage: AccountUsageResponse.Usage;
+}
+
+export namespace AccountUsageResponse {
+  export interface Limits {
+    /**
+     * Max historical data age in days. 0 = unlimited.
+     */
+    history_max_age_days: number;
+
+    /**
+     * Monthly REST request cap. 0 = unlimited.
+     */
+    monthly_requests: number;
+
+    /**
+     * REST queries per second. 0 = unlimited.
+     */
+    rest_qps: number;
+
+    /**
+     * REST burst QPS allowance. 0 = unlimited.
+     */
+    rest_qps_burst: number;
+
+    /**
+     * Max orderbook depth per WebSocket subscription.
+     */
+    ws_max_depth: number;
+
+    /**
+     * Max WebSocket subscriptions across all connections. 0 = unlimited.
+     */
+    ws_max_subscriptions: number;
+  }
+
+  export interface Usage {
+    /**
+     * REST requests consumed this billing period.
+     */
+    monthly_requests: number;
+
+    /**
+     * Currently active WebSocket connections.
+     */
+    ws_active_connections: number;
+
+    /**
+     * Currently active WebSocket subscriptions.
+     */
+    ws_active_subscriptions: number;
   }
 }
 
@@ -126,6 +207,7 @@ export declare namespace Account {
   export {
     type AccountBalanceResponse as AccountBalanceResponse,
     type AccountPingResponse as AccountPingResponse,
+    type AccountUsageResponse as AccountUsageResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,
     type AccountPingParams as AccountPingParams,
