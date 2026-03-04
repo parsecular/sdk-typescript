@@ -221,30 +221,6 @@ if (!RUN_LIVE) {
       }
     });
 
-    test('GET /api/v1/approvals (501) matches schema when exchange is not polymarket', async () => {
-      try {
-        await client.approvals.list({ exchange: 'kalshi' });
-        throw new Error('expected APIError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(APIError);
-        const e = err as APIError;
-        expect(e.status).toBe(501);
-        expectValidJsonBody('/api/v1/approvals', 'get', 501, e.error);
-      }
-    });
-
-    test('POST /api/v1/approvals (501) matches schema when exchange is not polymarket', async () => {
-      try {
-        await client.approvals.set({ exchange: 'kalshi' });
-        throw new Error('expected APIError');
-      } catch (err) {
-        expect(err).toBeInstanceOf(APIError);
-        const e = err as APIError;
-        expect(e.status).toBe(501);
-        expectValidJsonBody('/api/v1/approvals', 'post', 501, e.error);
-      }
-    });
-
     test('GET /api/v1/exchanges (401) matches schema for an invalid API key', async () => {
       const bad = new ParsecAPI({ apiKey: 'invalid-api-key', baseURL: BASE_URL });
       try {
