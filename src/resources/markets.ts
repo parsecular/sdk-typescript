@@ -115,6 +115,16 @@ export namespace MarketListResponse {
     event_start_time?: string;
 
     /**
+     * Market icon URL.
+     */
+    icon_url?: string | null;
+
+    /**
+     * Market image URL.
+     */
+    image_url?: string | null;
+
+    /**
      * Date of last data collection.
      */
     last_collected?: string;
@@ -128,6 +138,11 @@ export namespace MarketListResponse {
      * Current liquidity (USDC).
      */
     liquidity?: number;
+
+    /**
+     * Cross-exchange same-market relations. Only included when `include_matches=true`.
+     */
+    matched_markets?: Array<Market.MatchedMarket>;
 
     /**
      * Minimum order size in contracts. Varies per market on Polymarket (e.g. 5, 15);
@@ -144,6 +159,17 @@ export namespace MarketListResponse {
      * Number of outcomes in this market.
      */
     outcome_count?: number;
+
+    /**
+     * When bid/ask/last_price was last refreshed (upgraded to now when live WS data
+     * overlays the snapshot).
+     */
+    price_updated_at?: string | null;
+
+    /**
+     * Co-dependent market relations. Only included when `include_related=true`.
+     */
+    related_markets?: Array<Market.RelatedMarket>;
 
     /**
      * Market resolution rules.
@@ -191,6 +217,80 @@ export namespace MarketListResponse {
        * Exchange-native token ID for this outcome.
        */
       token_id?: string;
+    }
+
+    export interface MatchedMarket {
+      /**
+       * Match confidence score (0.0–1.0).
+       */
+      confidence: number;
+
+      /**
+       * Confidence tier: HIGH, MEDIUM, or LOW.
+       */
+      confidence_tier: string;
+
+      /**
+       * Exchange of the related market.
+       */
+      exchange: string;
+
+      /**
+       * Parsec ID of the related market.
+       */
+      parsec_id: string;
+
+      /**
+       * Source of the match (e.g., embedding, llm).
+       */
+      source: string;
+
+      /**
+       * Direction of dependency (for related markets only).
+       */
+      dependency_direction?: string | null;
+
+      /**
+       * Type of dependency (for related markets only).
+       */
+      dependency_type?: string | null;
+    }
+
+    export interface RelatedMarket {
+      /**
+       * Match confidence score (0.0–1.0).
+       */
+      confidence: number;
+
+      /**
+       * Confidence tier: HIGH, MEDIUM, or LOW.
+       */
+      confidence_tier: string;
+
+      /**
+       * Exchange of the related market.
+       */
+      exchange: string;
+
+      /**
+       * Parsec ID of the related market.
+       */
+      parsec_id: string;
+
+      /**
+       * Source of the match (e.g., embedding, llm).
+       */
+      source: string;
+
+      /**
+       * Direction of dependency (for related markets only).
+       */
+      dependency_direction?: string | null;
+
+      /**
+       * Type of dependency (for related markets only).
+       */
+      dependency_type?: string | null;
     }
   }
 
@@ -240,7 +340,19 @@ export interface MarketListParams {
   group_id?: string;
 
   /**
-   * Results per page (default 100).
+   * When true, each market includes a `matched_markets` array with cross-exchange
+   * same-market relations.
+   */
+  include_matches?: boolean;
+
+  /**
+   * When true, each market includes a `related_markets` array with co-dependent
+   * market relations.
+   */
+  include_related?: boolean;
+
+  /**
+   * Results per page (default 100, max 100).
    */
   limit?: number;
 

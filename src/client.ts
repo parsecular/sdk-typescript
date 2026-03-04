@@ -23,6 +23,7 @@ import {
   AccountBalanceResponse,
   AccountPingParams,
   AccountPingResponse,
+  AccountUsageResponse,
   AccountUserActivityParams,
   AccountUserActivityResponse,
 } from './resources/account';
@@ -34,6 +35,7 @@ import {
   ExecutionPriceRetrieveParams,
   ExecutionPriceRetrieveResponse,
 } from './resources/execution-price';
+import { FillListParams, FillListResponse, Fills } from './resources/fills';
 import { MarketListParams, MarketListResponse, Markets } from './resources/markets';
 import { Onboard, OnboardCreateParams, OnboardCreateResponse } from './resources/onboard';
 import { Orderbook, OrderbookRetrieveParams, OrderbookRetrieveResponse } from './resources/orderbook';
@@ -46,13 +48,6 @@ import {
   OrderRetrieveParams,
   Orders,
 } from './resources/orders';
-import {
-  PolymarketAuth,
-  PolymarketAuthCredentialsParams,
-  PolymarketAuthCredentialsResponse,
-  PolymarketAuthMessageParams,
-  PolymarketAuthMessageResponse,
-} from './resources/polymarket-auth';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
 import { Price, PriceRetrieveParams, PriceRetrieveResponse } from './resources/price';
 import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
@@ -799,10 +794,10 @@ export class ParsecAPI {
   websocket: API.Websocket = new API.Websocket(this);
   orders: API.Orders = new API.Orders(this);
   positions: API.Positions = new API.Positions(this);
+  fills: API.Fills = new API.Fills(this);
   account: API.Account = new API.Account(this);
   onboard: API.Onboard = new API.Onboard(this);
   wallet: API.Wallet = new API.Wallet(this);
-  polymarketAuth: API.PolymarketAuth = new API.PolymarketAuth(this);
   ctf: API.Ctf = new API.Ctf(this);
   builder: API.Builder = new API.Builder(this);
 }
@@ -817,10 +812,10 @@ ParsecAPI.Events = Events;
 ParsecAPI.Websocket = Websocket;
 ParsecAPI.Orders = Orders;
 ParsecAPI.Positions = Positions;
+ParsecAPI.Fills = Fills;
 ParsecAPI.Account = Account;
 ParsecAPI.Onboard = Onboard;
 ParsecAPI.Wallet = Wallet;
-ParsecAPI.PolymarketAuth = PolymarketAuth;
 ParsecAPI.Ctf = Ctf;
 ParsecAPI.Builder = Builder;
 
@@ -888,10 +883,13 @@ export declare namespace ParsecAPI {
     type PositionListParams as PositionListParams,
   };
 
+  export { Fills as Fills, type FillListResponse as FillListResponse, type FillListParams as FillListParams };
+
   export {
     Account as Account,
     type AccountBalanceResponse as AccountBalanceResponse,
     type AccountPingResponse as AccountPingResponse,
+    type AccountUsageResponse as AccountUsageResponse,
     type AccountUserActivityResponse as AccountUserActivityResponse,
     type AccountBalanceParams as AccountBalanceParams,
     type AccountPingParams as AccountPingParams,
@@ -909,14 +907,6 @@ export declare namespace ParsecAPI {
     type WalletRetrieveResponse as WalletRetrieveResponse,
     type WalletExportKeyResponse as WalletExportKeyResponse,
     type WalletExportKeyParams as WalletExportKeyParams,
-  };
-
-  export {
-    PolymarketAuth as PolymarketAuth,
-    type PolymarketAuthCredentialsResponse as PolymarketAuthCredentialsResponse,
-    type PolymarketAuthMessageResponse as PolymarketAuthMessageResponse,
-    type PolymarketAuthCredentialsParams as PolymarketAuthCredentialsParams,
-    type PolymarketAuthMessageParams as PolymarketAuthMessageParams,
   };
 
   export {
