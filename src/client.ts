@@ -49,13 +49,6 @@ import {
   OrderRetrieveParams,
   Orders,
 } from './resources/orders';
-import {
-  PolymarketAuth,
-  PolymarketAuthCredentialsParams,
-  PolymarketAuthCredentialsResponse,
-  PolymarketAuthMessageParams,
-  PolymarketAuthMessageResponse,
-} from './resources/polymarket-auth';
 import { PositionListParams, PositionListResponse, Positions } from './resources/positions';
 import { Price, PriceRetrieveParams, PriceRetrieveResponse } from './resources/price';
 import { TradeListParams, TradeListResponse, Trades } from './resources/trades';
