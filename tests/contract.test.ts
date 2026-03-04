@@ -549,7 +549,6 @@ if (!RUN_LIVE) {
       expect(activity.status).toHaveProperty('polymarket');
       expect(typeof activity.exchanges).toBe('object');
     });
-
   });
 
   describe('REST: authentication', () => {
