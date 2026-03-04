@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.0 (2026-03-04)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/parsecular/sdk-typescript/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* add fills + usage endpoints, remove polymarket auth ([82dde80](https://github.com/parsecular/sdk-typescript/commit/82dde8089514a9636c50b6444186eeff24831b16))
+
+
+### Chores
+
+* **internal:** version bump ([f911d4b](https://github.com/parsecular/sdk-typescript/commit/f911d4b3424a061e93950287bd3265162132a105))
+
 ## 0.10.0 (2026-03-03)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/parsecular/sdk-typescript/compare/v0.9.0...v0.10.0)

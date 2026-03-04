@@ -30,6 +30,8 @@ describe('resource markets', () => {
           event_id: 'event_id',
           exchanges: ['string'],
           group_id: 'group_id',
+          include_matches: true,
+          include_related: true,
           limit: 1,
           min_liquidity: 0,
           min_volume: 0,

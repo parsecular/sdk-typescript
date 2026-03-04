@@ -103,18 +103,30 @@ Methods:
 
 - <code title="get /api/v1/positions">client.positions.<a href="./src/resources/positions.ts">list</a>({ ...params }) -> PositionListResponse</code>
 
+# Fills
+
+Types:
+
+- <code><a href="./src/resources/fills.ts">FillListResponse</a></code>
+
+Methods:
+
+- <code title="get /api/v1/fills">client.fills.<a href="./src/resources/fills.ts">list</a>({ ...params }) -> FillListResponse</code>
+
 # Account
 
 Types:
 
 - <code><a href="./src/resources/account.ts">AccountBalanceResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountPingResponse</a></code>
+- <code><a href="./src/resources/account.ts">AccountUsageResponse</a></code>
 - <code><a href="./src/resources/account.ts">AccountUserActivityResponse</a></code>
 
 Methods:
 
 - <code title="get /api/v1/balance">client.account.<a href="./src/resources/account.ts">balance</a>({ ...params }) -> AccountBalanceResponse</code>
 - <code title="get /api/v1/ping">client.account.<a href="./src/resources/account.ts">ping</a>({ ...params }) -> AccountPingResponse</code>
+- <code title="get /api/v1/usage">client.account.<a href="./src/resources/account.ts">usage</a>() -> AccountUsageResponse</code>
 - <code title="get /api/v1/user-activity">client.account.<a href="./src/resources/account.ts">userActivity</a>({ ...params }) -> AccountUserActivityResponse</code>
 
 # Onboard
@@ -138,18 +150,6 @@ Methods:
 
 - <code title="get /api/v1/wallet">client.wallet.<a href="./src/resources/wallet.ts">retrieve</a>() -> WalletRetrieveResponse</code>
 - <code title="post /api/v1/wallet/export-key">client.wallet.<a href="./src/resources/wallet.ts">exportKey</a>({ ...params }) -> WalletExportKeyResponse</code>
-
-# PolymarketAuth
-
-Types:
-
-- <code><a href="./src/resources/polymarket-auth.ts">PolymarketAuthCredentialsResponse</a></code>
-- <code><a href="./src/resources/polymarket-auth.ts">PolymarketAuthMessageResponse</a></code>
-
-Methods:
-
-- <code title="post /api/v1/exchange/polymarket/auth-credentials">client.polymarketAuth.<a href="./src/resources/polymarket-auth.ts">credentials</a>({ ...params }) -> PolymarketAuthCredentialsResponse</code>
-- <code title="get /api/v1/exchange/polymarket/auth-message">client.polymarketAuth.<a href="./src/resources/polymarket-auth.ts">message</a>({ ...params }) -> PolymarketAuthMessageResponse</code>
 
 # Ctf
 

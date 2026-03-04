@@ -24,8 +24,6 @@ export interface TradeListResponse {
 
   parsec_id: string;
 
-  token_id: string;
-
   trades: Array<TradeListResponse.Trade>;
 
   /**
@@ -34,6 +32,18 @@ export interface TradeListResponse {
   has_more?: boolean;
 
   next_cursor?: string | null;
+
+  /**
+   * Explanatory field for empty results. Values: null (normal), "no_data_yet"
+   * (market exists but has no trade data for the requested range).
+   */
+  reason?: string | null;
+
+  /**
+   * Exchange-specific token/asset identifier. Null for exchanges that do not use
+   * token IDs (e.g., Kalshi).
+   */
+  token_id?: string | null;
 }
 
 export namespace TradeListResponse {

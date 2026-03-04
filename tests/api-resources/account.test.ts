@@ -50,6 +50,18 @@ describe('resource account', () => {
   });
 
   // Mock server tests are disabled
+  test.skip('usage', async () => {
+    const responsePromise = client.account.usage();
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Mock server tests are disabled
   test.skip('userActivity: only required params', async () => {
     const responsePromise = client.account.userActivity({ address: 'address' });
     const rawResponse = await responsePromise.asResponse();
