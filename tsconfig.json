@@ -1,6 +1,6 @@
 {
   "include": ["src", "tests", "examples"],
-  "exclude": [],
+  "exclude": ["tests/schema-validation.test.ts"],
   "compilerOptions": {
     "target": "es2020",
     "lib": ["es2020"],

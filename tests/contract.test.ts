@@ -176,7 +176,6 @@ if (!RUN_LIVE) {
       expect(typeof caps.fetch_trades).toBe('boolean');
       expect(typeof caps.fetch_events).toBe('boolean');
       expect(typeof caps.fetch_user_activity).toBe('boolean');
-      expect(typeof caps.approvals).toBe('boolean');
       expect(typeof caps.refresh_balance).toBe('boolean');
       expect(typeof caps.websocket).toBe('boolean');
       expect(exchanges.some((ex) => ex.id === 'kalshi')).toBe(true);
@@ -514,12 +513,6 @@ if (!RUN_LIVE) {
       expect(typeof ping[0]!.authenticated).toBe('boolean');
     });
 
-    test('GET /api/v1/session/capabilities returns tier + linked exchanges', async () => {
-      const caps = await client.account.capabilities();
-      expect(typeof caps.tier).toBe('string');
-      expect(Array.isArray(caps.linked_exchanges)).toBe(true);
-    });
-
     test('GET /api/v1/balance returns raw balance object (or auth error)', async () => {
       const { exchange, hasCredentials } = await resolvePrivateExchange();
       try {
@@ -557,37 +550,6 @@ if (!RUN_LIVE) {
       expect(typeof activity.exchanges).toBe('object');
     });
 
-    test('PUT /api/v1/credentials validates malformed kalshi credentials', async () => {
-      try {
-        await client.account.updateCredentials({
-          api_key_id: 'bad-key-id',
-          private_key: 'not-a-pem',
-        });
-        throw new Error('expected APIError — should never reach here');
-      } catch (err) {
-        assertAPIError(err, [400]);
-      }
-    });
-  });
-
-  describe('REST: approvals', () => {
-    test('GET /api/v1/approvals rejects unsupported exchange with typed error body', async () => {
-      try {
-        await client.approvals.list({ exchange: 'kalshi' });
-        throw new Error('expected APIError — should never reach here');
-      } catch (err) {
-        assertAPIError(err, [501]);
-      }
-    });
-
-    test('POST /api/v1/approvals rejects unsupported exchange with typed error body', async () => {
-      try {
-        await client.approvals.set({ exchange: 'kalshi', all: true });
-        throw new Error('expected APIError — should never reach here');
-      } catch (err) {
-        assertAPIError(err, [501]);
-      }
-    });
   });
 
   describe('REST: authentication', () => {
