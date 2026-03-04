@@ -64,7 +64,6 @@ import {
   WebsocketUsageParams,
   WebsocketUsageResponse,
 } from './resources/websocket';
-import { Builder, BuilderPoolResponse } from './resources/builder/builder';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
