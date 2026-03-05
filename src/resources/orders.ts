@@ -133,11 +133,22 @@ export interface OrderCreateParams {
   size: number;
 
   /**
+   * Body param: Affiliate address override. Builder-only.
+   */
+  affiliate?: string;
+
+  /**
    * Body param: Per-request exchange credentials (Mode B). When provided, Parsec
    * creates a transient exchange session instead of using stored credentials.
    * Credentials are never persisted.
    */
   credentials?: OrderCreateParams.Credentials;
+
+  /**
+   * Body param: EIP-712 fee authorization signed by the end-user's wallet. Required
+   * to collect fees via fee escrow. Builder-only.
+   */
+  fee_auth?: OrderCreateParams.FeeAuth;
 
   /**
    * Body param: Optional key-value parameters. Supported keys:
@@ -146,6 +157,16 @@ export interface OrderCreateParams {
    *   Unsupported types return 501 per exchange.
    */
   params?: { [key: string]: string };
+
+  /**
+   * Body param: End-user's wallet address (fee escrow payer). Builder-only.
+   */
+  payer_address?: string;
+
+  /**
+   * Body param: End-user's signing wallet address. Builder-only.
+   */
+  signer_address?: string;
 
   /**
    * Header param: Base64-encoded JSON of per-request exchange credentials (Mode B).
@@ -186,6 +207,37 @@ export namespace OrderCreateParams {
      * Kalshi RSA private key (PEM format).
      */
     private_key?: string;
+  }
+
+  /**
+   * EIP-712 fee authorization signed by the end-user's wallet. Required to collect
+   * fees via fee escrow. Builder-only.
+   */
+  export interface FeeAuth {
+    /**
+     * Unix timestamp after which the authorization expires.
+     */
+    deadline: number;
+
+    /**
+     * Fee in USDC base units (6 decimals), as a string.
+     */
+    fee_amount: string;
+
+    /**
+     * 0x-prefixed hex bytes32 order identifier.
+     */
+    order_id: string;
+
+    /**
+     * 0x-prefixed payer wallet address.
+     */
+    payer: string;
+
+    /**
+     * 0x-prefixed hex EIP-712 signature.
+     */
+    signature: string;
   }
 }
 
