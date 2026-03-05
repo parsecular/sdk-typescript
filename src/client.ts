@@ -27,6 +27,7 @@ import {
   AccountUserActivityParams,
   AccountUserActivityResponse,
 } from './resources/account';
+import { Builder, BuilderPoolResponse } from './resources/builder';
 import { Ctf, CtfMergeParams, CtfRedeemParams, CtfResponse, CtfSplitParams } from './resources/ctf';
 import { EventListParams, EventListResponse, Events } from './resources/events';
 import { ExchangeListResponse, Exchanges } from './resources/exchanges';
@@ -63,7 +64,7 @@ import {
   WebsocketUsageParams,
   WebsocketUsageResponse,
 } from './resources/websocket';
-import { Builder, BuilderPoolResponse } from './resources/builder/builder';
+import { ParsecWebSocket } from './streaming';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -800,6 +801,15 @@ export class ParsecAPI {
   wallet: API.Wallet = new API.Wallet(this);
   ctf: API.Ctf = new API.Ctf(this);
   builder: API.Builder = new API.Builder(this);
+
+  /**
+   * Create a ParsecWebSocket client for real-time orderbook and trade streaming.
+   * The WebSocket URL is derived from the configured base URL.
+   */
+  ws(terminalToken?: string): ParsecWebSocket {
+    const wsUrl = this.baseURL.replace(/^http/, 'ws') + '/ws';
+    return new ParsecWebSocket(this.apiKey, wsUrl, terminalToken);
+  }
 }
 
 ParsecAPI.Exchanges = Exchanges;

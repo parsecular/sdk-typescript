@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.12.0 (2026-03-04)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/parsecular/sdk-typescript/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** api update ([698ab63](https://github.com/parsecular/sdk-typescript/commit/698ab630824f4b131caac04a08cf5dba4e72650c))
+
+
+### Bug Fixes
+
+* add ws() method to ParsecAPI, remove stale approvals/capabilities refs ([a507414](https://github.com/parsecular/sdk-typescript/commit/a50741441bac5a2f8a085c0768eeabe14187b8cf))
+* remove stale polymarket-auth import from client.ts ([8ed2d54](https://github.com/parsecular/sdk-typescript/commit/8ed2d54c57ec92f60fced81cc4ab261c621f9489))
+* remove trailing blank line (prettier) ([40dd04e](https://github.com/parsecular/sdk-typescript/commit/40dd04ec8210d3d977e65f5ad57b29f90483f82f))
+* restore ws deps + remove duplicate builder import ([4825bc8](https://github.com/parsecular/sdk-typescript/commit/4825bc84cbb1f06749be860f7b906f1485e130a7))
+* update contract + schema-validation tests, remove stale approvals refs ([430daf5](https://github.com/parsecular/sdk-typescript/commit/430daf5255098b224f7b777fbe96ac4799b58537))
+* update contract tests for fills + usage, remove polymarket auth ([d32a4b5](https://github.com/parsecular/sdk-typescript/commit/d32a4b55e0b48dee5fa8e5f6ac3cb7a6169cdbdf))
+
 ## 0.11.0 (2026-03-04)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/parsecular/sdk-typescript/compare/v0.10.0...v0.11.0)
