@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.14.0 (2026-03-08)
+
+Full Changelog: [v0.13.0...v0.14.0](https://github.com/parsecular/sdk-typescript/compare/v0.13.0...v0.14.0)
+
+### Features
+
+* **api:** api update ([e785f77](https://github.com/parsecular/sdk-typescript/commit/e785f77875ff96b105e38de89fabc0c3a1b6ad61))
+
+
+### Bug Fixes
+
+* **client:** preserve URL params already embedded in path ([6b17506](https://github.com/parsecular/sdk-typescript/commit/6b175067be6172fa503a8a4255d43aad47ce6e11))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([ac5b54a](https://github.com/parsecular/sdk-typescript/commit/ac5b54a3b47de32ff90c89b9c20b2cbc923f67d1))
+* **internal:** codegen related update ([01352bb](https://github.com/parsecular/sdk-typescript/commit/01352bb4f15af4a88af982e82724a21c949d53ac))
+
 ## 0.13.0 (2026-03-05)
 
 Full Changelog: [v0.12.0...v0.13.0](https://github.com/parsecular/sdk-typescript/compare/v0.12.0...v0.13.0)
