@@ -6,8 +6,19 @@ import { RequestOptions } from '../internal/request-options';
 
 export class Markets extends APIResource {
   /**
-   * Provide either `exchanges` (CSV) or `parsec_ids` (CSV). When `parsec_ids` is
-   * provided, other filters are not allowed.
+   * Query markets using one of four scopes:
+   *
+   * - **`list`** (default) — Browse markets with optional filters. Pass `exchanges`
+   *   to restrict to specific exchanges.
+   * - **`market`** — Fetch a single market by `parsec_id` or by `exchange` +
+   *   `exchange_market_id`.
+   * - **`market_batch`** — Fetch up to 100 markets by `parsec_ids` or
+   *   `external_market_keys`.
+   * - **`event`** — Fetch all markets in an event by `event_id` or by `exchange` +
+   *   `exchange_group_id`.
+   *
+   * Each scope accepts a different set of parameters; see parameter descriptions for
+   * details.
    */
   list(
     query: MarketListParams | null | undefined = {},
@@ -21,6 +32,29 @@ export interface MarketListResponse {
   markets: Array<MarketListResponse.Market>;
 
   pagination: MarketListResponse.Pagination;
+
+  /**
+   * Query scope that produced this response: `list`, `market`, `market_batch`, or
+   * `event`.
+   */
+  scope: 'list' | 'market' | 'market_batch' | 'event';
+
+  /**
+   * IDs that appeared more than once in the request. Only present for
+   * `scope=market_batch`.
+   */
+  duplicate_ids?: Array<string>;
+
+  /**
+   * Event context. Only present when `scope=event`.
+   */
+  event?: MarketListResponse.Event;
+
+  /**
+   * IDs that were not found in any data layer. Only present for
+   * `scope=market_batch`.
+   */
+  not_found_ids?: Array<string>;
 }
 
 export namespace MarketListResponse {
@@ -315,29 +349,75 @@ export namespace MarketListResponse {
      */
     next_cursor?: string;
   }
+
+  /**
+   * Event context. Only present when `scope=event`.
+   */
+  export interface Event {
+    /**
+     * Canonical Parsec event ID.
+     */
+    event_id: string;
+
+    /**
+     * Number of exchanges covering this event.
+     */
+    exchange_count: number;
+
+    /**
+     * Total number of markets in this event.
+     */
+    market_count: number;
+
+    /**
+     * Event title.
+     */
+    title: string;
+  }
 }
 
 export interface MarketListParams {
   /**
-   * Pagination cursor (offset-based).
+   * Pagination cursor (offset-based). Only valid for `scope=list`.
    */
   cursor?: string;
 
   /**
-   * Canonical Parsec event ID filter (exact match).
+   * Canonical Parsec event ID (exact match). Used for `scope=event`. Mutually
+   * exclusive with `exchange` + `exchange_group_id`.
    */
   event_id?: string;
 
   /**
-   * Exchanges to query. In SDKs this is typically an array encoded as CSV on the
-   * wire. Required unless `parsec_ids` is provided.
+   * Exchange selector for external-ID lookups. Used with `exchange_market_id` for
+   * `scope=market`, or with `exchange_group_id` for `scope=event`.
+   */
+  exchange?: string;
+
+  /**
+   * Exchange-native event/group ID. Must be paired with `exchange` for
+   * `scope=event`. Mutually exclusive with `event_id`.
+   */
+  exchange_group_id?: string;
+
+  /**
+   * Exchange-native market ID. Must be paired with `exchange` for `scope=market`.
+   * Mutually exclusive with `parsec_id`.
+   */
+  exchange_market_id?: string;
+
+  /**
+   * Comma-separated exchange IDs to query (e.g., `polymarket,kalshi`). Only valid
+   * for `scope=list`. In SDKs this is typically an array encoded as CSV on the wire.
    */
   exchanges?: Array<string>;
 
   /**
-   * Source-native exchange event/group ID filter (exact match).
+   * Comma-separated external market keys in format
+   * `{exchange}:{exchange_market_id}`. Only valid for `scope=market_batch`. Mutually
+   * exclusive with `parsec_ids`.
    */
-  group_id?: string;
+  external_market_keys?: string;
 
   /**
    * When true, each market includes a `matched_markets` array with cross-exchange
@@ -357,29 +437,45 @@ export interface MarketListParams {
   limit?: number;
 
   /**
-   * Minimum liquidity filter.
+   * Minimum liquidity filter. Only valid for `scope=list`.
    */
   min_liquidity?: number;
 
   /**
-   * Minimum volume filter.
+   * Minimum volume filter. Only valid for `scope=list`.
    */
   min_volume?: number;
 
   /**
-   * Parsec market IDs to fetch directly (format: `{exchange}:{native_id}`). In SDKs
-   * this is typically an array encoded as CSV on the wire. Required unless
-   * `exchanges` is provided.
+   * Single canonical parsec ID for direct lookup (format: `{exchange}:{native_id}`).
+   * Only valid for `scope=market`. Mutually exclusive with `exchange` +
+   * `exchange_market_id`.
+   */
+  parsec_id?: string;
+
+  /**
+   * Comma-separated parsec IDs for batch lookup (format: `{exchange}:{native_id}`).
+   * Only valid for `scope=market_batch`. Max 100 IDs. Mutually exclusive with
+   * `external_market_keys`. In SDKs this is typically an array encoded as CSV on the
+   * wire.
    */
   parsec_ids?: Array<string>;
 
   /**
-   * Keyword search in question/description (case-insensitive).
+   * Query scope. Determines which parameters are valid and how results are returned.
+   * One of: `list` (default), `market`, `market_batch`, `event`.
+   */
+  scope?: 'list' | 'market' | 'market_batch' | 'event';
+
+  /**
+   * Keyword search in question/description (case-insensitive). Only valid for
+   * `scope=list`.
    */
   search?: string;
 
   /**
-   * Status filter (e.g., active, closed, resolved, archived).
+   * Status filter (e.g., active, closed, resolved, archived). Defaults to `active`
+   * for `scope=list`.
    */
   status?: string;
 }
