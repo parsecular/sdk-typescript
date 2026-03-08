@@ -29,7 +29,7 @@ const client = new ParsecAPI({
 
 const markets = await client.markets.list({ exchanges: ['kalshi'], limit: 1 });
 
-console.log(markets.markets);
+console.log(markets.duplicate_ids);
 ```
 
 ### Request & Response types
