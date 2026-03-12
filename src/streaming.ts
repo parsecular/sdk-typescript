@@ -62,6 +62,7 @@ export interface Activity {
   exchangeTsMs?: number | undefined;
   ingestTsMs?: number | undefined;
   sourceChannel: string;
+  liquidityRole?: 'maker' | 'taker' | undefined;
 }
 
 export interface WsError {
@@ -520,6 +521,7 @@ export class ParsecWebSocket {
           exchangeTsMs: msg.exchange_ts_ms,
           ingestTsMs: msg.ingest_ts_ms,
           sourceChannel: msg.source_channel ?? '',
+          liquidityRole: msg.liquidity_role,
         });
         break;
       }
