@@ -9,8 +9,8 @@ const client = new ParsecAPI({
 
 describe('resource orderbook', () => {
   // Mock server tests are disabled
-  test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.orderbook.retrieve({ parsec_id: 'parsec_id' });
+  test.skip('retrieve', async () => {
+    const responsePromise = client.orderbook.retrieve();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,15 +21,23 @@ describe('resource orderbook', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('retrieve: required and optional params', async () => {
-    const response = await client.orderbook.retrieve({
-      parsec_id: 'parsec_id',
-      cursor: 'cursor',
-      depth: 1,
-      end_ts: 0,
-      limit: 1,
-      outcome: 'outcome',
-      start_ts: 0,
-    });
+  test.skip('retrieve: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.orderbook.retrieve(
+        {
+          cursor: 'cursor',
+          depth: 1,
+          end_ts: 0,
+          exchange: 'exchange',
+          limit: 1,
+          market_id: 'market_id',
+          outcome: 'outcome',
+          parsec_id: 'parsec_id',
+          start_ts: 0,
+        },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(ParsecAPI.NotFoundError);
   });
 });

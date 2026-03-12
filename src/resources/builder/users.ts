@@ -82,7 +82,7 @@ export interface UserCreateResponse {
   linked_exchanges: Array<string>;
 
   /**
-   * User status ("active").
+   * Response status ("complete").
    */
   status: string;
 

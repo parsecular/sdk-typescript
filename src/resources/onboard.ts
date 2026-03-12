@@ -32,7 +32,7 @@ export interface OnboardCreateResponse {
   mode: string;
 
   /**
-   * Onboard status ("complete").
+   * Onboard status ("complete" or "already_linked").
    */
   status: string;
 
@@ -96,7 +96,9 @@ export interface OnboardCreateParams {
   eoa_address?: string;
 
   /**
-   * Kalshi RSA private key in PEM format (self mode).
+   * Self-mode signing key. For Polymarket this is an Ethereum private key (optional
+   * for order placement). For Kalshi this is an RSA private key in PEM format
+   * (required).
    */
   private_key?: string;
 

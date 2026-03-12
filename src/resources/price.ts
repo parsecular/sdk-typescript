@@ -6,10 +6,15 @@ import { RequestOptions } from '../internal/request-options';
 
 export class Price extends APIResource {
   /**
-   * Returns an array of candlesticks with timestamps at period start (UTC).
-   * Historical data is tier-gated: Free=5d, Pro=30d, Scale=unlimited.
+   * Use `/markets` to discover a market first, then query by either `parsec_id` or
+   * `exchange + market_id`. Returns an array of candlesticks with timestamps at
+   * period start (UTC). Historical data is tier-gated: Free=5d, Pro=30d,
+   * Scale=unlimited.
    */
-  retrieve(query: PriceRetrieveParams, options?: RequestOptions): APIPromise<PriceRetrieveResponse> {
+  retrieve(
+    query: PriceRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<PriceRetrieveResponse> {
     return this._client.get('/api/v1/price', { query, ...options });
   }
 }
@@ -67,11 +72,6 @@ export namespace PriceRetrieveResponse {
 
 export interface PriceRetrieveParams {
   /**
-   * Unified market ID in format `{exchange}:{native_id}`.
-   */
-  parsec_id: string;
-
-  /**
    * Point-in-time lookup (Unix seconds). Returns the single closest candle. Cannot
    * be combined with start_ts/end_ts.
    */
@@ -83,9 +83,19 @@ export interface PriceRetrieveParams {
   end_ts?: number;
 
   /**
+   * Exchange ID (alternative to parsec_id — use with market_id).
+   */
+  exchange?: string;
+
+  /**
    * Defaults to 1h for point-in-time (at_ts)
    */
   interval?: '1m' | '1h' | '6h' | '1d' | '1w' | 'max';
+
+  /**
+   * Exchange-native market ID (alternative to parsec_id — use with exchange).
+   */
+  market_id?: string;
 
   /**
    * Outcome selector. For binary markets this is typically "yes" or "no"
@@ -93,6 +103,11 @@ export interface PriceRetrieveParams {
    * outcome label or numeric index.
    */
   outcome?: string;
+
+  /**
+   * Unified market ID. Provide either `parsec_id` OR both `exchange` + `market_id`.
+   */
+  parsec_id?: string;
 
   /**
    * Unix seconds start timestamp (inclusive). If omitted, the server selects a

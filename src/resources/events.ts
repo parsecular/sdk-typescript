@@ -65,6 +65,11 @@ export namespace EventListResponse {
      * Constituent markets (only included when `include_markets=true`).
      */
     markets?: Array<Event.Market>;
+
+    /**
+     * Cross-exchange event counterparts from published `same_event` matches.
+     */
+    matched_events?: Array<Event.MatchedEvent>;
   }
 
   export namespace Event {
@@ -298,6 +303,11 @@ export namespace EventListResponse {
          * Type of dependency (for related markets only).
          */
         dependency_type?: string | null;
+
+        /**
+         * Counterpart market status (e.g., active, closed, archived).
+         */
+        status?: string;
       }
 
       export interface RelatedMarket {
@@ -335,7 +345,44 @@ export namespace EventListResponse {
          * Type of dependency (for related markets only).
          */
         dependency_type?: string | null;
+
+        /**
+         * Counterpart market status (e.g., active, closed, archived).
+         */
+        status?: string;
       }
+    }
+
+    export interface MatchedEvent {
+      /**
+       * Match confidence score.
+       */
+      confidence: number;
+
+      /**
+       * Confidence bucket metadata for the event match.
+       */
+      confidence_tier: string;
+
+      /**
+       * Canonical Parsec event ID for the matched event.
+       */
+      event_id: string;
+
+      /**
+       * Exchanges represented in the matched event.
+       */
+      exchanges: Array<string>;
+
+      /**
+       * Event match source label from the matching pipeline.
+       */
+      source: string;
+
+      /**
+       * Matched event title.
+       */
+      title: string;
     }
   }
 
