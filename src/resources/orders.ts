@@ -138,9 +138,11 @@ export interface OrderCreateParams {
   affiliate?: string;
 
   /**
-   * Body param: Per-request exchange credentials (Mode B). When provided, Parsec
-   * creates a transient exchange session instead of using stored credentials.
-   * Credentials are never persisted.
+   * Body param: Per-request exchange credentials passed in the
+   * `X-Exchange-Credentials` header. Parsec creates a transient exchange session
+   * instead of using stored credentials. For Polymarket transient sessions,
+   * `private_key` is required; CLOB API credentials are optional. Credentials are
+   * never persisted.
    */
   credentials?: OrderCreateParams.Credentials;
 
@@ -178,9 +180,10 @@ export interface OrderCreateParams {
 
 export namespace OrderCreateParams {
   /**
-   * Per-request exchange credentials (Mode B). When provided, Parsec creates a
-   * transient exchange session instead of using stored credentials. Credentials are
-   * never persisted.
+   * Per-request exchange credentials passed in the `X-Exchange-Credentials` header.
+   * Parsec creates a transient exchange session instead of using stored credentials.
+   * For Polymarket transient sessions, `private_key` is required; CLOB API
+   * credentials are optional. Credentials are never persisted.
    */
   export interface Credentials {
     /**
@@ -189,22 +192,23 @@ export namespace OrderCreateParams {
     api_key_id?: string;
 
     /**
-     * Polymarket CLOB API key.
+     * Optional Polymarket CLOB API key.
      */
     clob_api_key?: string;
 
     /**
-     * Polymarket CLOB API passphrase.
+     * Optional Polymarket CLOB API passphrase.
      */
     clob_api_passphrase?: string;
 
     /**
-     * Polymarket CLOB API secret.
+     * Optional Polymarket CLOB API secret.
      */
     clob_api_secret?: string;
 
     /**
-     * Kalshi RSA private key (PEM format).
+     * Kalshi RSA private key (PEM) or Polymarket wallet private key (`0x`-prefixed
+     * hex).
      */
     private_key?: string;
   }

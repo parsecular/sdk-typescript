@@ -6,8 +6,10 @@ import { RequestOptions } from '../internal/request-options';
 
 export class ExecutionPrice extends APIResource {
   /**
-   * Walks the orderbook to estimate the volume-weighted average price (VWAP) for a
-   * hypothetical order of the given size. Does not place an order.
+   * Use `/markets` to discover a market first, then query by either `parsec_id` or
+   * `exchange + market_id`. Walks the orderbook to estimate the volume-weighted
+   * average price (VWAP) for a hypothetical order of the given size. Does not place
+   * an order.
    */
   retrieve(
     query: ExecutionPriceRetrieveParams,
@@ -73,20 +75,30 @@ export interface ExecutionPriceRetrieveParams {
   amount: number;
 
   /**
-   * Unified market ID in format `{exchange}:{native_id}`.
-   */
-  parsec_id: string;
-
-  /**
    * Order side ("buy" or "sell").
    */
   side: 'buy' | 'sell';
+
+  /**
+   * Exchange ID (alternative to parsec_id — use with market_id).
+   */
+  exchange?: string;
+
+  /**
+   * Exchange-native market ID (alternative to parsec_id — use with exchange).
+   */
+  market_id?: string;
 
   /**
    * Outcome selector. For binary markets this is typically "yes" or "no"
    * (case-insensitive). For categorical markets, this is required.
    */
   outcome?: string;
+
+  /**
+   * Unified market ID. Provide either `parsec_id` OR both `exchange` + `market_id`.
+   */
+  parsec_id?: string;
 }
 
 export declare namespace ExecutionPrice {

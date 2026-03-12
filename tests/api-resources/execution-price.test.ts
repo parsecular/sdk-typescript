@@ -10,11 +10,7 @@ const client = new ParsecAPI({
 describe('resource executionPrice', () => {
   // Mock server tests are disabled
   test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.executionPrice.retrieve({
-      amount: 0,
-      parsec_id: 'parsec_id',
-      side: 'buy',
-    });
+    const responsePromise = client.executionPrice.retrieve({ amount: 0, side: 'buy' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -28,9 +24,11 @@ describe('resource executionPrice', () => {
   test.skip('retrieve: required and optional params', async () => {
     const response = await client.executionPrice.retrieve({
       amount: 0,
-      parsec_id: 'parsec_id',
       side: 'buy',
+      exchange: 'exchange',
+      market_id: 'market_id',
       outcome: 'outcome',
+      parsec_id: 'parsec_id',
     });
   });
 });

@@ -24,7 +24,7 @@ describe('resource fills', () => {
   test.skip('list: required and optional params', async () => {
     const response = await client.fills.list({
       exchange: 'exchange',
-      limit: 0,
+      limit: 1,
       market_id: 'market_id',
       'X-Exchange-Credentials': 'X-Exchange-Credentials',
     });

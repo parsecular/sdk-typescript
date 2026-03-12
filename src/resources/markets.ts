@@ -288,6 +288,11 @@ export namespace MarketListResponse {
        * Type of dependency (for related markets only).
        */
       dependency_type?: string | null;
+
+      /**
+       * Counterpart market status (e.g., active, closed, archived).
+       */
+      status?: string;
     }
 
     export interface RelatedMarket {
@@ -325,6 +330,11 @@ export namespace MarketListResponse {
        * Type of dependency (for related markets only).
        */
       dependency_type?: string | null;
+
+      /**
+       * Counterpart market status (e.g., active, closed, archived).
+       */
+      status?: string;
     }
   }
 
@@ -378,7 +388,7 @@ export namespace MarketListResponse {
 
 export interface MarketListParams {
   /**
-   * Pagination cursor (offset-based). Only valid for `scope=list`.
+   * Pagination cursor (offset-based). Valid for `scope=list` and `scope=event`.
    */
   cursor?: string;
 
@@ -408,16 +418,17 @@ export interface MarketListParams {
 
   /**
    * Comma-separated exchange IDs to query (e.g., `polymarket,kalshi`). Only valid
-   * for `scope=list`. In SDKs this is typically an array encoded as CSV on the wire.
+   * for `scope=list`. Omit to query all exchanges. In SDKs this is typically an
+   * array encoded as CSV on the wire.
    */
   exchanges?: Array<string>;
 
   /**
    * Comma-separated external market keys in format
-   * `{exchange}:{exchange_market_id}`. Only valid for `scope=market_batch`. Mutually
-   * exclusive with `parsec_ids`.
+   * `{exchange}:{exchange_market_id}`. Only valid for `scope=market_batch`. Max 100.
+   * Mutually exclusive with `parsec_ids`.
    */
-  external_market_keys?: string;
+  external_market_keys?: Array<string>;
 
   /**
    * When true, each market includes a `matched_markets` array with cross-exchange
@@ -456,7 +467,8 @@ export interface MarketListParams {
   /**
    * Comma-separated parsec IDs for batch lookup (format: `{exchange}:{native_id}`).
    * Only valid for `scope=market_batch`. Max 100 IDs. Mutually exclusive with
-   * `external_market_keys`. In SDKs this is typically an array encoded as CSV on the
+   * `external_market_keys`. If `scope` is omitted, the server auto-infers
+   * `scope=market_batch`. In SDKs this is typically an array encoded as CSV on the
    * wire.
    */
   parsec_ids?: Array<string>;

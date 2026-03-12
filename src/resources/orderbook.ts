@@ -6,51 +6,92 @@ import { RequestOptions } from '../internal/request-options';
 
 export class Orderbook extends APIResource {
   /**
-   * When start_ts or end_ts is provided, returns historical orderbook snapshots
-   * instead of a live L2 snapshot. Large time ranges are handled via internal
-   * chunking and may be slow for very wide windows. In historical mode, limit
-   * defaults to 500 (max 1000). Historical data is tier-gated: Free=5d, Pro=30d,
-   * Scale=unlimited.
+   * Use `/markets` to discover a market first, then query by either `parsec_id` or
+   * `exchange + market_id`. When start_ts or end_ts is provided, returns historical
+   * orderbook snapshots instead of a live L2 snapshot. Large time ranges are handled
+   * via internal chunking and may be slow for very wide windows. In historical mode,
+   * limit defaults to 500 (max 1000). Historical data is tier-gated: Free=5d,
+   * Pro=30d, Scale=unlimited.
    */
-  retrieve(query: OrderbookRetrieveParams, options?: RequestOptions): APIPromise<OrderbookRetrieveResponse> {
+  retrieve(
+    query: OrderbookRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<OrderbookRetrieveResponse> {
     return this._client.get('/api/v1/orderbook', { query, ...options });
   }
 }
 
-export interface OrderbookRetrieveResponse {
-  asks: Array<Array<number>>;
+export type OrderbookRetrieveResponse =
+  | OrderbookRetrieveResponse.OrderbookResponse
+  | OrderbookRetrieveResponse.OrderbookHistoryResult;
 
-  bids: Array<Array<number>>;
+export namespace OrderbookRetrieveResponse {
+  export interface OrderbookResponse {
+    asks: Array<Array<number>>;
 
-  exchange: string;
+    bids: Array<Array<number>>;
 
-  market_id: string;
+    exchange: string;
 
-  outcome: string;
+    market_id: string;
 
-  parsec_id: string;
+    outcome: string;
 
-  token_id: string;
+    parsec_id: string;
 
-  /**
-   * Minimum order size in contracts.
-   */
-  min_order_size?: number;
+    token_id: string;
 
-  /**
-   * Minimum price increment for orders on this market.
-   */
-  tick_size?: number;
+    /**
+     * Minimum order size in contracts.
+     */
+    min_order_size?: number;
 
-  timestamp?: string | null;
+    /**
+     * Minimum price increment for orders on this market.
+     */
+    tick_size?: number;
+
+    timestamp?: string | null;
+  }
+
+  export interface OrderbookHistoryResult {
+    exchange: string;
+
+    has_more: boolean;
+
+    market_id: string;
+
+    outcome: string;
+
+    parsec_id: string;
+
+    snapshots: Array<OrderbookHistoryResult.Snapshot>;
+
+    token_id: string;
+
+    min_order_size?: number;
+
+    next_cursor?: string;
+
+    tick_size?: number;
+  }
+
+  export namespace OrderbookHistoryResult {
+    export interface Snapshot {
+      asks: Array<Array<number>>;
+
+      bids: Array<Array<number>>;
+
+      timestamp: string;
+
+      hash?: string | null;
+
+      recorded_at?: string | null;
+    }
+  }
 }
 
 export interface OrderbookRetrieveParams {
-  /**
-   * Unified market ID in format `{exchange}:{native_id}`.
-   */
-  parsec_id: string;
-
   /**
    * Opaque pagination cursor for historical mode.
    */
@@ -67,9 +108,19 @@ export interface OrderbookRetrieveParams {
   end_ts?: number;
 
   /**
+   * Exchange ID (alternative to parsec_id — use with market_id).
+   */
+  exchange?: string;
+
+  /**
    * Max depth per side (default 50; server clamps to 1..=100).
    */
   limit?: number;
+
+  /**
+   * Exchange-native market ID (alternative to parsec_id — use with exchange).
+   */
+  market_id?: string;
 
   /**
    * Outcome selector. For binary markets this is typically "yes" or "no"
@@ -77,6 +128,11 @@ export interface OrderbookRetrieveParams {
    * outcome label or numeric index.
    */
   outcome?: string;
+
+  /**
+   * Unified market ID. Provide either `parsec_id` OR both `exchange` + `market_id`.
+   */
+  parsec_id?: string;
 
   /**
    * Unix seconds — when present, switches to historical mode (returns snapshots
