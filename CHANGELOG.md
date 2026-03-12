@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0 (2026-03-12)
+
+Full Changelog: [v0.15.0...v0.16.0](https://github.com/parsecular/sdk-typescript/compare/v0.15.0...v0.16.0)
+
+### Features
+
+* **ws:** add liquidityRole to Activity type ([d3eb5d5](https://github.com/parsecular/sdk-typescript/commit/d3eb5d5e1dd2ed1155071af1dffde6760732608d))
+
 ## 0.15.0 (2026-03-12)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/parsecular/sdk-typescript/compare/v0.14.0...v0.15.0)
