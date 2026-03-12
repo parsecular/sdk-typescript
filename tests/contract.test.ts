@@ -131,7 +131,7 @@ if (!RUN_LIVE) {
           parsec_id: market.parsec_id,
           outcome: market.outcomes[0]!.name,
         });
-        if (book.bids.length + book.asks.length > 0) {
+        if ('bids' in book && book.bids.length + book.asks.length > 0) {
           result.push({
             parsecId: market.parsec_id,
             outcome: market.outcomes[0]!.name,
@@ -262,7 +262,7 @@ if (!RUN_LIVE) {
           parsec_id: m.parsec_id,
           outcome: m.outcomes[0]!.name,
         });
-        if (book.bids.length + book.asks.length > 0) {
+        if ('bids' in book && book.bids.length + book.asks.length > 0) {
           market = m;
           ob = book;
           break;

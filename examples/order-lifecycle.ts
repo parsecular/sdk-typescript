@@ -30,7 +30,7 @@ async function main() {
   let target: (typeof markets)[0] | undefined;
   for (const m of markets) {
     const ob = await client.orderbook.retrieve({ parsec_id: m.parsec_id });
-    if (ob.bids && ob.bids.length > 0) {
+    if ('bids' in ob && ob.bids && ob.bids.length > 0) {
       target = m;
       break;
     }

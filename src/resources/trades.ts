@@ -6,11 +6,15 @@ import { RequestOptions } from '../internal/request-options';
 
 export class Trades extends APIResource {
   /**
-   * Returns an array of recent trades for the requested market+outcome (normalized
-   * prices 0.0-1.0). Historical data is tier-gated: Free=5d, Pro=30d,
-   * Scale=unlimited.
+   * Use `/markets` to discover a market first, then query by either `parsec_id` or
+   * `exchange + market_id`. Returns an array of recent trades for the requested
+   * market+outcome (normalized prices 0.0-1.0). Historical data is tier-gated:
+   * Free=5d, Pro=30d, Scale=unlimited.
    */
-  list(query: TradeListParams, options?: RequestOptions): APIPromise<TradeListResponse> {
+  list(
+    query: TradeListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<TradeListResponse> {
     return this._client.get('/api/v1/trades', { query, ...options });
   }
 }
@@ -106,11 +110,6 @@ export namespace TradeListResponse {
 
 export interface TradeListParams {
   /**
-   * Unified market ID in format `{exchange}:{native_id}`.
-   */
-  parsec_id: string;
-
-  /**
    * Opaque pagination cursor from a previous response.
    */
   cursor?: string;
@@ -121,9 +120,19 @@ export interface TradeListParams {
   end_ts?: number;
 
   /**
+   * Exchange ID (alternative to parsec_id — use with market_id).
+   */
+  exchange?: string;
+
+  /**
    * Max number of trades (default 200; server clamps to 1..=500).
    */
   limit?: number;
+
+  /**
+   * Exchange-native market ID (alternative to parsec_id — use with exchange).
+   */
+  market_id?: string;
 
   /**
    * Outcome selector. For binary markets this is typically "yes" or "no"
@@ -131,6 +140,11 @@ export interface TradeListParams {
    * outcome label or numeric index.
    */
   outcome?: string;
+
+  /**
+   * Unified market ID. Provide either `parsec_id` OR both `exchange` + `market_id`.
+   */
+  parsec_id?: string;
 
   /**
    * Unix seconds start timestamp (inclusive).

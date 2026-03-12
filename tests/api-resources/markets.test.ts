@@ -32,7 +32,7 @@ describe('resource markets', () => {
           exchange_group_id: 'exchange_group_id',
           exchange_market_id: 'exchange_market_id',
           exchanges: ['string'],
-          external_market_keys: 'external_market_keys',
+          external_market_keys: ['string'],
           include_matches: true,
           include_related: true,
           limit: 1,

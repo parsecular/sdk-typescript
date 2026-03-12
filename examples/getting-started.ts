@@ -30,6 +30,7 @@ async function main() {
   }
   const outcome = market.outcomes[0]?.name ?? 'yes';
   const book = await client.orderbook.retrieve({ parsec_id: market.parsec_id, outcome });
+  if (!('bids' in book)) throw new Error('Expected live orderbook, got history');
   console.log(`Orderbook for ${market.parsec_id} (${outcome.toUpperCase()}):`);
   console.log(`  Best bid: ${book.bids?.[0]?.[0] ?? '—'}  Best ask: ${book.asks?.[0]?.[0] ?? '—'}`);
   console.log(`  Depth: ${book.bids?.length ?? 0} bids, ${book.asks?.length ?? 0} asks\n`);
