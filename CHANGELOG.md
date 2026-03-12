@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.15.0 (2026-03-12)
+
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/parsecular/sdk-typescript/compare/v0.14.0...v0.15.0)
+
+### Features
+
+* **api:** api update ([21d16cb](https://github.com/parsecular/sdk-typescript/commit/21d16cbca379ef05d9a9ede2dd0dccb5b3a2d550))
+
+
+### Bug Fixes
+
+* narrow OrderbookRetrieveResponse union type in examples and tests ([c6d912f](https://github.com/parsecular/sdk-typescript/commit/c6d912fb16681bf55fa23631be33675d011ee0c8))
+* regenerate pnpm-lock.yaml to fix overrides mismatch ([d2cfa90](https://github.com/parsecular/sdk-typescript/commit/d2cfa904bdc47f58eef409c93f0ffbd10bbdb14e))
+
+
+### Chores
+
+* **internal:** update dependencies to address dependabot vulnerabilities ([cab69db](https://github.com/parsecular/sdk-typescript/commit/cab69db40090d7ac8efa039890d34702da1cd707))
+
 ## 0.14.0 (2026-03-08)
 
 Full Changelog: [v0.13.0...v0.14.0](https://github.com/parsecular/sdk-typescript/compare/v0.13.0...v0.14.0)
