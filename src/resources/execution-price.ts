@@ -51,6 +51,11 @@ export interface ExecutionPriceRetrieveResponse {
   fee_estimate?: number | null;
 
   /**
+   * Metadata about how fees were computed. Null for unknown exchanges.
+   */
+  fee_info?: ExecutionPriceRetrieveResponse.FeeInfo | null;
+
+  /**
    * Total cost including fees (total_cost + fee_estimate). Null when fee rate is
    * unknown.
    */
@@ -66,6 +71,27 @@ export interface ExecutionPriceRetrieveResponse {
    * liquidity.
    */
   worst_price?: number | null;
+}
+
+export namespace ExecutionPriceRetrieveResponse {
+  /**
+   * Metadata about how fees were computed. Null for unknown exchanges.
+   */
+  export interface FeeInfo {
+    exchange: string;
+
+    /**
+     * Fee model: quadratic, linear, lookup_table, or none.
+     */
+    fee_type: string;
+
+    is_estimate: boolean;
+
+    /**
+     * Additional context (e.g. "no fees for this market").
+     */
+    note?: string;
+  }
 }
 
 export interface ExecutionPriceRetrieveParams {

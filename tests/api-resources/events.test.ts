@@ -27,6 +27,9 @@ describe('resource events', () => {
       client.events.list(
         {
           cursor: 'cursor',
+          event_id: 'event_id',
+          exchange: 'exchange',
+          exchange_group_id: 'exchange_group_id',
           exchanges: ['string'],
           include_markets: true,
           limit: 1,

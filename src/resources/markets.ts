@@ -365,7 +365,7 @@ export namespace MarketListResponse {
    */
   export interface Event {
     /**
-     * Canonical Parsec event ID.
+     * Stored Parsec event-group ID.
      */
     event_id: string;
 
@@ -393,8 +393,9 @@ export interface MarketListParams {
   cursor?: string;
 
   /**
-   * Canonical Parsec event ID (exact match). Used for `scope=event`. Mutually
-   * exclusive with `exchange` + `exchange_group_id`.
+   * Stored Parsec event-group ID (exact match). The `ev:{event_id}` alias form is
+   * also accepted. Used for `scope=event`. Mutually exclusive with `exchange` +
+   * `exchange_group_id`.
    */
   event_id?: string;
 

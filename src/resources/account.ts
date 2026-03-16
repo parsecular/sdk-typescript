@@ -161,7 +161,8 @@ export namespace AccountUserActivityResponse {
 
 export interface AccountBalanceParams {
   /**
-   * Query param: Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., polymarket, kalshi, limitless, opinion,
+   * predictfun).
    */
   exchange: string;
 

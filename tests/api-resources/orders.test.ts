@@ -94,7 +94,11 @@ describe('resource orders', () => {
   test.skip('list: required and optional params', async () => {
     const response = await client.orders.list({
       exchange: 'exchange',
+      end_ts: 0,
+      limit: 1,
       market_id: 'market_id',
+      start_ts: 0,
+      status: 'open',
       'X-Exchange-Credentials': 'X-Exchange-Credentials',
     });
   });

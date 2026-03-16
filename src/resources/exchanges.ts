@@ -44,6 +44,8 @@ export namespace ExchangeListResponse {
 
       fetch_markets: boolean;
 
+      fetch_order_history: boolean;
+
       fetch_orderbook: boolean;
 
       fetch_orderbook_history: boolean;
@@ -57,6 +59,8 @@ export namespace ExchangeListResponse {
       fetch_user_activity: boolean;
 
       refresh_balance: boolean;
+
+      watch_address: boolean;
 
       websocket: boolean;
     }
