@@ -9,6 +9,12 @@ export class Events extends APIResource {
    * Aggregates markets by event ID from the DuckDB gold layer. Returns event
    * summaries sorted by total volume (descending). Markets without an event_id are
    * excluded.
+   *
+   * Exact lookup mode is available via either `event_id` or `exchange` +
+   * `exchange_group_id`. Exact lookup returns the normal `EventsResponse` wrapper
+   * with either zero or one event. Returned `event_id` values are the stored
+   * gold-layer event-group IDs (typically `parsec_group_id`); lookup also accepts
+   * `ev:{event_id}` aliases.
    */
   list(
     query: EventListParams | null | undefined = {},
@@ -27,7 +33,8 @@ export interface EventListResponse {
 export namespace EventListResponse {
   export interface Event {
     /**
-     * Canonical Parsec event ID.
+     * Stored Parsec event-group ID from the gold snapshot. Lookup also accepts
+     * `ev:{event_id}` aliases.
      */
     event_id: string;
 
@@ -365,7 +372,7 @@ export namespace EventListResponse {
       confidence_tier: string;
 
       /**
-       * Canonical Parsec event ID for the matched event.
+       * Stored Parsec event-group ID for the matched event.
        */
       event_id: string;
 
@@ -411,12 +418,30 @@ export namespace EventListResponse {
 
 export interface EventListParams {
   /**
-   * Pagination cursor (offset-based).
+   * Pagination cursor (offset-based). Only valid for list mode.
    */
   cursor?: string;
 
   /**
-   * Exchanges to include (CSV). Defaults to all exchanges in the cache.
+   * Exact event lookup by stored event-group ID. The `ev:{event_id}` alias form is
+   * also accepted. Mutually exclusive with `exchange` + `exchange_group_id`.
+   */
+  event_id?: string;
+
+  /**
+   * Exchange selector for exact external event lookup. Must be paired with
+   * `exchange_group_id`.
+   */
+  exchange?: string;
+
+  /**
+   * Exchange-native event/group ID. Must be paired with `exchange`.
+   */
+  exchange_group_id?: string;
+
+  /**
+   * Exchanges to include (CSV). Defaults to all exchanges in the cache. Only valid
+   * for list mode.
    */
   exchanges?: Array<string>;
 
@@ -426,22 +451,23 @@ export interface EventListParams {
   include_markets?: boolean;
 
   /**
-   * Results per page (default 50, max 100).
+   * Results per page (default 50, max 100). Only valid for list mode.
    */
   limit?: number;
 
   /**
-   * Minimum total volume across all markets in event.
+   * Minimum total volume across all markets in event. Only valid for list mode.
    */
   min_volume?: number;
 
   /**
-   * Keyword search in event title (case-insensitive).
+   * Keyword search in event title (case-insensitive). Only valid for list mode.
    */
   search?: string;
 
   /**
-   * Status filter (e.g., active, closed, resolved, archived).
+   * Status filter (e.g., active, closed, resolved, archived). Only valid for list
+   * mode.
    */
   status?: string;
 }

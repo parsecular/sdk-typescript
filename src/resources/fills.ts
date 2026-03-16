@@ -80,7 +80,8 @@ export namespace FillListResponse {
 
 export interface FillListParams {
   /**
-   * Query param: Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., polymarket, kalshi, limitless, opinion,
+   * predictfun).
    */
   exchange: string;
 
