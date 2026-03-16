@@ -43,7 +43,10 @@ export class Orders extends APIResource {
   }
 
   /**
-   * Lists open orders on the selected exchange.
+   * Lists orders on the selected exchange.
+   *
+   * `status=open` preserves open-order behavior. `status=closed|all` enables order
+   * history on supported exchanges.
    */
   list(params: OrderListParams, options?: RequestOptions): APIPromise<OrderListResponse> {
     const { 'X-Exchange-Credentials': xExchangeCredentials, ...query } = params;
@@ -103,7 +106,8 @@ export type OrderListResponse = Array<Order>;
 
 export interface OrderCreateParams {
   /**
-   * Query param: Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., polymarket, kalshi, limitless, opinion,
+   * predictfun).
    */
   exchange: string;
 
@@ -155,8 +159,10 @@ export interface OrderCreateParams {
   /**
    * Body param: Optional key-value parameters. Supported keys:
    *
-   * - `order_type`: Order time-in-force. Values: `gtc` (default), `ioc`, `fok`.
-   *   Unsupported types return 501 per exchange.
+   * - `order_type`: Order time-in-force. Values: `gtc` (default), `ioc`, `fok`,
+   *   `gtd`. Unsupported types return 501 per exchange.
+   * - `expiration`: Unix timestamp in seconds. Required when `order_type` is `gtd`
+   *   (must be at least 60s in the future). Polymarket only.
    */
   params?: { [key: string]: string };
 
@@ -247,7 +253,8 @@ export namespace OrderCreateParams {
 
 export interface OrderRetrieveParams {
   /**
-   * Query param: Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., polymarket, kalshi, limitless, opinion,
+   * predictfun).
    */
   exchange: string;
 
@@ -261,14 +268,37 @@ export interface OrderRetrieveParams {
 
 export interface OrderListParams {
   /**
-   * Query param: Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., polymarket, kalshi, limitless, opinion,
+   * predictfun).
    */
   exchange: string;
+
+  /**
+   * Query param: Filter orders created at or before this Unix timestamp (seconds).
+   */
+  end_ts?: number;
+
+  /**
+   * Query param: Max orders to return. For `status=closed|all`, defaults to 100 and
+   * clamps to 1..=500.
+   */
+  limit?: number;
 
   /**
    * Query param: Optional market ID filter (exchange-native).
    */
   market_id?: string;
+
+  /**
+   * Query param: Filter orders created at or after this Unix timestamp (seconds).
+   */
+  start_ts?: number;
+
+  /**
+   * Query param: Order status view. `open` returns active orders, `closed` returns
+   * terminal orders, and `all` returns both. Defaults to `open`.
+   */
+  status?: 'open' | 'closed' | 'all';
 
   /**
    * Header param: Base64-encoded JSON of per-request exchange credentials (Mode B).
@@ -280,7 +310,8 @@ export interface OrderListParams {
 
 export interface OrderCancelParams {
   /**
-   * Query param: Exchange identifier (e.g., kalshi, polymarket).
+   * Query param: Exchange identifier (e.g., polymarket, kalshi, limitless, opinion,
+   * predictfun).
    */
   exchange: string;
 
