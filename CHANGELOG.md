@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0 (2026-03-16)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/parsecular/sdk-typescript/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* update OpenAPI to 0.17.0 — fee estimates, price history, WS docs ([1a7089d](https://github.com/parsecular/sdk-typescript/commit/1a7089d0765abb26f21fd45fe8a74869913cb6b3))
+
 ## 0.16.0 (2026-03-12)
 
 Full Changelog: [v0.15.0...v0.16.0](https://github.com/parsecular/sdk-typescript/compare/v0.15.0...v0.16.0)
