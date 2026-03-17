@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.1 (2026-03-17)
+
+Full Changelog: [v0.17.0...v0.17.1](https://github.com/parsecular/sdk-typescript/compare/v0.17.0...v0.17.1)
+
+### Chores
+
+* **internal:** tweak CI branches ([1a294b5](https://github.com/parsecular/sdk-typescript/commit/1a294b50191a3327017d05adb4e3cc0149a5ff77))
+
 ## 0.17.0 (2026-03-16)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/parsecular/sdk-typescript/compare/v0.16.0...v0.17.0)
