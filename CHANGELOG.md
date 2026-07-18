@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.18.0 (2026-07-18)
+
+Full Changelog: [v0.17.0...v0.18.0](https://github.com/parsecular/sdk-typescript/compare/v0.17.0...v0.18.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([e71ce46](https://github.com/parsecular/sdk-typescript/commit/e71ce46fd4189ce6ec4681a4b25cffd336c072ba))
+* support setting headers via env ([abc8d07](https://github.com/parsecular/sdk-typescript/commit/abc8d0707d285f4f58a62d24b3638c18a1e489d9))
+
+
+### Bug Fixes
+
+* **ci:** bump @arethetypeswrong/cli to ^0.18.0 and run CI workflows on Node 24 ([62bc2fb](https://github.com/parsecular/sdk-typescript/commit/62bc2fb17ce52a927a49256342913e7f17dc36c2))
+* **client:** send content-type header for requests with an omitted optional body ([a5ed692](https://github.com/parsecular/sdk-typescript/commit/a5ed69223ba09f759c84784182b19a96b7a0fb9b))
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([6498877](https://github.com/parsecular/sdk-typescript/commit/64988777e4dfdb13f64b0e945ae5b535aa511856))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([e15456a](https://github.com/parsecular/sdk-typescript/commit/e15456a38d0c7db06d088dc9910f52559b15792f))
+* **format:** run eslint and prettier separately ([95814a1](https://github.com/parsecular/sdk-typescript/commit/95814a1823864bfa9a94f3912c74e4f9090276fc))
+* **internal:** codegen related update ([9136891](https://github.com/parsecular/sdk-typescript/commit/9136891344b5bc2dd12d3a54bda1695a71760250))
+* **internal:** codegen related update ([01f09f0](https://github.com/parsecular/sdk-typescript/commit/01f09f07cd333258bd4a343e7117531b896a2d3a))
+* **internal:** more robust bootstrap script ([95c3e2a](https://github.com/parsecular/sdk-typescript/commit/95c3e2a3776579dd85497af732db43b2c7e2df14))
+* **internal:** tweak CI branches ([1a294b5](https://github.com/parsecular/sdk-typescript/commit/1a294b50191a3327017d05adb4e3cc0149a5ff77))
+* **internal:** update gitignore ([d165640](https://github.com/parsecular/sdk-typescript/commit/d165640076f8046e3852951b459cbac28c4ffff3))
+* redact api-key headers in debug logs ([ac77cb8](https://github.com/parsecular/sdk-typescript/commit/ac77cb885b09d87ec7a7c15050ea1aa0cb4426ec))
+* **tests:** remove redundant File import ([3840d35](https://github.com/parsecular/sdk-typescript/commit/3840d351cb52eb9d3664171a78d24f334e479fac))
+
 ## 0.17.0 (2026-03-16)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/parsecular/sdk-typescript/compare/v0.16.0...v0.17.0)
